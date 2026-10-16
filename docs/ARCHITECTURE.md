@@ -22,7 +22,7 @@ The product is **Switchplinth**, formerly the working title **Decision Graph** a
 
 ![Pipeline from repository Markdown to decisions, a graph, and answers](assets/architecture-pipeline.svg)
 
-The SVG follows the viewer's light or dark preference. `assets/architecture-pipeline.png` (1600px, light) and `assets/architecture-pipeline-vertical.svg`/`.png` (stacked layout) are exports of the same diagram. The source is `src/components/docs/PipelineDiagram.astro` in the website repository; `scripts/export-architecture.mjs` there regenerates these files.
+The SVG follows the reader's system or browser light/dark setting, not GitHub's theme toggle. Its source is `src/components/docs/PipelineDiagram.astro` in the project website repository; `scripts/export-architecture.mjs` there regenerates it.
 
 Canonical data is the Markdown and the `.decision/` YAML. SQLite, the vector index, and compiled scenarios are disposable: the backend rebuilds or recomputes them from those files. Modules below are in `backend/src/switchplinth/`.
 

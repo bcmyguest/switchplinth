@@ -131,6 +131,12 @@ export type SavedScenario = { id: string; name: string; selections: Record<strin
 
 export type Capability = { status: 'supported' | 'unsupported' | 'error'; latency_ms?: number; raw_error?: string; normalized_error?: string; detail?: string }
 
+export type ConnectionGeneration = {
+  reasoning?: 'off' | 'low' | 'medium' | 'high'
+  max_output_tokens?: number
+  request_timeout_seconds?: number
+}
+
 export type Connection = {
   id: string
   name: string
@@ -143,4 +149,5 @@ export type Connection = {
   capabilities?: Record<string, Capability>
   latency_ms?: number
   credential_ref?: string
+  generation?: ConnectionGeneration
 }

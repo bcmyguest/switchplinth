@@ -40,7 +40,7 @@ const c = (s: string): Line => ({ t: s, code: true });
 const H = 92;
 const wide: Card[] = [
   { n: 1, x: 12, y: 48, w: 180, h: H, title: 'Markdown files', tag: 'canonical', lines: [t('ADRs, RFCs, design docs,'), t('READMEs, any headings;'), t('read, never written')] },
-  { n: 2, x: 224, y: 48, w: 180, h: H, title: 'Discovery', lines: [c('discover_markdown()'), t('skips hidden, generated,'), t('and configured paths')] },
+  { n: 2, x: 224, y: 48, w: 180, h: H, title: 'Discovery', lines: [c('discover_markdown()'), t('skips generated, metadata,'), t('and configured paths')] },
   { n: 3, x: 436, y: 48, w: 180, h: H, title: 'Passages, anchors', lines: [c('passages()'), t('path, headings, hash,'), t('context; relocatable')] },
   { n: 4, x: 648, y: 48, w: 180, h: H, title: 'Extraction', chips: ['mock rules', 'model'], chipsY: 38, lines: [t('LiteLLM, one fix-up retry')], linesY: 82 },
   { n: 5, x: 12, y: 184, w: 180, h: H, title: 'Validation', lines: [t('record-v1 schema and'), t('record rules on save;'), t('references on read')] },
@@ -48,7 +48,7 @@ const wide: Card[] = [
   { n: 7, x: 224, y: 328, w: 180, h: H, title: 'Human review', lines: [t('confirm, reject, correct;'), t('each judgment appends;'), t('undo appends too')] },
   { n: 8, x: 436, y: 184, w: 180, h: H, title: 'Compiler', tag: 'request', lines: [c('compile_scenario()'), t('graph + option deltas'), t('conflicts, assumptions')] },
   { n: 9, x: 436, y: 328, w: 180, h: H, title: 'Indexes', tag: 'disposable', lines: [t('SQLite FTS5 passages,'), t('Qdrant or local vectors;'), t('rebuilt after each scan')] },
-  { n: 10, x: 648, y: 184, w: 180, h: 236, title: 'Consumers', lines: [c('FastAPI /api/v1')], chips: ['Map and What-if', 'Why-search, grounded', 'MCP: 4 read-only tools'], chipsCol: true },
+  { n: 10, x: 648, y: 184, w: 180, h: 236, title: 'Consumers', lines: [c('FastAPI')], chips: ['Map and What-if', 'Why-search, grounded', 'MCP: 4 read-only tools'], chipsCol: true },
 ];
 const wideEdges: Edge[] = [
   { d: 'M192 94 H215', tip: [224, 94, 'right'] },
@@ -75,7 +75,7 @@ const wideLabels: Label[] = [
 const rows = [40, 166, 292, 418, 544, 670, 796, 922];
 const tall: Card[] = [
   { n: 1, x: 16, y: rows[0], w: 328, h: H, title: 'Markdown files', tag: 'canonical', lines: [t('ADRs, RFCs, design docs, READMEs;'), t('any headings, no template;'), t('read, never written')] },
-  { n: 2, x: 16, y: rows[1], w: 328, h: H, title: 'Discovery', lines: [c('discover_markdown()'), t('skips hidden and generated folders'), t('plus configured ignore paths')] },
+  { n: 2, x: 16, y: rows[1], w: 328, h: H, title: 'Discovery', lines: [c('discover_markdown()'), t('skips generated and metadata folders'), t('plus configured ignore paths')] },
   { n: 3, x: 16, y: rows[2], w: 328, h: H, title: 'Passages and evidence anchors', lines: [c('passages(), evidence_anchor()'), t('path, heading path, passage hash,'), t('context; relocated on rescans')] },
   { n: 4, x: 16, y: rows[3], w: 328, h: H, title: 'Extraction', chips: ['mock rules', 'LiteLLM model'], chipsY: 38, lines: [t('invalid deltas get one schema-feedback retry')], linesY: 82 },
   { n: 5, x: 16, y: rows[4], w: 328, h: H, title: 'Validation', lines: [t('record-v1 schema and record rules'), t('on every save; cross-record'), t('references on every read')] },
@@ -83,7 +83,7 @@ const tall: Card[] = [
   { n: 7, x: 188, y: rows[5], w: 156, h: H, title: 'Human review', lines: [t('confirm, reject,'), t('correct, undo;'), t('always appends')] },
   { n: 8, x: 16, y: rows[6], w: 156, h: H, title: 'Compiler', tag: 'request', lines: [t('base graph + deltas;'), t('conflicts, invalid'), t('assumptions')] },
   { n: 9, x: 188, y: rows[6], w: 156, h: H, title: 'Indexes', tag: 'disposable', lines: [t('SQLite FTS5,'), t('Qdrant or local'), t('vectors; rebuilt')] },
-  { n: 10, x: 16, y: rows[7], w: 328, h: H, title: 'Consumers', lines: [c('FastAPI /api/v1')], chips: ['Map, What-if', 'Why-search', 'MCP tools'], chipsY: 60 },
+  { n: 10, x: 16, y: rows[7], w: 328, h: H, title: 'Consumers', lines: [c('FastAPI')], chips: ['Map, What-if', 'Why-search', 'MCP tools'], chipsY: 60 },
 ];
 const down = (x: number, from: number, to: number): Edge => ({ d: `M${x} ${from} V${to - 9}`, tip: [x, to, 'down'] });
 const tallEdges: Edge[] = [
@@ -108,7 +108,7 @@ const tallHeight = rows[7] + H + 110;
 const sheet = site.name.toUpperCase();
 const title = 'How repository Markdown becomes decisions, a graph, and answers';
 const desc =
-  'Pipeline in ten steps. 1: Markdown files, canonical and never written. 2: discovery skips hidden, generated, and configured paths. 3: passages become evidence anchors with path, heading path, passage hash, and context. 4: extraction by mock rules or a LiteLLM model, with one schema-feedback retry for invalid deltas. 5: validation against the record-v1 schema on save and references on read. 6: canonical .decision/ YAML, one file per record. 7: human review reads records and appends judgments, including undo. 8: the compiler applies selected option deltas to the base graph per request and reports conflicts and invalid assumptions. 9: disposable SQLite FTS5 and vector indexes, rebuilt from the YAML. 10: consumers through the FastAPI API: the map and What-if, why-search, and four MCP tools.';
+  'Pipeline in ten steps. 1: Markdown files, canonical and never written. 2: discovery skips generated, metadata, and configured paths. 3: passages become evidence anchors with path, heading path, passage hash, and context. 4: extraction by mock rules or a LiteLLM model, with one schema-feedback retry for invalid deltas. 5: validation against the record-v1 schema on save and references on read. 6: canonical .decision/ YAML, one file per record. 7: human review reads records and appends judgments, including undo. 8: the compiler applies selected option deltas to the base graph per request and reports conflicts and invalid assumptions. 9: disposable SQLite FTS5 and vector indexes, rebuilt from the YAML. 10: consumers through FastAPI: the map and What-if, why-search, and four MCP tools.';
 ---
 <figure class="pl-figure not-content" aria-label="Pipeline diagram">
 {
@@ -184,12 +184,11 @@ const desc =
             <rect class="pl-card" x="0" y="60" width="26" height="16" rx="4" />
             <text class="pl-legend-text" x="36" y="72">Process step</text>
           </g>
-          <g class="pl-block" transform="translate(612 438)">
-            <rect width="216" height="26" rx="4" />
-            <path d="M96 0V26M154 0V26" />
+          <g class="pl-block" transform="translate(668 438)">
+            <rect width="160" height="26" rx="4" />
+            <path d="M96 0V26" />
             <text x="8" y="17">{sheet}</text>
-            <text x="104" y="17">A-102</text>
-            <text x="162" y="17">PIPELINE</text>
+            <text x="104" y="17">PIPELINE</text>
           </g>
         </>
       ) : (

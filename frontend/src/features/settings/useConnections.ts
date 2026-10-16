@@ -5,7 +5,7 @@ import { getConnections, saveConnection, testConnection } from '../../api'
 import { demoConnection } from '../../demo'
 import type { Workspace } from '../../app/useWorkspace'
 import type { Connection } from '../../types'
-import { canConfigureEndpoint, createConnectionDraft } from './connectionDraft'
+import { canConfigureEndpoint, connectionGeneration, createConnectionDraft, requestTimeoutError } from './connectionDraft'
 
 type ConnectionDraft = ReturnType<typeof createConnectionDraft>
 
@@ -74,9 +74,12 @@ export function useConnections(workspace: Pick<Workspace, 'live' | 'generation' 
   async function createConnection(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setConnectionError('')
+    const timeoutError = requestTimeoutError(connectionDraft.request_timeout_seconds)
+    if (timeoutError) { setConnectionError(timeoutError); return }
     try {
-      const id = connectionDraft.id || connectionDraft.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-      const saved = await saveConnection({ ...connectionDraft, id, endpoint: canConfigureEndpoint(connectionDraft.provider) ? connectionDraft.endpoint.trim() || undefined : undefined, embedding_model: connectionDraft.embedding_model.trim() || undefined, credential_ref: connectionDraft.credential_ref || undefined })
+      const { generation: storedGeneration, request_timeout_seconds: timeoutText, ...draft } = connectionDraft
+      const id = draft.id || draft.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+      const saved = await saveConnection({ ...draft, id, generation: connectionGeneration(storedGeneration, timeoutText), endpoint: canConfigureEndpoint(draft.provider) ? draft.endpoint.trim() || undefined : undefined, embedding_model: draft.embedding_model.trim() || undefined, credential_ref: draft.credential_ref || undefined })
       const refreshed = await getConnections()
       setConnections(refreshed)
       setSelectedConnectionId(id)
@@ -91,7 +94,7 @@ export function useConnections(workspace: Pick<Workspace, 'live' | 'generation' 
     if (!activeConnection || activeConnection.id === demoConnection.id) {
       setConnectionDraft(createConnectionDraft())
     } else {
-      setConnectionDraft({ ...createConnectionDraft(activeConnection.provider), name: activeConnection.name, id: activeConnection.id, endpoint: activeConnection.endpoint ?? '', model: activeConnection.model ?? '', embedding_model: activeConnection.embedding_model ?? '', credential_ref: activeConnection.credential_ref ?? '' })
+      setConnectionDraft({ ...createConnectionDraft(activeConnection.provider, activeConnection.generation), name: activeConnection.name, id: activeConnection.id, endpoint: activeConnection.endpoint ?? '', model: activeConnection.model ?? '', embedding_model: activeConnection.embedding_model ?? '', credential_ref: activeConnection.credential_ref ?? '' })
     }
     setConnectionForm(true)
     setConnectionError('')

@@ -214,7 +214,7 @@ Gate: a reviewer checks pacing and caption legibility, and confirms that nothing
 | 4. Map fullscreen | Done (`00b04ed`); re-review PASS |
 | 5. Map readability | Done (`00b04ed`); review PASS (Chromium and Firefox: 0 overlaps, crossings 38→4 and 61→4, all edges orthogonal) |
 | 6. Architecture log reasons | Done (backend `d23ee3c`, UI `3f0ea73`); reviews PASS |
-| 7. Local model extraction (Lemonade) | Connection registered; extraction gate pending |
+| 7. Local model extraction (Lemonade) | Gate PASS (Qwen3.8 full corpus, 7/7 decisions); 7b follow-ups done (`57ae142`); connection form edits the request timeout (`64c6aa8`) |
 | 8. Review log with undo | Done (backend `314c199`, `cd7d0e5`; UI `5fa52b6`); reviews PASS |
 | 9. Usefulness task study | Baseline recorded on `b8e5053`; fixes pending |
 | 10. Scenario lifecycle | Not started; needs product decision |

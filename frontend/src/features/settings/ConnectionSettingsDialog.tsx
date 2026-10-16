@@ -1,7 +1,7 @@
 // Model connections dialog: picks the active connection, shows its capability diagnostics, and edits or adds a connection.
 import { Activity, AlertTriangle, ArrowUpRight, Check, ChevronRight, LoaderCircle, Plus, Settings2, Sparkles, TerminalSquare, X } from 'lucide-react'
 import { Dialog } from '../../components/ui/dialog'
-import { canConfigureEndpoint, createConnectionDraft, endpointPlaceholder, OLLAMA_ENDPOINT } from './connectionDraft'
+import { canConfigureEndpoint, createConnectionDraft, endpointPlaceholder, OLLAMA_ENDPOINT, requestTimeoutError } from './connectionDraft'
 import type { Connections } from './useConnections'
 
 type ConnectionSettingsDialogProps = {
@@ -12,7 +12,7 @@ type ConnectionSettingsDialogProps = {
 export function ConnectionSettingsDialog({ connections: controller, live }: ConnectionSettingsDialogProps) {
   const { list: connections, active: activeConnection, select: setSelectedConnectionId, dialog } = controller
   const { open: showSettings, setOpen: setShowSettings, providerBusy, formOpen: connectionForm, setFormOpen: setConnectionForm, draft: connectionDraft, setDraft: setConnectionDraft, error: connectionError, check: checkProvider, save: createConnection, edit: editConnection } = dialog
-  return <Dialog open={showSettings} onOpenChange={setShowSettings} ariaLabel="Model connections"><section className="settings-modal">
+  return <Dialog open={showSettings} onOpenChange={setShowSettings} ariaLabel="Model connections"><section className="settings-modal max-h-[90vh] overflow-auto">
     <div className="modal-head"><div><span className="modal-icon"><Settings2 size={17} /></span><div><h2>Model connections</h2><p>Configure providers and inspect each capability.</p></div></div><button className="icon-button" onClick={() => setShowSettings(false)}><X size={17} /></button></div>
     {connections.length > 1 && <div className="connection-picker">{connections.map((connection) => <button key={connection.id} className={connection.id === activeConnection?.id ? 'selected' : ''} onClick={() => setSelectedConnectionId(connection.id)}><span>{connection.name}</span><small>{connection.model}</small>{connection.id === activeConnection?.id && <Check size={13} />}</button>)}</div>}
     {activeConnection ? <div className="connection-card">
@@ -30,6 +30,7 @@ export function ConnectionSettingsDialog({ connections: controller, live }: Conn
       <label>Chat model<input required value={connectionDraft.model} onChange={(event) => setConnectionDraft({ ...connectionDraft, model: event.target.value })} placeholder={connectionDraft.provider === 'openai' ? 'gpt-4.1-mini' : connectionDraft.provider === 'anthropic' ? 'claude-sonnet-4-5' : 'model name'} /></label>
       <label>Embedding model <span className="optional-label">optional</span><input value={connectionDraft.embedding_model} onChange={(event) => setConnectionDraft({ ...connectionDraft, embedding_model: event.target.value })} placeholder="Leave blank if unavailable" /><small>Diagnostics report embeddings as unsupported when this is blank.</small></label>
       <label>Credential environment reference<input value={connectionDraft.credential_ref} onChange={(event) => setConnectionDraft({ ...connectionDraft, credential_ref: event.target.value })} placeholder={connectionDraft.provider === 'anthropic' ? 'env:ANTHROPIC_API_KEY' : 'env:OPENAI_API_KEY'} /><small>Secrets stay in the environment and are never written to repository YAML.</small></label>
+      <label>Request timeout (seconds) <span className="optional-label">optional</span><input type="number" inputMode="decimal" min="0" max="86400" step="any" value={connectionDraft.request_timeout_seconds} onChange={(event) => setConnectionDraft({ ...connectionDraft, request_timeout_seconds: event.target.value })} placeholder="600" aria-invalid={requestTimeoutError(connectionDraft.request_timeout_seconds) ? true : undefined} /><small>How long the backend waits for one model response. Leave blank to use the 600-second default.</small></label>
       {connectionError && <div className="inline-error"><AlertTriangle size={13} /> {connectionError}</div>}
       <div className="form-actions"><button type="button" className="button subtle" onClick={() => setConnectionForm(false)}>Cancel</button><button type="submit" className="button primary">Save connection</button></div>
     </form> : <button className="add-provider" onClick={() => { setConnectionDraft(createConnectionDraft()); setConnectionForm(true) }}><div><Plus size={14} /><span>Add a connection</span><small>OpenAI, Anthropic, Ollama or a compatible endpoint</small></div><ChevronRight size={15} /></button>}

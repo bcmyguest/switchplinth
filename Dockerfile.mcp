@@ -1,0 +1,30 @@
+# Stdio MCP server for Glama and other registries. Build from the repository root:
+#   docker build -f Dockerfile.mcp -t switchplinth-mcp .
+#   docker run -i --rm switchplinth-mcp
+# The image serves the read-only decision tools over the bundled fictional
+# food-delivery corpus. It needs no secrets, Qdrant, model, or runtime network:
+# the corpus is extracted by deterministic mock extraction at build time, and
+# search uses the in-process local vector fallback.
+
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS build
+ENV UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never UV_NO_CACHE=1
+WORKDIR /app
+COPY backend/pyproject.toml backend/uv.lock backend/README.md ./
+RUN uv sync --locked --no-dev --no-install-project
+COPY backend/src ./src
+RUN uv sync --locked --no-dev --no-editable
+COPY fixtures/food-delivery /fixture
+RUN LITELLM_LOCAL_MODEL_COST_MAP=True /app/.venv/bin/python -I /fixture/bootstrap.py /data \
+    && rm -rf /.data-decision-cache
+
+FROM python:3.12-slim-bookworm
+ENV PATH=/app/.venv/bin:$PATH \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    LITELLM_LOCAL_MODEL_COST_MAP=True \
+    DECISION_CACHE=/tmp/switchplinth-cache
+RUN useradd --create-home --uid 10001 switchplinth
+COPY --from=build /app/.venv /app/.venv
+COPY --from=build --chown=switchplinth:switchplinth /data /data
+USER switchplinth
+ENTRYPOINT ["switchplinth", "mcp", "--repo", "/data"]

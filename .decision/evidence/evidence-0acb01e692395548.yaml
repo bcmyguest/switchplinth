@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-0acb01e692395548
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Decision, option, and delta records
+  normalized_passage_sha256: d27f65e269c9f4821dca6086486774be62968e3877cb7b87931beb3713ce16af
+  context_before: on. A removal must identify its target; an optional `expect` precondition
+    can state whether that target must exist in the base or an earlier composed operation.
+  context_after: '```yaml schema_version: decision/v1 record_type: scenario id: scenario-managed-queue
+    name: Managed queue migration selections: decision-messaging: option-sqs de'
+  display_line: 177
+text: The compiler's code-defined structural predicate set contributes graph nodes
+  and edges to the base. Context, motivation, consequence, rationale, and other descriptive
+  claims remain attached to decision/evidence records and do not imply that an option's
+  components are already present.
+state: current

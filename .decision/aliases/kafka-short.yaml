@@ -1,0 +1,8 @@
+schema_version: decision/v1
+record_type: alias
+id: alias-kafka
+entity_id: broker-kafka
+name: Kafka
+epistemic_state: confirmed
+confidence: 0.99
+evidence: [evidence-ad0e2cd1b4d9bcc4]

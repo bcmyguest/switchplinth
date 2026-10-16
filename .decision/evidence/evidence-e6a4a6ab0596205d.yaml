@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-e6a4a6ab0596205d
+source:
+  path: AGENTS.md
+  git_blob: null
+  content_sha256: b8493d09d47dc1555e89664121d3e034324a66a56bf7f924ee8140892add34db
+location:
+  heading_path:
+  - Repository guidance
+  - Commands
+  normalized_passage_sha256: 5f29d27b07fc69d39a0798038f3eecf5444382101061fe6d3f8c516b47669a31
+  context_before: cd backend && uv run --locked --python 3.12 pytest -q cd frontend
+    && pnpm install --frozen-lockfile cd frontend && pnpm typecheck && pnpm lint &&
+    pnpm build ```
+  context_after: ''
+  display_line: 29
+text: 'Run service-specific checks from the service directory and report the exact
+  command and result. In environments where pnpm cannot open its package store, run
+  the installed binaries directly: `./node_modules/.bin/tsc -b`, `./node_modules/.bin/eslint
+  .`, and `./node_modules/.bin/vite build` from `frontend/`. Do not claim a command
+  works until the files and dependencies exist and it has been run.'
+state: current

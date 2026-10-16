@@ -1,0 +1,41 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-ba0abd32244f8802
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: df647c4e7d19a11877b24b0c14b68576322ea0e348897c87babaf65a4501ce96
+location:
+  heading_path:
+  - V0 implementation plan
+  - Progress log
+  normalized_passage_sha256: f02bc5eb38cad98507bcc256da462b3a6166705b7f388293473cf5ba55ed0195
+  context_before: d indexes. - No external provider credentials or remote model endpoint
+    were used; provider interoperability was exercised with the local OpenAI-compatible
+    mock.
+  context_after: ''
+  display_line: 79
+text: '| Date | Milestone | Change / decision | Verification | |---|---|---|---| |
+  2026-10-05 | 1 | Built the three-service Compose app with FastAPI, React, shadcn/ui,
+  graph/scenario UI, MCP, demo Markdown, and portable overlay. | `docker compose config`
+  passed. Root verified Compose build/start and HTTP health/proxy responses (200).
+  | | 2026-10-06 | 2–3 | Implemented typed portable records, evidence relocation,
+  human review precedence, deterministic extraction, LiteLLM adapter, provider diagnostics,
+  scenario deltas, and reviewable option proposals. | Escalated `UV_CACHE_DIR=/tmp/uv-cache
+  uv run --python 3.12 pytest -q` → 16 passed (12.24s). Standard sandbox run → 15
+  passed, 1 skipped because loopback binding is blocked. Reviewer independently verified
+  frontend `tsc --noEmit`, ESLint, and Vite build (all exit 0). | | 2026-10-06 | 4–6
+  | Added disposable SQLite/Qdrant retrieval, scenario-aware entity details, invalid-assumption
+  detection, focused rationale answers, MCP lifespan/route, discovery exclusions/limits,
+  and rollback for canonical overlay writes on synchronous scan exceptions. Repaired
+  the dangling inferred alias left by the earlier live scan. | Root/reviewer verified
+  `down -v`, scan HTTP 200 with exclusions, 96 Qdrant points, focused Why Kafka rationale/evidence,
+  active SQS details, and MCP initialize/tools-list/query. | | 2026-10-06 | 2–6 update
+  | Added relationship and entity/decision consequence extraction with anchored evidence,
+  additive decision extraction precedence, mounted workspace picker with safe relative
+  paths and first-open overlay bootstrap, and per-repository Qdrant namespaces. |
+  Python 3.12 suite includes provider relationship/consequence, manual delta precedence,
+  unknown schema rejection, fresh Markdown bootstrap, safe picker, and repo-index
+  isolation regressions. Current Compose A/B picker smoke is pending root verification.
+  |'
+state: unresolved

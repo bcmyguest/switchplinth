@@ -1,0 +1,30 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-1a89461642f928d8
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - UI-BASE-OPTIONS — Show selected scenario values accurately
+  normalized_passage_sha256: cb8872e7d97988b7832664440bdf5fd7f08ca000665c9b64240d67fa10c15624
+  context_before: was still pending after 20 seconds; final V0 acceptance must verify
+    its completion. - **Next action:** Retain this flow in the final real-backend
+    browser sweep.
+  context_after: '- **Outcome:** Architecture log and progress have interlinked pages;
+    a Facts section links to the system map; Decision assistant appears near the top
+    of the pri'
+  display_line: 83
+text: '- **Outcome:** What-if shows the active selection distinctly and never presents
+  unselected option values as active. - **Blockers:** None for current option-state
+  labels. - **Owner:** `<agent seat>` (agent). - **Reviewer gate:** `<agent seat>`
+  passed active-only source and inactive labels; live Firefox option-state check passed.
+  - **Status:** `completed`. - **Acceptance/evidence:** After graph option switching
+  passed earlier live verification, Firefox inspected the What-if row: Apache Kafka
+  had `Active`, `aria-pressed=true`, and its source link; Amazon SQS had `Not selected`,
+  `aria-pressed=false`, and no active-source link. The selected SQS state was also
+  verified in the scenario browser flow. - **Next action:** None for this task.'
+state: unresolved

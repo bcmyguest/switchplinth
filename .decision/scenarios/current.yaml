@@ -1,0 +1,7 @@
+schema_version: decision/v1
+record_type: scenario
+id: scenario-current
+name: Current selected architecture
+selections:
+  decision-messaging-platform: option-kafka
+  decision-order-storage: option-postgres

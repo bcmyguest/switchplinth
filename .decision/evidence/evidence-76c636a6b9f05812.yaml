@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-76c636a6b9f05812
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Runtime shape
+  normalized_passage_sha256: bba577ebb1bce416fe0e27c524076e5deb417ed360e24c42689721a59aec60e5
+  context_before: emantic CSS variables. The backend is Python/FastAPI. SQLite is
+    local disposable state; Qdrant is a disposable vector retrieval index. Neither
+    is authoritative.
+  context_after: The repository is the durable boundary. Source Markdown remains untouched
+    input. A small `.decision/` tree stores validated, human-readable YAML records
+    and sch
+  display_line: 19
+text: The UI currently displays **Waypoint** as a provisional working label. Product
+  branding remains undecided.
+state: current

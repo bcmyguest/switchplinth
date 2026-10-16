@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-63f8d9191078f5bc
+source:
+  path: AGENTS.md
+  git_blob: null
+  content_sha256: e30293b4887acd5268aa03016951d9895f3fcfa94898ded0fd452ac53c0df6dd
+location:
+  heading_path:
+  - Repository guidance
+  - Commands
+  normalized_passage_sha256: 53337536dfecdfd560903462dfee978040f92dd013591a07e930ace2378e91ef
+  context_before: 'The repository is being bootstrapped; these are the intended V0
+    commands once the corresponding files exist:'
+  context_after: Run service-specific checks from the service directory and report
+    the exact command and result. Do not claim a command works until the files and
+    dependencies ex
+  display_line: 19
+text: '```sh docker compose up --build docker compose down docker compose down -v                 #
+  deletes disposable service volumes cd backend && uv run pytest cd frontend && npm
+  run build ```'
+state: unresolved

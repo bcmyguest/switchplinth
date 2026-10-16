@@ -1,0 +1,49 @@
+# Project name; -p and COMPOSE_PROJECT_NAME override it (scripts/demo.sh uses switchplinth-demo).
+name: switchplinth
+services:
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DECISION_REPO: /workspace/repos
+      DECISION_WORKSPACE_ROOT: /workspace/repos
+      DECISION_WORKSPACE_NAME: ${DECISION_WORKSPACE_NAME:-}
+      DECISION_CACHE: /var/cache/switchplinth
+      QDRANT_URL: http://qdrant:6333
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${DECISION_WORKSPACE_HOST:-.}:/workspace/repos
+      - decision-cache:/var/cache/switchplinth
+    ports:
+      - "127.0.0.1:${DECISION_BACKEND_PORT:-8000}:8000"
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "127.0.0.1:${DECISION_FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant-data:/qdrant/storage
+    ports:
+      - "127.0.0.1:${DECISION_QDRANT_PORT:-6333}:6333"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/6333"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+volumes:
+  decision-cache:
+  qdrant-data:

@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-5b71b6d1767655cb
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Decision evidence and consequences
+  normalized_passage_sha256: 033eb230b4f6d71f6a5c71506c20138c2ed93a40596a6bff1697d5b11259c175
+  context_before: g retrieval. Embedding failures are reported in scan/search diagnostics
+    and do not silently switch a configured provider-backed index to a different vectorizer.
+  context_after: '```yaml schema_version: decision/v1 record_type: claim id: claim-kafka-replay-consequence
+    subject: decision-messaging predicate: consequence object: Event repla'
+  display_line: 121
+text: 'Option rationale cites canonical evidence records through its `evidence` field.
+  V1 does not define a nested `consequences` object. Represent an inferred consequence
+  as a claim with the decision or entity as its subject, `consequence` as its predicate,
+  a descriptive value as its object, and the supporting evidence:'
+state: current

@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-2ef638686b9e63b3
+subject: entity-225ac6a9466f917c
+predicate: mentioned_in
+object: examples/synthetic/decisions/storage.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: examples/synthetic/decisions/storage.md
+evidence:
+- evidence-6b0bb531e75c7f48

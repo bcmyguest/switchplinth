@@ -1,0 +1,21 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-041eef7353a37085
+source:
+  path: backend/README.md
+  git_blob: null
+  content_sha256: e784589337622a49baf54d5ff138d89cab7127e980ea937df5cfe722e981420c
+location:
+  heading_path:
+  - Decision Graph backend
+  normalized_passage_sha256: 1f969d415f0dae9a6c0244ecb588a01d4d8ffa2185d68fa497134fdc4e4c3895
+  context_before: FastAPI service and portable-data compiler for Decision Graph. Python
+    3.12 is the supported runtime.
+  context_after: The API is served on port 8000. Open `/docs` for the OpenAPI interface.
+    MCP is exposed at `/mcp`.
+  display_line: 5
+text: Run tests with `uv run --python 3.12 pytest -q`. The service uses `DECISION_REPO`
+  for the repository containing Markdown and `.decision/`, `DECISION_CACHE` for disposable
+  SQLite state, and `QDRANT_URL` for the derived vector index. The Compose backend
+  mounts the host repository at `/workspace/repository`.
+state: current

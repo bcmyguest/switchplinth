@@ -1,0 +1,9 @@
+/* Starlight overrides: the app's typeface and palette (tokens.css). */
+:root {
+  --sl-font: 'DM Sans', system-ui, sans-serif;
+  --sl-content-width: 46rem;
+}
+.sl-markdown-content .unverified,
+.sl-markdown-content strong.label {
+  color: var(--c-warning);
+}

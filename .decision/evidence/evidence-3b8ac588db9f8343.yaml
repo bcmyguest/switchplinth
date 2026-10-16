@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3b8ac588db9f8343
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Portability checks
+  normalized_passage_sha256: 20f56f6bcdecf7b9d8d5c202c35f41914c47e91fbefc4df246ee173716781af5
+  context_before: ' diffs. Never silently rewrite unknown/future versions. Application
+    import validates portable records against the schema; this checkout has no CI
+    configuration.'
+  context_after: ''
+  display_line: 201
+text: '- Copy `.decision/` and Markdown into a fresh checkout; no local index files
+  are required to compile. - Delete generated SQLite/Qdrant data and rebuild indexes
+  from repository content and portable records. - Parse and validate all YAML with
+  the matching schema version. - Preserve IDs and human states through round-trip
+  read/write and re-extraction. - Keep state required to understand decisions, options,
+  aliases, claims, evidence, and scenarios in committed text files.'
+state: current

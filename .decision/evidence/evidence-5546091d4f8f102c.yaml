@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-5546091d4f8f102c
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: ffc4ea9d223c4638d956f3687731197bf7005d964525894852d27a11bfcbf49b
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 6: MCP and end-to-end acceptance'
+  normalized_passage_sha256: acf480f6efea59a37cdb1b9eca8f4dfd8f5e260c5917f1e363ee94c5344e28e9
+  context_before: rvices. - [x] Document local setup, provider config, portability,
+    rebuild, and troubleshooting. - [ ] Run full acceptance matrix and record real
+    outcomes below.
+  context_after: '- Compose mounts the current host repository to `/workspace/repository`;
+    V0 has no folder picker. - Markdown discovery excludes `.decision/`, `.decision-cache/`'
+  display_line: 65
+text: 'Verification: Compose startup and HTTP health/proxy checks passed. The refreshed
+  live scan returned 200 and indexed 95 passages across 10 Markdown sources. The remaining
+  matrix includes the focused “Why Kafka?” HTTP answer, non-default scenario detail,
+  live Qdrant rebuild from empty state, MCP initialize/tools-list/query, and final
+  post-scan validation. No external model credentials were used.'
+state: unresolved

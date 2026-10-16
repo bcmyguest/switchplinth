@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-a40dcf78b08707a7
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Provider configuration
+  normalized_passage_sha256: b15ff4e8aa8ff01ea96900f4f927842ca6711cbd6960d73025f8ba19552cdcc2
+  context_before: ' required to probe/use provider embeddings credential_ref: env:DECISION_MODEL_API_KEY
+    capabilities: structured_output: true embeddings: true streaming: true ```'
+  context_after: Option rationale cites canonical evidence records through its `evidence`
+    field. V1 does not define a nested `consequences` object. Represent an inferred
+    consequ
+  display_line: 117
+text: An optional `agents/` record references an external coding/engineering agent
+  and its invocation configuration; it is distinct from `model_connection` and does
+  not declare inference capabilities. Agent integration details and transport remain
+  unresolved. LiteLLM is an internal adapter, not the portable schema. If no provider
+  embedding model is configured, V0 uses deterministic local token-hash vectors; that
+  fallback is rebuildable but is not semantic embedding retrieval. Embedding failures
+  are reported in scan/search diagnostics and do not silently switch a configured
+  provider-backed index to a different vectorizer.
+state: current

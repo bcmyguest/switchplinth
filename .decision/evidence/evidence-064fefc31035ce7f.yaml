@@ -1,0 +1,21 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-064fefc31035ce7f
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Acceptance criteria
+  normalized_passage_sha256: bd26bda5fb4a9564c1077df17389d7075069a14ecced35d8e81b303d13af2791
+  context_before: n V0. Reusable visual/theme primitives may be retained; a future
+    static React/Tailwind/shadcn marketing/docs site and synthetic scenario demo are
+    separate work.
+  context_after: 1. `docker compose up --build` starts distinct frontend, backend,
+    and Qdrant services locally. 2. A repository with synthetic, non-template-specific
+    Markdown ca
+  display_line: 56
+text: 'V0 is accepted when:'
+state: current

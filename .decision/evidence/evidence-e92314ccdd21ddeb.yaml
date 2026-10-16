@@ -1,0 +1,29 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-e92314ccdd21ddeb
+source:
+  path: CLAUDE.md
+  git_blob: null
+  content_sha256: cbb751b97f45cc8e25a58a68b8bf1a71adf4aef92a1529f8c91f315b4866a808
+location:
+  heading_path:
+  - Project orientation
+  - Backend boundaries
+  normalized_passage_sha256: 897ea39e26e23e34a5a5c6dc8c5dcda57df80c57619031f26cb8b5787c6335c4
+  context_before: for local model connections. Local API docs are at `http://localhost:8000/docs`,
+    the frontend at `http://localhost:3000`, and Qdrant at `http://localhost:6333`.
+  context_after: '`docker compose up --build` starts the local stack. Compose mounts
+    `${DECISION_WORKSPACE_HOST:-.}` at `/workspace/repos`; the repository chooser
+    accepts only re'
+  display_line: 11
+text: The deterministic domain/compiler does not depend on HTTP, SQLite, Qdrant, or
+  model providers. Keep provider-neutral connection records portable and secrets out
+  of YAML. Blank optional connection fields are omitted from saved `model_connection`
+  records; explicit `env:` credential references are preserved. Local `openai_compatible`
+  extraction can run without a credential reference; hosted OpenAI and Anthropic connections
+  use their configured credentials. Inferred claims and aliases need evidence; human
+  reviews append records and supersede earlier human judgments without rewriting the
+  original inference. Keep source anchors relocatable and avoid line numbers as identity.
+  Options are typed deltas over one base graph. YAML edits, API graph edits, and provider
+  proposals use the same delta shape.
+state: current

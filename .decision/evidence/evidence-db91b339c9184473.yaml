@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-db91b339c9184473
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Development checks
+  normalized_passage_sha256: dd2e679681c198dd1f0f00997213cd08ed7cad9caf80ff5edc1f10780bbcda0d
+  context_before: ' in `qdrant-data`. Both are rebuildable. `docker compose down -v`
+    removes those generated volumes; it does not remove repository Markdown or `.decision/`
+    files.'
+  context_after: The backend exposes deterministic mock extraction and a LiteLLM adapter
+    for configured providers. Local `openai_compatible` endpoints can perform structured
+    ext
+  display_line: 35
+text: '```sh cd backend && uv run --locked --python 3.12 pytest -q cd frontend &&
+  pnpm install --frozen-lockfile && pnpm typecheck && pnpm lint && pnpm build ```'
+state: current

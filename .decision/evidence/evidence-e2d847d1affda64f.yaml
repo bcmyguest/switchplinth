@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-e2d847d1affda64f
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: 5aae143fca7c37edfb98a98d3d661642b0e50a31cb3e8255ee821be6fec02fb3
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 4: derived indexes and grounded retrieval'
+  normalized_passage_sha256: 11bc4187d315a7cbc6c66ebffe31a03d67ef8830df06999bc504b7f27f7b1e19
+  context_before: ' by backend tests. No live external model provider was configured
+    in this verification run, so provider-authenticated extraction and proposal remain
+    unverified.'
+  context_after: 'Verification: backend tests delete/recreate SQLite index state and
+    validate local vector rebuild/query determinism using a fake Qdrant client. Compose
+    proved th'
+  display_line: 42
+text: '- [x] Build disposable SQLite index and Qdrant collections from canonical Markdown
+  and overlay. - [x] Implement lexical + local deterministic semantic retrieval, entity/alias
+  resolution, graph expansion, provenance-aware ranking, and grounded answer shape.
+  - [x] Add explicit full rebuild path and index version tracking.'
+state: unresolved

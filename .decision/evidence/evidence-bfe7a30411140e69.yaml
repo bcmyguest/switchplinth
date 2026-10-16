@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-bfe7a30411140e69
+source:
+  path: examples/synthetic/decisions/messaging.md
+  git_blob: null
+  content_sha256: 7516b0f81cff7c0da672c458b26118bbb911bc5d3b41816b58c6056da729a3d8
+location:
+  heading_path:
+  - Event delivery for order processing
+  - 'Alternative: managed queue'
+  normalized_passage_sha256: 514cd1f504f4629ffb094f70f7a7cef766689b6db1d711bc7704edad7d95e05e
+  context_before: oss fulfillment events matter more than operating a managed queue.
+    The Order Service publishes order events to Kafka, and the Fulfillment Service
+    consumes them.
+  context_after: The team operates Kafka and monitors consumer lag. The decision can
+    be revisited if operational load becomes more important than replay.
+  display_line: 13
+text: Amazon SQS would reduce infrastructure work. A dead-letter queue would hold
+  messages after repeated failures, but replaying a selected range of old events would
+  require extra application support.
+state: current

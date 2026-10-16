@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-24c9ba3918f05b78
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Discovery, retrieval, and model access
+  normalized_passage_sha256: 419fed90872d1dfebe8eef7a6f98dc3208feaa761c02fb47273c889fa566b8db
+  context_before: s need not depend on UI internals. Local/remote transport and authentication
+    remain unresolved and must be selected before exposing a listener beyond localhost.
+  context_after: 'Use narrow Docker contexts: each service context includes only its
+    subtree and required root files, with caches/build outputs re-ignored. Keep Dockerfiles
+    and C'
+  display_line: 45
+text: LangGraph remains a future seam for workflows that need resumability or human
+  checkpoints, such as long-running extraction/review. It is intentionally absent
+  from V0 because the implemented scan is synchronous and has no persisted workflow
+  or review checkpoint. CRUD, YAML validation, compilation, delta application, indexing,
+  and deterministic retrieval orchestration remain ordinary Python.
+state: current

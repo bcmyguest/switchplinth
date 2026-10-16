@@ -1,0 +1,20 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-72f74206f55b5961
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Run locally
+  normalized_passage_sha256: a0184cc834d502ad30e295846d093fb6ea02c5ed2f309ab9bf0876081747607d
+  context_before: '```sh docker compose up --build ```'
+  context_after: Published ports bind to `127.0.0.1` by default. The backend container
+    maps `host.docker.internal` to the host gateway so local model servers can be
+    reached from
+  display_line: 15
+text: '- Web app: <http://localhost:3000> - Backend API and OpenAPI docs: <http://localhost:8000/docs>
+  - Qdrant: <http://localhost:6333>'
+state: current

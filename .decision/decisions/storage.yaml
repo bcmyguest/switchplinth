@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: decision
+id: decision-order-storage
+title: Choose the order database
+status: decided
+context: Order records require transactions and relational queries.
+selected_option: option-postgres
+options:
+  - id: option-postgres
+    title: PostgreSQL
+    rationale: Transactional updates and relational reporting.
+    evidence: [evidence-a568bcae94e37893]
+    delta:
+      base: architecture
+      operations: []
+  - id: option-redis
+    title: Redis
+    rationale: Cache use is appropriate for short lived data, but not durable order records.
+    evidence: [evidence-a568bcae94e37893]
+    delta:
+      base: architecture
+      operations:
+        - op: add_entity
+          entity: {id: datastore-redis, kind: datastore, name: Redis}

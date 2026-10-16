@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3ed485ddf9fa1d6e
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: 9041f290c93da93d66cabb4cac3bfec0979b70512c08bc532da41e9b41896a34
+location:
+  heading_path:
+  - Architecture
+  - Runtime shape
+  normalized_passage_sha256: fb398545890d72de9a80dcf7f321047a098486471074be8ff483e82789e3af35
+  context_before: DX[SQLite disposable index] API --> VEC[Qdrant disposable vectors]
+    API --> LLM[Provider abstraction] LLM --> LIT[LiteLLM adapter] API --> MCP[MCP
+    interface] ```
+  context_after: The repository is the durable boundary. Source Markdown remains untouched
+    input. A small `.decision/` tree stores validated, human-readable YAML records
+    and sch
+  display_line: 17
+text: 'Docker Compose runs three distinct services: `frontend`, `backend`, and `qdrant`.
+  The frontend uses React, TypeScript, shadcn/ui, Tailwind, and `@xyflow/react` for
+  graph interaction. YAML theme values compile/map to semantic CSS variables. The
+  backend is Python/FastAPI. SQLite is local disposable state; Qdrant is disposable
+  semantic retrieval state. Neither is authoritative.'
+state: unresolved

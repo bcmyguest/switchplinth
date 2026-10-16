@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-a8bfdd6e02a78969
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Intent
+  normalized_passage_sha256: 826d4d7da914550c2dd534e4e4ed20ae2948d80bd407383451339acd1643f5d9
+  context_before: es from heterogeneous Markdown. It makes the evidence and uncertainty
+    inspectable, supports human correction, and lets users explore coherent what-if
+    scenarios.
+  context_after: The current UI label is **Waypoint**, a provisional working name
+    rather than a finalized product brand.
+  display_line: 7
+text: 'The central domain concept is a **Decision**: a choice with context, options,
+  and consequences. ADRs, RFCs, design docs, proposals, READMEs, tickets, and arbitrary
+  Markdown are input artifacts. Teams do not need an ADR convention to get value.'
+state: current

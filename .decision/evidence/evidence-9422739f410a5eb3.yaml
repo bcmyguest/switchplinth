@@ -1,0 +1,17 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-9422739f410a5eb3
+source:
+  path: backend/.pytest_cache/README.md
+  git_blob: null
+  content_sha256: 73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad
+location:
+  heading_path:
+  - pytest cache directory
+  normalized_passage_sha256: e3e0990b973d4a494ff51109653b54b498e2a9f609f3946077d23e9e41c6dbf4
+  context_before: '**Do not** commit this to version control.'
+  context_after: ''
+  display_line: 8
+text: See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more
+  information.
+state: unresolved

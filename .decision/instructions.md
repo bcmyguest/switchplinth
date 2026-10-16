@@ -1,0 +1,1 @@
+Use the document's own section names. Treat a decision as selected only when the source makes an outcome explicit. Treat alternatives as unselected options, and cite a specific evidence passage for every inferred claim and alias. Keep ambiguous entity matches separate for human review.

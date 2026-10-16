@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-41e7478165607f07
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 6: MCP and end-to-end acceptance'
+  normalized_passage_sha256: 5b7dfa8438b94d24b411f7ab19bb6ccd1cbf2db998e227c61e345db3925d4d31
+  context_before: tion returns HTTP 422 and leaves all canonical `.decision/` files
+    byte-identical. The focused backend review passed, and the full backend suite
+    passed 33 tests.
+  context_after: 'Verification: Compose startup and HTTP health/proxy checks passed.
+    Discovery returned HTTP 200 with generated/cache paths excluded. The chooser opened/scanned
+    M'
+  display_line: 64
+text: '- [x] Expose query/search and graph inspection through MCP over shared services.
+  - [x] Document local setup, provider config, portability, rebuild, and troubleshooting.
+  - [ ] Complete the full 12-criterion V0 acceptance audit. Scenario detail, readable
+  diff behavior, the synthetic provider-extraction/rebuild fixture, and the independent
+  UI-PANELS gate are verified; review the remaining criteria before claiming V0 acceptance.'
+state: current

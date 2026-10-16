@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-e73a03cd0d490dad
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 0: durable project contract'
+  normalized_passage_sha256: 741e35c8e21021c073854e26b0bc68ddd464f63ce1c1e7437b3dad07ca57616d
+  context_before: ent updated with actual completion, decisions, deviations, and exact
+    verification results. A milestone is complete only when its listed checks run
+    successfully.
+  context_after: 'Verification: document cross-check; ensure decisions called normative
+    agree across all specs. No application verification applies yet.'
+  display_line: 7
+text: '- [x] Write repository guidance and product, architecture, portable format,
+  and V0 plan specifications. - [x] Review specifications for internal contradictions
+  against the full product brief/latest conversation direction and resolve them before
+  substantial application code.'
+state: current

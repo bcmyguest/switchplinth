@@ -1,0 +1,31 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3cbdcba0ac498283
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - BACKEND-REGRESSIONS — Restore deterministic scenario and scan checks
+  normalized_passage_sha256: e236c57e1ba85cc118e84193c10e4278f7f25a2467b422804eff692c62d8dc14
+  context_before: docs/V0_PLAN.md` to match current behavior; run full relevant suites,
+    Compose/browser checks, and a criterion-by-criterion audit against `docs/PRODUCT_SPEC.md`.
+  context_after: '- **Outcome:** After switching to SQS, retain the selected entity
+    and show SQS rationale/evidence; render scenario diff with readable entity names
+    instead of ra'
+  display_line: 33
+text: '- **Outcome:** Verify claim-derived relationship removal in the affected list
+  and stale inferred-alias evidence repair without weakening human review precedence.
+  - **Blockers:** None. - **Owner:** `<agent seat>` (agent, second focused task).
+  - **Reviewer gate:** `<agent seat>` passed invariant and full-suite review. - **Status:**
+  `completed`. - **Acceptance/evidence:** The original two focused cases passed after
+  replacing mutable ordering assumptions with a provably present base edge and the
+  inferred Kafka alias; human review bytes remain asserted. Independent reviewer also
+  passed a grounding-order assertion and the full `env UV_CACHE_DIR=/tmp/uv-cache
+  uv run --locked --python 3.12 pytest -q` result: 31 passed, 1 skipped. - **Next
+  action:** None for these test fixtures; rerun the full suite after later backend
+  changes.'
+state: unresolved

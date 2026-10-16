@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-132b42e4be510c89
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Run locally
+  normalized_passage_sha256: 7c2d6b035979be9d625c1eda193609d97d1feb2865afa27f54c02755675675cc
+  context_before: nal` to the host gateway so local model servers can be reached from
+    Linux Compose. The API is unauthenticated in V0; external listener access is not
+    configured.
+  context_after: The workspace navigation provides separate **Architecture**, **Architecture
+    log**, **Progress**, and **Facts** pages. Architecture places the Decision assistant
+  display_line: 21
+text: Compose mounts `${DECISION_WORKSPACE_HOST:-.}` at `/workspace/repos` (the current
+  directory by default). The repository chooser lists Markdown repositories under
+  that mounted directory; selected paths are relative, and paths that traverse symlinks
+  or escape the mount are rejected. New Markdown-only repositories receive a portable
+  `.decision/` v1 schema, config, and instructions on first open. To mount a different
+  workspace, set `DECISION_WORKSPACE_HOST` before starting Compose.
+state: current

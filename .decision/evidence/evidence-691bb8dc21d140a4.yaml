@@ -1,0 +1,26 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-691bb8dc21d140a4
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: df647c4e7d19a11877b24b0c14b68576322ea0e348897c87babaf65a4501ce96
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 4: derived indexes and grounded retrieval'
+  normalized_passage_sha256: 1e60470069d76fd256922ce052382160c788aaa37e10c085ffc4839b097375ee
+  context_before: ath and index version tracking. - [x] Verify live Qdrant collection
+    recreation and the seeded “Why are we using Kafka?” answer with focused evidence
+    after scan.
+  context_after: '- [x] Display an interactive architecture graph and entity detail/evidence
+    panel. - [x] Support human confirm/reject/override for claims and independent
+    alias r'
+  display_line: 47
+text: 'Verification: backend tests delete/recreate SQLite index state and validate
+  Qdrant collection deletion/recreation and deterministic vectors using a fake client.
+  Root ran `docker compose down -v`, verified empty Qdrant collections, then scanned
+  successfully (HTTP 200); Qdrant contained 96 indexed passage points. The exact “Why
+  are we using Kafka?” query returned selected-option rationale, one direct evidence
+  ID, and two linked claims.'
+state: unresolved

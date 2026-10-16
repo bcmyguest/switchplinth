@@ -1,0 +1,31 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-80a20780049813f6
+source:
+  path: CLAUDE.md
+  git_blob: null
+  content_sha256: cbb751b97f45cc8e25a58a68b8bf1a71adf4aef92a1529f8c91f315b4866a808
+location:
+  heading_path:
+  - Project orientation
+  - Backend boundaries
+  normalized_passage_sha256: fc80cd6c6dc00c165269f2527d3fed6ea57f16a148a51823822813652c097570
+  context_before: ons under `.decision/scenarios/`. Update this file and `README.md`
+    when setup or behavior changes. Follow `AGENTS.md` for the remaining engineering
+    constraints.
+  context_after: When excluded task evidence is reconciled, current-source inferred
+    references can keep a task-seeded entity supported after its excluded evidence
+    is removed.
+  display_line: 15
+text: The workspace has separate Architecture, Architecture log, Progress, and Facts
+  pages. Architecture puts Decision assistant near the system map; Architecture log
+  lists decisions; Progress displays counts from current graph/evidence data; Facts
+  contains Needs a closer look review controls and links to the system map. Scenarios
+  and Explore retain scenario selection and grounded assistant workflows. All Discover
+  triggers (Source Types, the heading, and source card) open one mode chooser for
+  deterministic/mock or provider extraction. Provider extraction passes the selected
+  connection ID to `/api/v1/extraction/run`, displays provider/model and saved counts,
+  and rebuilds SQLite/Qdrant after saving canonical inferred records; provider errors
+  stay visible. Human-reviewed records retain precedence. Do not imply support for
+  other source formats or mark the V0 acceptance audit complete from this flow alone.
+state: current

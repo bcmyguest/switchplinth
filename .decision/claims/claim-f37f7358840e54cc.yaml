@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-f37f7358840e54cc
+subject: entity-8bcf11933046c744
+predicate: mentioned_in
+object: docs/PORTABLE_FORMAT.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: docs/PORTABLE_FORMAT.md
+evidence:
+- evidence-129c72687168d828

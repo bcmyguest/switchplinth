@@ -1,0 +1,33 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-64d949227e718e5d
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Scope for V0
+  normalized_passage_sha256: 21b50c04b15cc53fe1316992c9dfc6a9e3599e3d41772b0a3cc6bd861bdef454
+  context_before: '**Evidence anchor:** a stable locator and content identity for
+    a source passage. - **Inference:** a machine-proposed interpretation, never an
+    unchangeable fact.'
+  context_after: '- Requiring or managing a proprietary ADR template. - Code parsing,
+    Tree-sitter/codegraph indexing, and implementation-versus-design conformance analysis.
+    V1 ha'
+  display_line: 36
+text: '- Local repository opening and recursive Markdown discovery with generated/build
+  directories excluded by documented defaults and user-configurable ignore rules.
+  - Deterministic/mock extraction plus at least one real provider path behind a provider-neutral
+  configuration contract. - Portable overlay creation and schema validation; stable
+  evidence identity and relocation after source edits. - Human confirmation, rejection,
+  and override for claims and aliases; human-authored records outrank model inference.
+  - Decision → option → typed delta, and composition of multiple selected options
+  into a scenario. - Interactive graph browsing/editing, evidence inspection, scenario
+  switching, grounded lexical/semantic/entity/graph retrieval, and MCP query interface.
+  - Rebuild SQLite and Qdrant entirely from canonical repository files. - Provider
+  setup and diagnostic UI for authentication, endpoint reachability, model availability,
+  structured output, embeddings, streaming, latency, and useful raw/normalized errors.
+  - Docker Compose local runtime with frontend, backend, and Qdrant separate.'
+state: current

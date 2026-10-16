@@ -1,0 +1,19 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-be69d92b6813cc1a
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Run locally
+  normalized_passage_sha256: c0944eee71f00dd77b80c73a26ecd8d2a8eb73d227d3bfbc8783d10066a8fc08
+  context_before: own without requiring a particular template. The source documents
+    and validated YAML under `.decision/` are canonical; SQLite and Qdrant are disposable
+    indexes.
+  context_after: '```sh docker compose up --build ```'
+  display_line: 9
+text: 'Docker Compose starts three services:'
+state: current

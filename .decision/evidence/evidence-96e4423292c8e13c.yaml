@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-96e4423292c8e13c
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Evidence records and references
+  normalized_passage_sha256: 539e08d99be4cf37d09e94ae4d3161e7b73d618ecac7c820488b1bac7f525e36
+  context_before: on/evidence/<id>.yaml` record. On relocation, retain that record's
+    ID when the passage match is unambiguous. Claim status and evidence identity remain
+    separate.
+  context_after: 'The passage hash is SHA-256 of the case-folded, whitespace-collapsed
+    `text`. The content hash is SHA-256 of the source file bytes; the example value
+    above is a '
+  display_line: 32
+text: '```yaml schema_version: decision/v1 record_type: evidence id: evidence-01j-example
+  source: path: docs/platform.md git_blob: null # null when Git is unavailable content_sha256:
+  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef" # 64 lowercase
+  hex characters location: heading_path: [Messaging, Current platform] normalized_passage_sha256:
+  "aad82dbbea2e79c0e6fa9ed88aa1b880115754c6817b1e0867c87a65757ba502" context_before:
+  "..." context_after: "..." display_line: 42 # hint only; never identity text: Kafka
+  supports replay. ```'
+state: current

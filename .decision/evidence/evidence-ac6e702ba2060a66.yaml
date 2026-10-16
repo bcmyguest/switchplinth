@@ -1,0 +1,34 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-ac6e702ba2060a66
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - UI-BASE-SOURCES — Make the source-types plus control useful
+  normalized_passage_sha256: a55834dcd88dc89ce536955af8b5f3d193443f807413e881076c36461b683d18
+  context_before: 'ored and the test copy deleted. Screenshot: `<local review artifact>`.
+    - **Next action:** None for typed edits; source-types plus is tracked separately
+    below.'
+  context_after: '- **Outcome:** What-if shows the active selection distinctly and
+    never presents unselected option values as active. - **Blockers:** None for current
+    option-stat'
+  display_line: 73
+text: '- **Outcome:** The source-types plus opens an actionable Markdown source view
+  that lets users inspect the supported source type and run discovery. - **Blockers:**
+  None for this UI control; actual backend scan completion remains part of final V0
+  acceptance. - **Owner:** `<agent seat>` (agent). - **Reviewer gate:** `<agent seat>`
+  passed independent re-review after agent''s mobile fix; the reviewer''s temporary
+  CSS edit was fully reverted before agent''s correction. - **Status:** `completed`.
+  - **Acceptance/evidence:** Firefox desktop (1440px) and narrow (500px; Firefox minimum)
+  keyboard Enter opened the Markdown-only card, with the panel and result fitting
+  the viewport. Controlled discovery responses showed success counts, visible errors,
+  `role="status"`, and button re-enabling. `./node_modules/.bin/tsc -b`, `./node_modules/.bin/eslint
+  .`, and `./node_modules/.bin/vite build` passed from `frontend/`. A real scan was
+  still pending after 20 seconds; final V0 acceptance must verify its completion.
+  - **Next action:** Retain this flow in the final real-backend browser sweep.'
+state: unresolved

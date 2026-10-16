@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-9a8f1804c9590c94
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Run locally
+  normalized_passage_sha256: 85192595e7bf87f52e413455febeac54ec293c74794f1a8a9d5b93f95de18b31
+  context_before: '- Web app: <http://localhost:3000> - Backend API and OpenAPI docs:
+    <http://localhost:8000/docs> - Qdrant: <http://localhost:6333>'
+  context_after: Compose mounts `${DECISION_WORKSPACE_HOST:-.}` at `/workspace/repos`
+    (the current directory by default). The repository chooser lists Markdown repositories
+    unde
+  display_line: 19
+text: Published ports bind to `127.0.0.1` by default. The backend container maps `host.docker.internal`
+  to the host gateway so local model servers can be reached from Linux Compose. The
+  API is unauthenticated in V0; external listener access is not configured.
+state: current

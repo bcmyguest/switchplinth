@@ -1,0 +1,34 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-742b73552e702a33
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: ffc4ea9d223c4638d956f3687731197bf7005d964525894852d27a11bfcbf49b
+location:
+  heading_path:
+  - V0 implementation plan
+  - Progress log
+  normalized_passage_sha256: 4d7c0a9a7d8bf4596f2b54884aacfe203bdfa4817b20a5a880d286a97fdae4a9
+  context_before: nd Qdrant remain derived indexes. - Live external provider credentials,
+    MCP client interoperability, and the remaining Compose acceptance checks are unverified.
+  context_after: ''
+  display_line: 78
+text: '| Date | Milestone | Change / decision | Verification | |---|---|---|---| |
+  2026-10-05 | 1 | Built the three-service Compose app with FastAPI, React, shadcn/ui,
+  graph/scenario UI, MCP, demo Markdown, and portable overlay. | `docker compose config`
+  passed. Root verified Compose build/start and HTTP health/proxy responses (200).
+  | | 2026-10-06 | 2–3 | Implemented typed portable records, evidence relocation,
+  human review precedence, deterministic extraction, LiteLLM adapter, provider diagnostics,
+  scenario deltas, and reviewable option proposals. | Escalated `UV_CACHE_DIR=/tmp/uv-cache
+  uv run --python 3.12 pytest -q` → 15 passed (10.42s). Standard sandbox run → 14
+  passed, 1 skipped because loopback binding is blocked. Reviewer independently verified
+  frontend `tsc --noEmit`, ESLint, and Vite build (all exit 0). | | 2026-10-06 | 4–6
+  | Added disposable SQLite/Qdrant retrieval, scenario-aware entity details, invalid-assumption
+  detection, focused rationale answers, MCP tools, discovery exclusions/limits, and
+  rollback for canonical overlay writes on synchronous scan exceptions. Repaired the
+  dangling inferred alias left by the earlier live scan. | Root verified refreshed
+  Compose scan returned 200 and indexed 95 passages across 10 Markdown files. Focused
+  search/UI detail, empty-state live Qdrant rebuild, MCP HTTP, and final post-scan
+  validation remain open. |'
+state: unresolved

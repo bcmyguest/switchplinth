@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-9a182188415c1899
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 908fc06fa0411247422c44676dcb2dba5490754f5e8d85b5b1ec054564877b21
+location:
+  heading_path:
+  - Portable repository format
+  - Decision evidence and consequences
+  normalized_passage_sha256: 5bacca4a24d2a663154df2415747012a4194ee685d3f89972aaa49dead09d696
+  context_before: ' unresolved. `config.yaml` references model connection IDs by purpose
+    (extraction, answer, embeddings). LiteLLM is an internal adapter, not the portable
+    schema.'
+  context_after: '```yaml consequences: - id: consequence-kafka-replay statement:
+    Event replay remains available for downstream recovery. epistemic_state: inferred
+    confidence: 0.'
+  display_line: 111
+text: 'Decision context, option rationale, and consequences extracted from documents
+  cite canonical evidence records. Consequences are claims, so inferred consequences
+  carry status and provenance like other inferred claims:'
+state: unresolved

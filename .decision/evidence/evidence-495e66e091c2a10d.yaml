@@ -1,0 +1,34 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-495e66e091c2a10d
+source:
+  path: AGENTS.md
+  git_blob: null
+  content_sha256: e30293b4887acd5268aa03016951d9895f3fcfa94898ded0fd452ac53c0df6dd
+location:
+  heading_path:
+  - Repository guidance
+  - Engineering rules
+  normalized_passage_sha256: 24a03c0f1017554bf4e1f0df5eb0b4a97bd41e37abaa45a2731220f3fae814d5
+  context_before: ''
+  context_after: 'The repository is being bootstrapped; these are the intended V0
+    commands once the corresponding files exist:'
+  display_line: 5
+text: '- Treat Markdown sources and validated, versioned YAML under `.decision/` as
+  the only canonical knowledge. SQLite, Qdrant, embeddings, workflow state, and generated
+  graph data are disposable. - Keep deterministic domain and compiler logic independent
+  of storage, UI, and model providers. Model output is an inference; confirmed, rejected,
+  or overridden human records take precedence. - Preserve provenance for inferred
+  claims and aliases. Use relocatable content/structure anchors, never line numbers
+  as identity. - Model options as typed operations over a base graph. YAML, graph
+  editing, and conversation must write the same delta model. - Validate portable YAML
+  against versioned schemas and make migrations explicit. Rebuild generated state
+  from canonical files. - Keep `frontend`, `backend`, and `qdrant` as distinct Compose
+  services. Do not add Postgres, Redis, Neo4j, or another canonical database in V0.
+  - Keep provider configuration behind the product''s provider-neutral contract; LiteLLM
+  is an implementation detail. Keep inference model connections separate from coding-agent
+  connections. - Keep code-analysis extraction out of V0; leave a documented extension
+  point with distinct code-derived evidence types. - Add function and class definitions
+  after constants in each source file. Keep changes small, inspectable, and documented
+  in `README.md` and `CLAUDE.md` when setup or behavior changes.'
+state: unresolved

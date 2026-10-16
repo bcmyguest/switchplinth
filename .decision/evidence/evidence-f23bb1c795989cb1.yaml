@@ -1,0 +1,32 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-f23bb1c795989cb1
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - UI-BASE-EDITS — Preview and save typed graph edits
+  normalized_passage_sha256: b7a8a058a842b9465db63244cabe2d1949bd75ecea30602b50accf81205e627a
+  context_before: 'a later passage in `docs/V0_PLAN.md`. Screenshot: `<local review
+    artifact>`. - **Next action:** None for this flow; preserve it in the final acceptance
+    sweep.'
+  context_after: '- **Outcome:** The source-types plus opens an actionable Markdown
+    source view that lets users inspect the supported source type and run discovery.
+    - **Blockers:'
+  display_line: 63
+text: '- **Outcome:** Add-operation and drawn-line edits automatically preview their
+  option delta and expose Discard and Save actions. - **Blockers:** None for the typed
+  edit flow. - **Owner:** `<agent seat>` (agent). - **Reviewer gate:** `<agent seat>`
+  passed all corrected findings, including What-if/Save race; live headless Firefox
+  flow passed on a disposable repository copy. - **Status:** `completed`. - **Acceptance/evidence:**
+  Firefox added an entity operation and saw automatic server preview while the API
+  graph remained unchanged; Discard removed the preview. Repeating the draft and Save
+  wrote the typed delta to the disposable overlay, and dragging a line staged an automatically
+  previewed relationship. The original repository was restored and the test copy deleted.
+  Screenshot: `<local review artifact>`. - **Next action:** None for typed edits;
+  source-types plus is tracked separately below.'
+state: unresolved

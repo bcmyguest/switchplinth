@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-f44923d5e663ad11
+source:
+  path: CLAUDE.md
+  git_blob: null
+  content_sha256: cbb751b97f45cc8e25a58a68b8bf1a71adf4aef92a1529f8c91f315b4866a808
+location:
+  heading_path:
+  - Project orientation
+  - Backend boundaries
+  normalized_passage_sha256: ddf0fbda2bb72e09d694656240543a92433ab2624ec3ac3214a59d3b42030a5d
+  context_before: ' visible. Human-reviewed records retain precedence. Do not imply
+    support for other source formats or mark the V0 acceptance audit complete from
+    this flow alone.'
+  context_after: 'Architecture map details, What-if controls, and the typed graph
+    editor open in separate closable side panels. When a panel changes the available
+    map width, the '
+  display_line: 17
+text: When excluded task evidence is reconciled, current-source inferred references
+  can keep a task-seeded entity supported after its excluded evidence is removed.
+state: current

@@ -1,0 +1,38 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-92a92b86e3138cd8
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - UI-PAGES — Separate architecture log, progress, and Facts
+  normalized_passage_sha256: adf2077f50b9a99202de51e84d9861b3d1482f45eec9fea65942084331ddb16d
+  context_before: ', `aria-pressed=false`, and no active-source link. The selected
+    SQS state was also verified in the scenario browser flow. - **Next action:** None
+    for this task.'
+  context_after: '- **Outcome:** Map selection opens selected-component details in
+    a side dialog without scrolling; graph editing and What-if use separate Mural-like
+    side panels;'
+  display_line: 93
+text: '- **Outcome:** Architecture log and progress have interlinked pages; a Facts
+  section links to the system map; Decision assistant appears near the top of the
+  primary flow. - **Blockers:** Independent desktop/mobile browser recheck is pending.
+  - **Owner:** `<agent seat>` (agent). - **Reviewer gate:** `<agent seat>` identified
+  navigation defects; corrections are implemented and current-build desktop/mobile
+  browser re-review is pending. - **Status:** `in_review`. - **Acceptance/evidence:**
+  Added Architecture, Architecture log, Progress, Facts, Scenarios, and Explore views;
+  Decision assistant appears directly below Architecture heading. Firefox current-build
+  review found all six distinct and the 500px view fitting its content width; Progress
+  showed current graph counts (8 entities, 4 decisions, 164 evidence, 72 review items,
+  15 source files). Corrected full-graph routing, added contextual page links, hash-backed
+  navigation/history, `aria-current`, and scroll/focus reset when navigation changes.
+  Updated `README.md` and `CLAUDE.md`. From `frontend/`, `./node_modules/.bin/tsc
+  -b`, `./node_modules/.bin/eslint .`, and `./node_modules/.bin/vite build` passed.
+  Independent browser recheck is pending. - **Next action:** Independent desktop/mobile
+  browser recheck. Afterward implement and gate UI-PANELS, update `docs/V0_PLAN.md`,
+  and run full acceptance checks.'
+state: unresolved

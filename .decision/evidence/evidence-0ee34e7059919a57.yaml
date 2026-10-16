@@ -1,0 +1,17 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-0ee34e7059919a57
+source:
+  path: smoke-repo/notes.md
+  git_blob: null
+  content_sha256: 02bb4f6e618e02332ceebd30208ee111c02f588834066e66861c7ce9eb06a45d
+location:
+  heading_path:
+  - Messaging choice
+  normalized_passage_sha256: 513625effe2c7d9e8931939ec620e3510446fe7b1ca16f45cf4173d4ce9f86b6
+  context_before: ''
+  context_after: ''
+  display_line: 3
+text: The Order Service publishes events through Apache Kafka. We chose Kafka for
+  replay after outages. Amazon SQS remains an option with less operational work.
+state: unresolved

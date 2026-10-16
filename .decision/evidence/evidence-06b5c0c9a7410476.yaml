@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-06b5c0c9a7410476
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 1: minimal runnable service skeleton'
+  normalized_passage_sha256: 0d5ebe787dd7eb234f38f1ded37765b75004340d3fa612e423be1e1f9237c013
+  context_before: 'Verification: document cross-check; ensure decisions called normative
+    agree across all specs. No application verification applies yet.'
+  context_after: 'Verification: `docker compose config` passed. Root ran `docker
+    compose up --build`; Qdrant, backend, and frontend became healthy, backend `/health`
+    returned'
+  display_line: 14
+text: '- [x] Create narrow-context Dockerfiles and Compose with `frontend`, `backend`,
+  `qdrant` as separate services. - [x] Scaffold React/TypeScript, Tailwind, shadcn/ui
+  primitives, and `@xyflow/react`; scaffold Python/FastAPI. - [x] Add `/health` API,
+  frontend API connection, and service health/dependency behavior. - [x] Add synthetic
+  Markdown demo sources that do not assume an ADR template.'
+state: current

@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-336ebdeb30c795f3
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: ffc4ea9d223c4638d956f3687731197bf7005d964525894852d27a11bfcbf49b
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 6: MCP and end-to-end acceptance'
+  normalized_passage_sha256: 81b599487ee12d651936ccaf63806682c635546170c2f4c686a2e3de89a9582b
+  context_before: d served in Compose. The API now returns the selected option matching
+    the active scenario; root is repeating the live inspector check after the backend
+    rebuild.
+  context_after: 'Verification: Compose startup and HTTP health/proxy checks passed.
+    The refreshed live scan returned 200 and indexed 95 passages across 10 Markdown
+    sources. The '
+  display_line: 61
+text: '- [x] Expose query/search and graph inspection through MCP over shared services.
+  - [x] Document local setup, provider config, portability, rebuild, and troubleshooting.
+  - [ ] Run full acceptance matrix and record real outcomes below.'
+state: unresolved

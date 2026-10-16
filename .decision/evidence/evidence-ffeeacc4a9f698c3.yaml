@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-ffeeacc4a9f698c3
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 2: portable domain and compiler'
+  normalized_passage_sha256: 33e93747616e505d136f6a858c3052f14ecd3961896582fbfdb2ac768ac2e7d2
+  context_before: uity handling. - [x] Add synthetic fixtures and meaningful tests
+    for portability, human-over-inference precedence, delta application, and provenance
+    relocation.
+  context_after: '- [x] Discover Markdown while honoring ignore/exclusion settings.
+    - [x] Implement deterministic/mock extractor for repeatable tests and a LiteLLM
+    adapter for co'
+  display_line: 28
+text: 'Verification: The demo overlay is schema/reference validated by the backend
+  suite. Tests verify unknown schema versions fail before a record write. V1→v2 transformation
+  is not implemented; any future format change requires an explicit migration. Unit
+  tests verify deterministic Qdrant construction/query; Compose smoke checks are tracked
+  below.'
+state: current

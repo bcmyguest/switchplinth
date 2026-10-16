@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-a1553c32483d68b4
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Canonical data and compilation
+  normalized_passage_sha256: 83f10ea0c1bf269251bf15797c36bf6dbccafc87adf723803467020779ba5a1d
+  context_before: exes. UI and conversational edits call domain operations that update
+    the same portable records; YAML edits are validated and reloaded through the same
+    compiler.
+  context_after: 'Claims carry an epistemic state: `inferred`, `confirmed`, `rejected`,
+    or `asserted` (human override). Machine extraction emits inference claims with
+    evidence an'
+  display_line: 25
+text: 'The domain/compiler layer must not import SQLite, Qdrant, FastAPI request types,
+  LiteLLM, or LangGraph. Storage and search adapters map between domain records and
+  rebuildable state. Rebuild must be possible with generated state removed. LangGraph
+  is intentionally not used in V0: the synchronous scan has no resumability or human
+  checkpoint flow that needs workflow persistence.'
+state: current

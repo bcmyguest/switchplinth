@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-36b9d56ce05b814e
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Common claim and evidence shape
+  normalized_passage_sha256: 97d9790f2925e89cfb26aed3cde40d8fa7e561d14a5e3847207f13d19306848a
+  context_before: 'Illustrative YAML (field names are normative for V0; examples are
+    illustrative):'
+  context_after: Claim status belongs to each proposition. Rejection records remain
+    durable and suppress the corresponding inference without deleting source text.
+    `asserted` rec
+  display_line: 55
+text: '```yaml schema_version: decision/v1 record_type: claim id: claim-01j-example
+  subject: decision-messaging predicate: motivated_by object: event-replay-requirements
+  epistemic_state: inferred # inferred | confirmed | rejected | asserted confidence:
+  0.86 evidence: - evidence-01j-example ```'
+state: current

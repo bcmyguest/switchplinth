@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-f55d7866a652a160
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Goals
+  normalized_passage_sha256: b0e546b11b0333b476fe076c7b0fd4fa7f4c1c4944624419c6dc6d7787eff6cb
+  context_before: ''
+  context_after: '```text .decision/ config.yaml schema/ record-v1.schema.json # versioned
+    discriminated schema for all record types entities/<entity-id>.yaml evidence/<evidence-'
+  display_line: 5
+text: '`.decision/` is a small, human-readable Git overlay beside ordinary source
+  documents. It is canonical and usable without this application. SQLite, Qdrant,
+  embeddings, LangGraph checkpoints, generated graphs, and caches are rebuildable.
+  Never commit provider secrets. All YAML validates against a versioned schema; unsupported
+  versions fail clearly and migrations are explicit.'
+state: current

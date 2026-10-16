@@ -1,0 +1,34 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-daf65946bdce024e
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - UI-SCENARIO-DETAIL — Keep selected rationale and scenario diff aligned after option
+    changes
+  normalized_passage_sha256: d2cf0626a5c375a0b9ce0307b5e352da5f9d6816e252f1d63c0f56bfd5fa14d2
+  context_before: 'locked --python 3.12 pytest -q` result: 31 passed, 1 skipped. -
+    **Next action:** None for these test fixtures; rerun the full suite after later
+    backend changes.'
+  context_after: '- **Outcome:** `Open passage` and What-if source controls open the
+    actual repository Markdown at the relevant evidence; the evidence dropdown remains
+    usable. - '
+  display_line: 43
+text: '- **Outcome:** After switching to SQS, retain the selected entity and show
+  SQS rationale/evidence; render scenario diff with readable entity names instead
+  of raw IDs. - **Blockers:** None for the selected-detail/diff task. - **Owner:**
+  `<agent seat>` (agent). - **Reviewer gate:** `<agent seat>` passed corrected code;
+  live headless Firefox case passed after selecting Kafka, switching to SQS, and resolving
+  SQS again. - **Status:** `completed`. - **Acceptance/evidence:** On the rebuilt
+  Compose app, headless Firefox selected `broker-kafka`, confirmed Kafka rationale,
+  switched `Select the event transport` to Amazon SQS, and confirmed the selected
+  summary showed SQS rationale/evidence with no Kafka rationale. The option was visibly
+  selected; first and repeated SQS resolves rendered entity/relationship names with
+  no raw IDs. Screenshot: `<local review artifact>`. - **Next action:** None for this
+  task; retain it in final V0 acceptance browser sweep.'
+state: unresolved

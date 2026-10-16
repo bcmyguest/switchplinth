@@ -1,0 +1,5 @@
+schema_version: decision/v1
+record_type: entity
+id: entity-8bcf11933046c744
+kind: technology
+name: Apache Kafka

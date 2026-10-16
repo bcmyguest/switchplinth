@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-84582a1262565cdf
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 908fc06fa0411247422c44676dcb2dba5490754f5e8d85b5b1ec054564877b21
+location:
+  heading_path:
+  - Portable repository format
+  - Provider configuration
+  normalized_passage_sha256: 77f9f2c4c99eec599370f69d320b63250a011a318fa9a90118e10ba4beeb39b7
+  context_before: '//localhost:1234/v1 model: local-model-id credential_ref: env:DECISION_MODEL_API_KEY
+    capabilities: structured_output: true embeddings: false streaming: true ```'
+  context_after: Decision context, option rationale, and consequences extracted from
+    documents cite canonical evidence records. Consequences are claims, so inferred
+    consequences
+  display_line: 107
+text: An optional `agents/` record references an external coding/engineering agent
+  and its invocation configuration; it is distinct from `model_connection` and does
+  not declare inference capabilities. Agent integration details and transport remain
+  unresolved. `config.yaml` references model connection IDs by purpose (extraction,
+  answer, embeddings). LiteLLM is an internal adapter, not the portable schema.
+state: unresolved

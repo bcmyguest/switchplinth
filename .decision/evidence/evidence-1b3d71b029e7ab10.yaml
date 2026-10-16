@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-1b3d71b029e7ab10
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - V1-MIGRATION — Add an explicit migration when the portable schema evolves
+  normalized_passage_sha256: 332ce6f779a8af4612565c890392c8aa3a7c63643b9e7bb80fd360488ec251ec
+  context_before: ols are below the canvas and remain keyboard usable. - **Next action:**
+    Implement after base interaction and page tasks, then test on wide and narrow
+    viewports.
+  context_after: '- **Outcome:** Add code-derived claims/evidence without mixing them
+    with Markdown evidence or making extraction part of V0. - **Blockers:** Future
+    product scope'
+  display_line: 113
+text: '- **Outcome:** Preserve canonical records through a deterministic, reviewable
+  schema transformation. - **Blockers:** A new schema version and migration requirement.
+  - **Owner:** TBD. - **Reviewer gate:** Validate migrated fixtures and backward-compatibility
+  policy when scheduled. - **Status:** `deferred`. - **Acceptance/evidence:** V1 rejects
+  unknown schema versions. No v1-to-v2 migration exists or is currently planned. -
+  **Next action:** Reopen when a schema change is proposed; do not claim migration
+  support before implementation.'
+state: unresolved

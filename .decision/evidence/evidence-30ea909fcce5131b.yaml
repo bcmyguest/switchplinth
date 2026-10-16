@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-30ea909fcce5131b
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: 9041f290c93da93d66cabb4cac3bfec0979b70512c08bc532da41e9b41896a34
+location:
+  heading_path:
+  - Architecture
+  - Extension boundary
+  normalized_passage_sha256: b859af2f8a93647d3a3f48e232d3a975f9b27b2bd1b21b339d3638e2941a85e6
+  context_before: standable. Persist `.decision/` in the opened repository; generated
+    SQLite/Qdrant data lives in disposable volumes/cache locations. Avoid adding services
+    in V0.
+  context_after: ''
+  display_line: 51
+text: Later code analysis may contribute evidence and claims such as `implements`,
+  `calls`, `depends_on`, `conforms_to_decision`, and `violates_decision`. It must
+  use a distinguishable evidence source/type and feed the same claim/provenance model.
+  No code-analysis subsystem is part of V0.
+state: unresolved

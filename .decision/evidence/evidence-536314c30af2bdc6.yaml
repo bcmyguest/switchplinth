@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-536314c30af2bdc6
+source:
+  path: AGENTS.md
+  git_blob: null
+  content_sha256: b8493d09d47dc1555e89664121d3e034324a66a56bf7f924ee8140892add34db
+location:
+  heading_path:
+  - Repository guidance
+  - Commands
+  normalized_passage_sha256: f4e6faa552083d6ea5cd80a7de78d5a108e0813d02e966936fe1ce21f332282a
+  context_before: 'Install and run the service checks with the repository''s pinned
+    tools:'
+  context_after: Run service-specific checks from the service directory and report
+    the exact command and result. In environments where pnpm cannot open its package
+    store, run th
+  display_line: 20
+text: '```sh docker compose up --build docker compose down docker compose down -v                 #
+  deletes disposable service volumes cd backend && uv run --locked --python 3.12 pytest
+  -q cd frontend && pnpm install --frozen-lockfile cd frontend && pnpm typecheck &&
+  pnpm lint && pnpm build ```'
+state: current

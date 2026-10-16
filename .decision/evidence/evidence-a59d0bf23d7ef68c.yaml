@@ -1,0 +1,33 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-a59d0bf23d7ef68c
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: 9baa462f812e95fcbf3e4877ee751200dde58ae898cd364a5f0bf1f8e3d8e3bc
+location:
+  heading_path:
+  - Decision Graph
+  - Verified V0 checks
+  normalized_passage_sha256: 877c3d933a8441cef0d994ae2fd6290b1e1425ca6fcc4d523b575b7c88307987
+  context_before: g back without rescanning preserved grounded Kafka rationale/evidence.
+    Kafka→SQS detail, picker traversal rejection, and MCP initialize/tools-list/query
+    passed.
+  context_after: ''
+  display_line: 50
+text: The provider adapters and diagnostics were exercised against a local OpenAI-compatible
+  mock; no external provider credentials or external-provider diagnostics were tested.
+  Provider-backed embedding calls used the same injected vectorizer for indexing and
+  query; real hosted/local model interoperability remains unverified. An independent
+  usability review exercised 1440×900 and 375×667 browser captures, graph selection
+  and evidence opening, and Kafka→SQS switching in demo mode. A later live Playwright
+  switch changed graph IDs, and selecting `queue-sqs-orders` showed SQS rationale
+  and evidence; stale detail after switching with Kafka already selected remains unverified.
+  A live SQS search request returned grounded rationale/evidence and reported the
+  deterministic-local vector fallback. The review opened a human-reviewed claim correction
+  form and intercepted a Reject request to check its payload; it did not submit that
+  request to the backend. Scan restores `.decision/` files after synchronous exceptions,
+  but abrupt termination and concurrent writers are outside that rollback guarantee.
+  V1 schemas reject unknown versions; no v1-to-v2 migration exists, and any future
+  schema upgrade requires an explicit migration.
+state: unresolved

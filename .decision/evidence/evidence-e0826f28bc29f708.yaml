@@ -1,0 +1,18 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-e0826f28bc29f708
+source:
+  path: .agents/skills/maintain-task-ledger/SKILL.md
+  git_blob: null
+  content_sha256: 31e6ac47472a50a0fe95903804d3a5a5f6b59f9185b9da9bf33dd364060889f0
+location:
+  heading_path: []
+  normalized_passage_sha256: bc538bb4e5759c27c766f277eb3af31b04114777b37f6123d7f53f798a4b9cc6
+  context_before: ''
+  context_after: Use `.tasks/ledger.md` to track substantial repository tasks across
+    turns and agents.
+  display_line: 1
+text: '--- name: maintain-task-ledger description: Keep durable status and handoff
+  context for substantial, multi-step repository work; skip trivial edits and one-command
+  tasks. ---'
+state: unresolved

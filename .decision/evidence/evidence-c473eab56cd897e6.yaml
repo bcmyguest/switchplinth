@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c473eab56cd897e6
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Discovery, retrieval, and model access
+  normalized_passage_sha256: a2973f78f7e7b6448d74f9e5f263d05d63700a2330c650f8de311a588b27bea2
+  context_before: ecisions, assumptions invalidated, conflicts, and supporting evidence.
+    The same delta payload is read/written by YAML, graphical editing, and conversational
+    AI.
+  context_after: Public provider configuration is the application's own versioned
+    schema. An adapter maps it to LiteLLM. Keep model connections (inference, embedding,
+    structured
+  display_line: 39
+text: Markdown discovery is deterministic and configurable. Extraction may use rules/mock
+  behavior or a provider. Retrieval combines lexical lookup, Qdrant vector lookup,
+  alias/entity resolution, graph expansion, provenance filtering, and ranking; responses
+  retain links to evidence and claims. When a configured embedding model is available,
+  the same LiteLLM-backed vectorizer indexes passages and embeds queries. Without
+  one, V0 uses deterministic token-hash vectors as an offline fallback; this is not
+  semantic embedding retrieval and the API reports that mode.
+state: current

@@ -1,0 +1,34 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3dcf4283656d19b6
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: 5aae143fca7c37edfb98a98d3d661642b0e50a31cb3e8255ee821be6fec02fb3
+location:
+  heading_path:
+  - V0 implementation plan
+  - Progress log
+  normalized_passage_sha256: 21aa9defcfdaeffbd91777118bcd12c596f28090bed0bd98c96f7016913105f5
+  context_before: indexes. - Live provider extraction, live MCP client interoperability,
+    frontend host build commands, and the full post-scan acceptance matrix remain
+    unverified.
+  context_after: ''
+  display_line: 74
+text: '| Date | Milestone | Change / decision | Verification | |---|---|---|---| |
+  2026-10-05 | 1 | Built the three-service Compose app with FastAPI, React, shadcn/ui,
+  graph/scenario UI, MCP, demo Markdown, and portable overlay. | `docker compose config`
+  passed. Root verified Compose build/start, service health, backend `/health` 200,
+  frontend `/` 200, and proxied `/api/v1/project` 200. | | 2026-10-05 | 2–3 | Implemented
+  typed portable records, evidence relocation, human review precedence, deterministic
+  extraction, LiteLLM path, diagnostics, scenario deltas, and reviewable option proposals.
+  | `UV_CACHE_DIR=/tmp/uv-cache uv run --python 3.12 pytest -q` → 12 passed. Live
+  provider credentials were not configured. | | 2026-10-05 | 4–6 | Added disposable
+  SQLite/Qdrant retrieval, scenario-aware entity details, invalid-assumption detection,
+  grounded rationale answers, and MCP tools. Fixed recovery for stale inferred alias
+  anchors after the Compose discovery scan left a dangling reference. | Backend suite
+  → 12 passed. Compose startup passed. The post-repair live scan/search, Qdrant rebuild,
+  scenario detail, and MCP query are pending refreshed backend image/retest by root.
+  Host pnpm verification hit inaccessible default state path and npm registry DNS
+  failure; the production frontend image did build in Compose. |'
+state: unresolved

@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-9786f8968d27e140
+subject: entity-0ad8c3795bf9c830
+predicate: mentioned_in
+object: CLAUDE.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: CLAUDE.md
+evidence:
+- evidence-caa704755d96ac32

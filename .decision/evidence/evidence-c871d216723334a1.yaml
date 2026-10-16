@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c871d216723334a1
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 0: durable project contract'
+  normalized_passage_sha256: 1e50dcacdbe33bc9ef1c56143e911eab67f496aaa8b04bc214556c3309e97c09
+  context_before: ew specifications for internal contradictions against the full product
+    brief/latest conversation direction and resolve them before substantial application
+    code.
+  context_after: '- [x] Create narrow-context Dockerfiles and Compose with `frontend`,
+    `backend`, `qdrant` as separate services. - [x] Scaffold React/TypeScript, Tailwind,
+    shadcn'
+  display_line: 10
+text: 'Verification: document cross-check; ensure decisions called normative agree
+  across all specs. No application verification applies yet.'
+state: current

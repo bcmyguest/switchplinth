@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-bb2dd179af62d0bb
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Scenarios
+  normalized_passage_sha256: 0af6022432d2743986ba59456386987968dbc45ba812bebe5e7136cc6258f350
+  context_before: ' record_type: scenario id: scenario-managed-queue name: Managed
+    queue migration selections: decision-messaging: option-sqs decision-storage: option-dynamodb
+    ```'
+  context_after: 'Evidence IDs survive edits when the indexing process unambiguously
+    relocates the same passage. Relocation compares passages within the same repository-relative '
+  display_line: 191
+text: Scenario application composes selected option operations over one base graph.
+  Compilation reports invalid references, conflicting operations, affected decisions,
+  invalid assumptions, and evidence links. Ordering and conflict resolution must be
+  deterministic and surfaced, never silently guessed.
+state: current

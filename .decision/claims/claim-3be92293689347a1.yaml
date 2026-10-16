@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-3be92293689347a1
+subject: entity-8bcf11933046c744
+predicate: mentioned_in
+object: docs/V0_PLAN.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: docs/V0_PLAN.md
+evidence:
+- evidence-77a0a891218e4835

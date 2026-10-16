@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-ed478548c54f09bf
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Canonical data and compilation
+  normalized_passage_sha256: 5a28bff624862d35d697e056883ade753fdb2183c16c387343d11665a28a25e0
+  context_before: The UI currently displays **Waypoint** as a provisional working
+    label. Product branding remains undecided.
+  context_after: The domain/compiler layer must not import SQLite, Qdrant, FastAPI
+    request types, LiteLLM, or LangGraph. Storage and search adapters map between
+    domain records a
+  display_line: 23
+text: The repository is the durable boundary. Source Markdown remains untouched input.
+  A small `.decision/` tree stores validated, human-readable YAML records and schema
+  files. Evidence anchors are canonical records with reference integrity; claims,
+  aliases, decisions, options, and consequences cite them by ID. The backend loads
+  these plus discovered Markdown into a deterministic domain model, applies precedence
+  rules, compiles graph/scenario views, and rebuilds indexes. UI and conversational
+  edits call domain operations that update the same portable records; YAML edits are
+  validated and reloaded through the same compiler.
+state: current

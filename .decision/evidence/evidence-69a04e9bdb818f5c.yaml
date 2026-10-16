@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-69a04e9bdb818f5c
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Runtime shape
+  normalized_passage_sha256: 27f4f5fdc17fd75edc9dfbd0f8ae3348c1b632d6fb71f46393a4a050238575dc
+  context_before: DX[SQLite disposable index] API --> VEC[Qdrant disposable vectors]
+    API --> LLM[Provider abstraction] LLM --> LIT[LiteLLM adapter] API --> MCP[MCP
+    interface] ```
+  context_after: The UI currently displays **Waypoint** as a provisional working label.
+    Product branding remains undecided.
+  display_line: 17
+text: 'Docker Compose runs three distinct services: `frontend`, `backend`, and `qdrant`.
+  The frontend uses React, TypeScript, shadcn/ui, Tailwind, and `@xyflow/react` for
+  graph interaction. YAML theme values compile/map to semantic CSS variables. The
+  backend is Python/FastAPI. SQLite is local disposable state; Qdrant is a disposable
+  vector retrieval index. Neither is authoritative.'
+state: current

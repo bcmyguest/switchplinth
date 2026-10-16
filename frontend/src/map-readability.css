@@ -1,0 +1,520 @@
+/* Shared type hierarchy for the architecture canvas and its overlays. */
+.map-overview-line{font-size:12px;line-height:1.45}
+.map-start-guide{padding:12px 14px;gap:16px}
+.map-start-guide strong{font-size:14px;line-height:1.35}
+.map-start-guide p{font-size:13px;line-height:1.5}
+.map-start-action{min-height:38px;padding:0 12px;font-size:13px}
+
+.arch-node .node-copy span{font-size:11px;line-height:1.3;letter-spacing:.06em}
+.arch-node .node-copy strong{font-size:15px;line-height:1.3}
+.layer-label{font-size:10px;line-height:1.3;padding:4px 6px}
+.relationship-label{font-size:11px;line-height:1.3;padding:4px 6px}
+.graph-breadcrumb,.graph-filter .ui-select-trigger{font-size:12px}
+.graph-filter .ui-select-trigger{height:32px}
+.graph-footer,.graph-footer button{font-size:12px;line-height:1.45}
+.graph-footer{gap:10px 14px}
+
+.graph-selection-summary.is-open,.architecture-scenario-open .scenario-panel{padding:18px}
+.graph-selection-summary .panel-kicker,.scenario-head .panel-kicker{font-size:11px;line-height:1.4;letter-spacing:.08em}
+.selection-summary-heading h3,.scenario-head h3{font-size:17px;line-height:1.3}
+.selection-summary-rationale>strong,.rationale-label{font-size:12px;line-height:1.4}
+.selection-summary-rationale p,.rationale-block p,.scenario-copy{font-size:14px;line-height:1.55}
+.selection-summary-evidence{padding:9px 10px}
+.selection-summary-evidence strong{font-size:13px;line-height:1.4}
+.selection-summary-evidence small{font-size:12px;line-height:1.45}
+.decision-name{font-size:13px;line-height:1.45}
+.option-choice>button:first-child{font-size:13px;line-height:1.4;padding:8px 10px}
+.option-choice>button:first-child small{font-size:11px;line-height:1.35}
+.option-source,.scenario-save,.scenario-diff{font-size:12px;line-height:1.45}
+.scenario-outcome{padding:12px}
+.scenario-outcome-heading strong{font-size:14px}
+.scenario-outcome-heading span{font-size:11px}
+.scenario-choice-list li{font-size:12px;line-height:1.45;padding-top:7px}
+.scenario-outcome-grid{gap:10px}
+.scenario-outcome-grid>div{padding:10px}
+.scenario-outcome-grid>div>strong{font-size:12px;line-height:1.4}
+.scenario-outcome-grid p,.scenario-outcome-grid li{font-size:12px;line-height:1.5}
+.scenario-outcome-grid li span{font-size:11px}
+.scenario-note{font-size:11px;line-height:1.45}
+.scenario-working-state{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0;padding:9px 10px;border:1px solid #e4eae4;border-radius:6px;background:var(--dk-raised,#f8faf7);color:var(--dk-source,#536257);font-size:12px;line-height:1.4}
+.scenario-working-state.changed{border-color:#d7e5d8;background:var(--dk-raised,#f2f7f2);color:var(--dk-source,#405d46)}
+.scenario-working-state>span{font-weight:600}
+.scenario-working-state button,.scenario-named-save{min-height:32px;padding:6px 9px;border:1px solid #cbdaca;border-radius:5px;background:var(--dk-panel,#fff);color:var(--dk-source,#41634b);font-size:11px;font-weight:600}
+.scenario-working-state button:hover,.scenario-named-save:hover:not(:disabled){background:var(--dk-hover,#eef5ef);border-color:#afc5b0}
+.scenario-working-state button:focus-visible,.scenario-library-toggle:focus-visible,.scenario-named-save:focus-visible{outline:2px solid #86a68a;outline-offset:2px}
+.scenario-working-state button:disabled,.scenario-named-save:disabled{opacity:.55;cursor:wait}
+.scenario-library{margin:12px 0;border-top:1px solid #e8ede8;padding-top:10px}
+.scenario-library-toggle{display:flex;align-items:center;gap:7px;width:100%;min-height:36px;padding:7px 9px;border:1px solid #e2e9e1;border-radius:5px;background:var(--dk-panel,#fff);color:var(--dk-source,#526456);text-align:left;font-size:11px;font-weight:600}
+.scenario-library-toggle:hover{background:var(--dk-raised,#f8faf7);border-color:#cbd9cd}
+.scenario-library-toggle>svg:last-child{margin-left:auto;transition:transform .15s}
+.scenario-library-toggle>svg.expanded{transform:rotate(180deg)}
+.scenario-library-content{display:grid;gap:7px;margin-top:8px}
+.scenario-library-content>p{margin:0;color:var(--dk-muted,#68756b);font-size:11px;line-height:1.45}
+.scenario-library-content .saved-scenarios{margin:2px 0 0}
+.scenario-library-content .saved-scenarios-heading{font-size:11px}
+.scenario-library-content .scenario-save-form{flex-wrap:wrap}
+.scenario-library-content .scenario-save-form input{min-height:32px;font-size:12px}
+.scenario-library-content .scenario-save-form button{min-height:32px;font-size:11px}
+.scenario-library-content .scenario-save-form button[type=submit]{padding:0 9px;background:#4f765f;border-color:#4f765f;color:white;font-weight:600}
+.scenario-history{display:grid;gap:6px;margin:9px 0}
+.scenario-history-heading{display:flex;align-items:baseline;gap:7px;color:var(--dk-source,#526257);font-size:11px}
+.scenario-history-heading>span{color:var(--dk-source,#718075);font-size:10px}
+.scenario-history-list{display:grid;gap:5px;max-height:112px;overflow:auto}
+.scenario-history-item{width:100%;min-height:32px;padding:6px 8px;border:1px solid #e2e9e1;border-radius:5px;background:var(--dk-panel,#fff);color:var(--dk-source,#536257);text-align:left;font-size:11px;line-height:1.35;overflow-wrap:anywhere}
+.scenario-history-item:hover:not(:disabled){border-color:#b9cbb9;background:var(--dk-raised,#f8faf7)}
+.scenario-history-item[aria-pressed=true]{border-color:#8ba98d;background:var(--dk-hover,#eef5ef);color:var(--dk-source,#3f6046);font-weight:600}
+.scenario-history-item:focus-visible{outline:2px solid #86a68a;outline-offset:1px}
+.scenario-history-item:disabled{cursor:wait;opacity:.6}
+.scenario-history-list{grid-template-columns:minmax(0,1fr);max-height:none}
+.scenario-history-item{display:block;min-height:38px;color:var(--dk-source,#3f5144);font-size:12px;line-height:1.4;overflow-wrap:break-word;word-break:normal}
+.scenario-history-item.base{border-color:#cadaca;background:var(--dk-raised,#f8fbf8)}
+.scenario-history-kind{display:inline-block;margin-right:7px;padding-right:7px;border-right:1px solid #cadaca;color:var(--dk-source,#42634b);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.scenario-quick-summary{display:grid;gap:5px;margin:0 0 8px;padding:8px 10px;border:1px solid #dfe8df;border-radius:6px;background:var(--dk-raised,#f7faf7);color:var(--dk-source,#435448);font-size:12px;line-height:1.35}
+.scenario-quick-summary>strong{font-size:12px}
+.scenario-quick-summary>span{color:var(--dk-muted,#59665c)}
+.scenario-summary-counts{display:flex;flex-wrap:wrap;gap:5px}
+.scenario-summary-counts span{padding:2px 6px;border-radius:10px;background:var(--dk-hover,#eaf1ea);color:var(--dk-source,#405b45);font-size:11px;font-weight:600}
+.scenario-quick-summary p{margin:0;color:var(--dk-muted,#59665c);font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.scenario-decision-picker{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:7px;margin:0 -2px 5px;padding:7px 2px;border-bottom:1px solid #e5eae4;background:var(--dk-panel,#fff);box-shadow:0 4px 7px -7px #25362980}
+.scenario-decision-picker-label{color:var(--dk-source,#526257);font-size:11px;font-weight:650;white-space:nowrap}
+.scenario-decision-picker>div{display:flex;gap:5px;min-width:0;overflow-x:auto;scrollbar-width:thin}
+.scenario-decision-picker button{display:flex;align-items:center;gap:5px;min-height:32px;max-width:190px;flex:0 0 auto;padding:5px 8px;border:1px solid #dfe6df;border-radius:16px;background:var(--dk-panel,#fff);color:var(--dk-source,#435448);font-size:12px;line-height:1.2;white-space:nowrap}
+.scenario-decision-picker button>span{overflow:hidden;text-overflow:ellipsis}
+.scenario-decision-picker button[aria-current=location]{border-color:#8ba98d;background:var(--dk-hover,#edf4ed);color:var(--dk-source,#355b3e);font-weight:650}
+.scenario-decision-picker button small{padding:2px 5px;border-radius:8px;background:#dcebdd;color:var(--dk-source,#365d3f);font-size:10px;font-weight:700}
+.scenario-decision-picker button:focus-visible{outline:2px solid #86a68a;outline-offset:2px}
+.decision-select{scroll-margin-block:120px}
+.decision-name:focus{outline:2px solid #86a68a;outline-offset:3px;border-radius:3px}
+.scenario-working-state{margin:7px 0;padding:7px 9px;font-size:12px}
+.scenario-working-state button{min-height:30px;font-size:12px}
+.scenario-copy{margin:4px 0 7px;color:var(--dk-muted,#536157);font-size:13px;line-height:1.4}
+.decision-name{color:var(--dk-source,#3f4e43)}
+.option-choice.inactive>button:first-child small{color:var(--dk-muted,#59665c)}
+.option-choice>button:first-child small{font-size:12px}
+
+/* Keep secondary map and overlay text subdued while meeting normal-text contrast. */
+.map-overview-line,.map-overview-line strong,.section-kicker,.graph-tools .legend,
+.graph-breadcrumb,.graph-filter .ui-select-trigger,.layer-label,
+.arch-node .node-copy span,.graph-footer,.graph-footer strong,
+.selection-hint,.selection-summary-evidence small,.graph-selection-summary .panel-kicker,
+.scenario-head .panel-kicker,.option-choice>button:first-child,
+.option-choice>button:first-child small,.option-source,.scenario-save,
+.scenario-diff,.scenario-outcome-heading span,.scenario-outcome-grid p,
+.scenario-outcome-grid li,.scenario-outcome-grid li span,.scenario-note,
+.linked-decisions.empty,.linked-decisions-title,.entity-tags>span,
+.selection-summary-heading .state-tag,.selection-return-scenario,
+.graph-footer button,.graph-filter .ui-select-trigger{
+  color:var(--dk-muted,#59665c);
+}
+.arch-node.service .node-mark{color:var(--dk-source,#42634b)}
+.arch-node.technology .node-mark{color:#66507d}
+.arch-node.datastore .node-mark{color:#78591f}
+.arch-node.queue .node-mark{color:#805332}
+.map-overview-line strong,.graph-footer strong{color:var(--dk-source,#435448)}
+.graph-footer button,.selection-return-scenario,.option-source{color:var(--dk-source,#41634b)}
+.option-choice.inactive>button:first-child{color:var(--dk-muted,#59665c)}
+.option-choice.inactive>button:first-child small{color:var(--dk-muted,#59665c)}
+.option-choice.active>button:first-child small{color:var(--dk-source,#41634b)}
+.scenario-diff.warning,.scenario-diff.warning span{color:#704910}
+.scenario-outcome-grid .has-warnings>strong,.scenario-outcome-grid .has-warnings li{color:#704910}
+.scenario-outcome-grid .has-warnings li span{color:#704910}
+.linked-decisions-title span{color:var(--dk-source,#41634b)}
+.state-tag.confirmed,.state-tag.inferred{color:var(--dk-source,#526b55)}
+.map-overview-line>span,.identity-review-heading>span,.identity-empty{color:var(--dk-muted,#59665c)}
+.map-overview-line>span strong{color:var(--dk-source,#435448)}
+.architecture-layout .button.tiny-button{color:var(--dk-muted,#59665c)}
+.graph-minimap-rail>span{color:var(--dk-muted,#59665c)}
+.option-source span{color:var(--dk-source,#41634b)}
+
+@media(max-width:640px){
+  .map-overview-line{font-size:12px;line-height:1.45}
+  .map-start-guide{padding:11px 12px}
+  .map-start-guide p{font-size:13px}
+  .layer-services{top:8px}
+  .layer-platform{top:198px}
+  .graph-breadcrumb,.graph-filter .ui-select-trigger{font-size:12px}
+  .graph-footer,.graph-footer button{font-size:12px}
+  .graph-selection-summary.is-open,.architecture-scenario-open .scenario-panel{padding:15px}
+  .selection-summary-heading h3,.scenario-head h3{font-size:17px}
+  .selection-summary-rationale p,.rationale-block p,.scenario-copy{font-size:14px;line-height:1.5}
+  .option-choice>button:first-child{font-size:13px}
+  .scenario-outcome-grid p,.scenario-outcome-grid li{font-size:12px}
+  .scenario-history{gap:5px;margin:6px 0}
+  .scenario-history-heading{font-size:12px}
+  .scenario-history-list{grid-template-columns:minmax(0,1fr);gap:4px}
+  .scenario-history-item{min-height:36px;padding:5px 7px;font-size:12px;line-height:1.35}
+  .scenario-history-kind{font-size:10px}
+  .scenario-quick-summary{gap:4px;margin-bottom:6px;padding:7px 8px;font-size:12px}
+  .scenario-summary-counts{gap:4px}
+  .scenario-summary-counts span{font-size:11px}
+  .scenario-copy{font-size:13px}
+  .scenario-decision-picker{margin-inline:-2px;padding-block:6px}
+  .scenario-decision-picker button{max-width:155px;min-height:34px;font-size:12px}
+  .scenario-decision-picker button[aria-current=location]{max-width:240px}
+  .scenario-decision-picker button[aria-current=location]>span{overflow:visible;text-overflow:clip}
+  .architecture-scenario-open .option-choice{width:100%;max-width:100%}
+  .architecture-scenario-open .option-switch{display:flex;flex-direction:column;gap:5px;align-items:stretch}
+  .architecture-scenario-open .option-choice>button:first-child{width:100%;font-size:13px;line-height:1.4;padding:7px 9px;overflow-wrap:break-word;word-break:normal}
+  .architecture-scenario-open .option-choice>button:first-child small{font-size:12px;line-height:1.35;white-space:nowrap;word-break:normal}
+}
+
+/* Scenario choices keep the reason and its citation beside each state. */
+.scenario-panel .option-switch{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));align-items:stretch;gap:8px}
+.scenario-panel .option-choice{align-content:start;justify-items:stretch;gap:6px;min-width:0;padding:9px;border:1px solid #dfe6df;border-radius:7px;background:var(--dk-raised,#f8faf8)}
+.scenario-panel .option-choice.active{border:2px solid #a8c1ab;background:var(--dk-hover,#e8f0eb)}
+.scenario-panel .option-choice.inactive{border-style:dashed;background:var(--dk-panel,#fff)}
+.scenario-panel .option-choice>button:first-child{position:relative;display:flex;align-items:flex-start;gap:8px;width:100%;min-height:48px;padding:8px 9px;border:1px solid #cbdaca;border-radius:6px;background:var(--dk-panel,#fff);color:var(--dk-ink,#202522);text-align:left;white-space:normal}
+.scenario-panel .option-choice>button:first-child>svg{flex:none;margin-top:2px}
+.scenario-panel .option-choice.active>button:first-child{border-width:2px}
+.scenario-panel .option-choice.inactive>button:first-child{border-style:dashed}
+.scenario-panel .option-choice>button:first-child>span{flex:1;min-width:0;overflow-wrap:anywhere}
+.scenario-panel .option-choice>button:first-child small{display:block;flex:none;max-width:42%;color:var(--dk-source,#415f47);font-size:11px;white-space:normal;text-align:right}
+.scenario-panel .option-choice.active>button:first-child{border-color:#739779;background:var(--dk-raised,#f9fcf9)}
+.scenario-panel .option-choice.inactive>button:first-child{background:var(--dk-raised,#f6f8f6)}
+.scenario-panel .option-choice>button:first-child:focus-visible{outline:3px solid #38634c;outline-offset:2px}
+.scenario-panel .option-choice>button:first-child:disabled{border-color:#d8ded8;background:var(--dk-raised,#f0f2ef);color:var(--dk-muted,#59665c);cursor:wait}
+.scenario-panel .option-rationale{margin:0;color:var(--dk-ink,#344239);font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.scenario-panel .option-source{display:flex;align-items:flex-start;width:100%;min-height:36px;margin:0;padding:4px 0;border:0;background:transparent;color:#355e42;font-size:12px;line-height:1.4;white-space:normal}
+.scenario-panel .option-source>span{min-width:0;flex:1;overflow-wrap:anywhere}
+.scenario-panel .option-source:focus-visible{outline:2px solid #38634c;outline-offset:2px}
+.scenario-panel .option-source:hover{text-decoration:underline}
+.scenario-panel .option-choice.inactive>button:first-child small{color:var(--dk-source,#415f47)}
+.scenario-panel .option-choice.active>button:first-child small{color:#355e42}
+
+@media(max-width:640px){
+  .scenario-panel .option-switch{grid-template-columns:minmax(0,1fr);width:100%;gap:7px}
+  .scenario-panel .option-choice{width:100%;max-width:100%;padding:9px}
+  .scenario-panel .option-choice>button:first-child{min-height:48px;padding:8px}
+  .scenario-panel .option-choice>button:first-child small{font-size:11px}
+  .scenario-panel .option-rationale{font-size:13px;line-height:1.45}
+  .scenario-panel .option-source{font-size:12px;line-height:1.4}
+}
+
+/* Bring the first scenario choices above history and comparison details on mobile. */
+.scenario-panel,.architecture-scenario-open .scenario-panel{display:flex;flex-direction:column}
+.scenarios-page .below-grid{display:block}
+.scenarios-page .rationale-panel{display:none}
+.scenario-head{order:0}
+.scenario-copy{order:1}
+.scenario-working-state{order:2}
+.scenario-decision-picker{order:3}
+.scenario-panel .decision-select{order:4}
+.scenario-panel .scenario-history,.scenario-panel .scenario-quick-summary{order:5}
+.scenario-panel .scenario-list-status,.scenario-panel .scenario-diff,.scenario-panel .scenario-outcome{order:6}
+.scenario-panel .scenario-library{order:7}
+.scenario-panel .scenario-note{order:8}
+.scenario-panel .option-rationale{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3}
+@media(max-width:640px){
+  .scenario-panel .scenario-history{max-height:72px;overflow:auto}
+  .scenario-panel .scenario-quick-summary{margin-top:6px}
+  .scenario-panel .scenario-decision-picker{min-height:42px}
+  .scenario-panel .option-rationale{-webkit-line-clamp:2;font-size:12px}
+  .scenario-panel .option-source{min-height:34px}
+}
+
+/* Theme variables match the semantic palettes documented in theme.yml. */
+:root[data-theme='dark']{
+  color-scheme:dark;
+  --theme-canvas:#111713;--theme-panel:#19211b;--theme-panel-raised:#202a22;--theme-ink:#edf4ee;--theme-muted:#bdc8be;--theme-line:#3a4a3d;--theme-brand:#a6d0ae;--theme-brand-soft:#263b2c;--theme-selected:#2b4933;--theme-hover:#29382d;--theme-map-canvas:#121b15;--theme-map-dot:#2a392d;--theme-source:#bfe4c8;--theme-code:#151c16;--theme-warning:#f0cc83;--theme-danger:#ffb7b1;--theme-interactive:var(--theme-brand-soft)
+}
+/* Neutral light surfaces and neutral/green text in the base sheets read var(--dk-*,<light hex>): light keeps its exact hex, dark inherits these tokens. */
+:root[data-theme='dark']{--dk-panel:var(--theme-panel);--dk-raised:var(--theme-panel-raised);--dk-hover:var(--theme-hover);--dk-ink:var(--theme-ink);--dk-muted:var(--theme-muted);--dk-source:var(--theme-source)}
+:root[data-theme='light']{color-scheme:light}
+:root[data-theme='dark'] :focus-visible{outline-color:var(--theme-brand)!important}
+body{background:var(--theme-canvas);color:var(--theme-ink)}
+.app-shell{background:var(--theme-canvas);color:var(--theme-ink)}
+.sidebar,.topbar{background:var(--theme-panel);border-color:var(--theme-line)}
+.main-column,.content-scroll{background:var(--theme-canvas)}
+.repo-card,.profile,.mcp-callout,.page-card,.panel,.graph-frame,.graph-selection-summary.is-open,.architecture-scenario-open .scenario-panel,.delta-editor[role=dialog]{background:var(--theme-panel);border-color:var(--theme-line);color:var(--theme-ink)}
+.page-heading h1,.page-heading h2,.page-card h2,.panel h3,.section-heading h2,.log-entry h3,.log-choice-heading>span{color:var(--theme-ink)}
+.page-heading p,.page-card p,.panel p,.log-entry-content>p,.entity-description,.scenario-copy,.scenario-list-status{color:var(--theme-muted)}
+.nav-item,.breadcrumbs,.repo-card strong,.profile strong,.linked-decision-heading strong{color:var(--theme-ink)}
+.nav-item:hover,.repo-card:hover,.profile:hover{background:var(--theme-hover)}
+.nav-item.active{background:var(--theme-brand-soft);color:var(--theme-brand)}
+.topbar,.page-card,.panel,.log-entry,.linked-decisions,.scenario-library,.scenario-decision-picker{border-color:var(--theme-line)}
+.graph-canvas{background-color:var(--theme-map-canvas)!important;background-image:radial-gradient(var(--theme-map-dot) .8px,transparent .8px)!important}
+.map-start-guide,.map-start-action,.graph-minimap-rail{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
+.map-start-guide strong,.map-start-guide p,.selection-hint,.layer-label,.graph-minimap-rail>span{color:var(--theme-muted)}
+.map-start-action{border:1px solid var(--theme-line)}
+.map-start-action:hover{background:var(--theme-hover);border-color:var(--theme-brand);color:var(--theme-ink)}
+.layer-label{background:var(--theme-panel-raised)}
+.arch-node,.arch-node.service,.arch-node.technology,.arch-node.datastore,.arch-node.queue{border-color:var(--theme-line);background:var(--theme-panel-raised);color:var(--theme-ink)}
+.arch-node .node-copy span,.arch-node .node-copy strong{color:var(--theme-ink)}
+.arch-node .node-mark{background:var(--theme-brand-soft);color:var(--theme-brand)}
+.react-flow__node.selected .arch-node{border-color:var(--theme-brand);background:var(--theme-selected)}
+.react-flow__node.selected .arch-node:after{border-color:var(--theme-brand);background:var(--theme-panel);color:var(--theme-ink)}
+.relationship-label,.react-flow__controls-button,.react-flow__minimap{background:var(--theme-panel)!important;border-color:var(--theme-line)!important;color:var(--theme-ink)!important;fill:var(--theme-ink)!important}
+.react-flow__controls-button{border-bottom-color:var(--theme-line)!important}
+.graph-minimap-rail{border-color:var(--theme-line)}
+.graph-breadcrumb,.graph-footer{background:var(--theme-panel);border-color:var(--theme-line);color:var(--theme-muted)}
+.graph-footer strong,.graph-footer button,.graph-filter .ui-select-trigger{color:var(--theme-brand)}
+.selection-summary-heading h3,.scenario-head h3,.linked-option-heading .linked-option,.linked-option-heading .linked-option-state,.linked-option-rationale,.linked-decision-explore,.linked-evidence,.selection-return-scenario{color:var(--theme-ink)!important}
+.linked-decision,.linked-option-card,.log-selected-choice,.log-alternatives,.scenario-outcome,.scenario-quick-summary,.scenario-history-item,.scenario-working-state,.scenario-choice-list li{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
+.linked-option-card.active,.log-selected-choice,.scenario-panel .option-choice.active,.scenario-working-state.changed{background:var(--theme-selected);border-color:var(--theme-brand)}
+.linked-option-card.alternative,.scenario-panel .option-choice.inactive{background:var(--theme-panel-raised)}
+.linked-option-preview,.scenario-panel .option-choice>button:first-child,.scenario-working-state button,.scenario-history-item,.scenario-library-toggle,.scenario-named-save,.log-alternative>button:first-child,.facts-filters button{background:var(--theme-panel);border-color:var(--theme-line);color:var(--theme-ink)}
+.linked-option-preview:hover:not(:disabled),.scenario-panel .option-choice>button:first-child:hover:not(:disabled),.scenario-history-item:hover:not(:disabled),.scenario-library-toggle:hover,.facts-filters button:hover{background:var(--theme-hover);border-color:var(--theme-brand)}
+.scenario-panel .option-choice>button:first-child small,.option-source,.log-source-link,.linked-option-preview,.linked-evidence,.scenario-working-state button{color:var(--theme-source)}
+.scenario-panel .option-rationale,.scenario-outcome-grid p,.scenario-outcome-grid li,.scenario-quick-summary p,.scenario-history-heading,.scenario-outcome-heading strong{color:var(--theme-muted)}
+.scenario-decision-picker{background:var(--theme-panel);box-shadow:0 4px 7px -7px #000}
+.scenario-decision-picker button,.scenario-panel .option-choice>button:first-child{color:var(--theme-ink)}
+.scenario-decision-picker button[aria-current=location],.scenario-history-item[aria-pressed=true],.facts-filters button[aria-pressed=true]{background:var(--theme-selected);border-color:var(--theme-brand);color:var(--theme-ink)}
+.scenario-summary-counts span,.scenario-decision-picker button small,.scenario-history-kind{background:var(--theme-brand-soft);color:var(--theme-brand)}
+.evidence-row,.source-document-heading,.source-document-content,.source-passage,.source-document-section{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
+.source-passage{border-left-color:var(--theme-brand)}
+.source-line.highlighted{background:var(--theme-selected);color:var(--theme-ink)}
+.log-alternative>button:first-child{color:var(--theme-source)}
+.state-tag,.linked-option-state,.scenario-outcome-heading span,.scenario-note,.identity-review-heading>span{color:var(--theme-muted)}
+.identity-card,.identity-group,.identity-facts,.identity-endpoint,.source-passage,.scenario-outcome-grid>div{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
+.identity-conflict{background:#3a2524;border-color:#6d403c}
+.identity-conflict>strong,.scenario-diff.warning,.scenario-diff.warning span{color:var(--theme-warning)}
+.state-tag.inferred i,.node-state.inferred{background:#4b3921}
+.button.primary,.ui-button-default{background:var(--theme-brand);border-color:var(--theme-brand);color:var(--dk-source,#102016)}
+.ui-button-secondary,.theme-toggle{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
+.theme-toggle{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px}
+.theme-toggle:focus-visible{outline:3px solid var(--theme-brand);outline-offset:2px}
+.scenario-panel button:disabled,.linked-option-preview:disabled{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-muted);opacity:.75}
+.dialog-content>.settings-modal,.ui-select-content{background:var(--theme-panel);border-color:var(--theme-line);color:var(--theme-ink)}
+.ui-select-item{color:var(--theme-ink)}
+.ui-select-item[data-highlighted]{background:var(--theme-selected);color:var(--theme-ink)}
+.scenario-panel .option-choice.active>button:first-child{border-style:solid;border-color:var(--theme-brand)}
+.scenario-panel .option-choice.inactive>button:first-child{border-style:dashed;border-color:var(--theme-muted)}
+@media(max-width:640px){.theme-toggle{width:36px;min-width:36px;justify-content:center;padding:0}.theme-toggle span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
+
+/* Keep narrow component drawers from placing the option state beside its title. */
+.graph-selection-summary.is-open .linked-option-heading{display:grid;justify-content:stretch;gap:2px}
+.graph-selection-summary.is-open .linked-option-heading .linked-option-state{text-align:left}
+
+/* Scenario choices keep semantic foreground and background pairs in dark mode. */
+:root[data-theme='dark'] .page-context-links{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-muted)}
+:root[data-theme='dark'] .page-context-links button,:root[data-theme='dark'] .page-context-links span{color:var(--theme-muted)}
+:root[data-theme='dark'] .page-context-links button:hover{color:var(--theme-ink)}
+:root[data-theme='dark'] .log-choice-heading>strong,:root[data-theme='dark'] .log-alternatives>strong,:root[data-theme='dark'] .log-alternative>span{color:var(--theme-muted)}
+:root[data-theme='dark'] .log-choice-heading>span{color:var(--theme-ink)}
+:root[data-theme='dark'] .log-selected-choice>p,:root[data-theme='dark'] .log-alternative>p,:root[data-theme='dark'] .log-alternatives>p{color:var(--theme-muted)}
+:root[data-theme='dark'] .log-selected-choice,:root[data-theme='dark'] .log-alternatives{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
+:root[data-theme='dark'] .log-alternative>button:first-child{background:var(--theme-panel);border-color:var(--theme-line);color:var(--theme-source)}
+:root[data-theme='dark'] .scenario-panel .option-choice.active{background:var(--theme-selected);border-color:var(--theme-brand)}
+:root[data-theme='dark'] .scenario-panel .option-choice.inactive{background:var(--theme-panel-raised);border-color:var(--theme-line)}
+:root[data-theme='dark'] .scenario-panel .option-choice>button:first-child{background:var(--theme-panel)!important;border-color:var(--theme-line);color:var(--theme-ink)!important}
+:root[data-theme='dark'] .scenario-panel .option-choice.active>button:first-child{background:var(--theme-selected)!important;border-color:var(--theme-brand)}
+:root[data-theme='dark'] .scenario-panel .option-choice.inactive>button:first-child{background:var(--theme-panel-raised)!important;border-color:var(--theme-muted)}
+:root[data-theme='dark'] .scenario-panel .option-choice>button:first-child small{color:var(--theme-brand)!important}
+:root[data-theme='dark'] .scenario-panel .option-rationale{color:var(--theme-muted)}
+:root[data-theme='dark'] .scenario-panel .option-source{color:var(--theme-source)!important}
+:root[data-theme='dark'] .scenario-decision-picker-label{color:var(--theme-muted)}
+:root[data-theme='dark'] .scenario-decision-picker button{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
+:root[data-theme='dark'] .scenario-decision-picker button[aria-current=location]{background:var(--theme-selected);border-color:var(--theme-brand);color:var(--theme-ink)}
+:root[data-theme='dark'] .scenario-decision-picker button small{background:var(--theme-brand-soft);color:var(--theme-brand)}
+:root[data-theme='dark'] .breadcrumbs,:root[data-theme='dark'] .breadcrumbs strong,:root[data-theme='dark'] .breadcrumbs>span,:root[data-theme='dark'] .breadcrumbs svg,:root[data-theme='dark'] .branch-pill{color:var(--theme-muted)!important}
+:root[data-theme='dark'] .section-kicker,:root[data-theme='dark'] .linked-decisions-title,:root[data-theme='dark'] .selection-summary-heading .state-tag,:root[data-theme='dark'] .identity-review-heading{color:var(--theme-muted)}
+:root[data-theme='dark'] .page-card .text-button,:root[data-theme='dark'] .log-explore,:root[data-theme='dark'] .selection-return-scenario{color:var(--theme-source)!important}
+:root[data-theme='dark'] .decision-name{color:var(--theme-ink)}
+:root[data-theme='dark'] .scenario-panel .option-source>span{color:var(--theme-source)!important}
+
+@media(max-width:640px){
+  .app-scenarios .sidebar .sources-label{display:none!important}
+  .app-scenarios .page-context-links{display:none}
+  .app-scenarios .heading-actions{display:none}
+  .app-scenarios .page-heading{gap:5px;margin-bottom:12px}
+  .app-scenarios .page-heading>div>p{display:none}
+  .app-scenarios .scenario-panel .scenario-copy{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:1;margin:2px 0 4px;font-size:12px;line-height:1.35}
+  .app-scenarios .scenario-panel .scenario-working-state{margin:4px 0;padding:5px 7px;min-height:28px}
+}
+
+/* Keep the light-theme primary CTA above the normal-text contrast threshold. */
+:root[data-theme='light'] .button.primary,:root[data-theme='light'] .ui-button-default{background:#41634b;border-color:#41634b;color:#fff}
+:root[data-theme='light'] .button.primary:focus-visible,:root[data-theme='light'] .ui-button-default:focus-visible{outline:3px solid #243d2a;outline-offset:2px}
+
+/* Shared readable scale for controls, evidence, and decision states. */
+.main-nav .nav-item{min-height:var(--control-target);font-size:var(--type-secondary)}
+.nav-label,.mcp-callout strong,.mcp-callout span,.profile strong,.profile span,.sync-pill{font-size:var(--type-tertiary)}
+.breadcrumbs{font-size:var(--type-tertiary)}
+.breadcrumbs strong{font-size:var(--type-secondary)}
+.branch-pill{min-height:var(--control-target);font-size:var(--type-tertiary)}
+.repo-card{min-height:48px}
+.repo-card strong{font-size:var(--type-secondary)}
+.repo-card span,.repo-open-label{font-size:var(--type-tertiary)}
+.repo-open-label{display:inline-flex;align-items:center;min-height:36px;padding-inline:8px}
+.provider-chip{height:auto;min-height:var(--control-target);font-size:var(--type-tertiary)}
+.theme-toggle{min-height:var(--control-target);font-size:var(--type-tertiary)}
+.page-heading p,.page-card p,.panel p,.log-entry-content>p{font-size:var(--type-secondary)}
+.page-context-links{min-height:var(--control-target)}
+.page-links button{min-height:var(--control-target);font-size:var(--type-tertiary)}
+.button,.ui-button-base,.ui-select-trigger{min-height:var(--control-target);font-size:var(--type-control)}
+.map-overview-line,.graph-breadcrumb{font-size:var(--type-tertiary)}
+.graph-footer{font-size:var(--type-secondary)}
+.map-start-guide strong{font-size:var(--type-functional)}
+.map-start-guide p{font-size:var(--type-secondary)}
+.map-start-action{min-height:var(--control-target);font-size:var(--type-control)}
+.layer-label,.relationship-label{font-size:var(--type-tertiary)}
+.graph-filter .ui-select-trigger{height:auto;min-height:var(--control-target);font-size:var(--type-tertiary)}
+.graph-footer button{min-height:var(--control-target);font-size:var(--type-tertiary)}
+.graph-selection-summary .panel-kicker,.scenario-head .panel-kicker{font-size:var(--type-tertiary)}
+.selection-summary-heading h3,.scenario-head h3{font-size:19px}
+.selection-summary-rationale>strong,.rationale-label{font-size:var(--type-tertiary)}
+.selection-summary-rationale p,.rationale-block p,.scenario-copy{font-size:var(--type-secondary)}
+.linked-decision-heading strong{font-size:var(--type-secondary)}
+.linked-decision-heading .linked-option-state,.linked-option-state{font-size:var(--type-tertiary)}
+.linked-option-heading .linked-option{font-size:var(--type-secondary)}
+.linked-option-rationale{font-size:var(--type-secondary)}
+.linked-option-card .linked-evidence,.selection-summary-evidence small{min-height:var(--control-target);font-size:var(--type-secondary)}
+.linked-option-preview,.linked-decision-explore{min-height:var(--control-target);font-size:var(--type-tertiary)}
+.log-entry-content>h3{font-size:16px}
+.log-choice-heading>strong,.log-alternatives>strong{font-size:var(--type-tertiary)}
+.log-choice-heading>span,.log-selected-choice>p,.log-alternative>p,.log-alternatives>p{font-size:var(--type-secondary)}
+.log-source-link,.log-alternative>button:first-child{min-height:var(--control-target);font-size:var(--type-secondary)}
+.log-alternative>span{font-size:var(--type-tertiary)}
+.scenario-decision-picker-label,.scenario-panel .option-choice>button:first-child small{font-size:var(--type-tertiary)}
+.scenario-decision-picker button,.scenario-history-item{min-height:var(--control-target);font-size:var(--type-secondary)}
+.scenario-working-state{font-size:var(--type-secondary)}
+.scenario-working-state button,.scenario-library-toggle,.scenario-named-save{min-height:var(--control-target);font-size:var(--type-tertiary)}
+.decision-name,.scenario-panel .option-choice>button:first-child{font-size:var(--type-secondary)}
+.scenario-panel .option-choice>button:first-child{min-height:48px}
+.scenario-panel .option-rationale{font-size:var(--type-secondary)}
+.scenario-panel .option-source{min-height:var(--control-target);font-size:var(--type-secondary)}
+.scenario-quick-summary,.scenario-outcome-grid>div>strong,.scenario-outcome-heading strong{font-size:var(--type-tertiary)}
+.scenario-outcome-grid p,.scenario-outcome-grid li,.scenario-choice-list li{font-size:var(--type-secondary)}
+.facts-intro{font-size:var(--type-secondary)}
+.facts-filters button{min-height:var(--control-target);font-size:var(--type-secondary)}
+.facts-group-label{font-size:var(--type-secondary)}
+.identity-review-heading strong,.identity-conflict>strong{font-size:var(--type-tertiary)}
+.identity-meta,.identity-provenance,.identity-limitation,.identity-empty,.identity-group>span,.identity-conflict>p,.identity-conflict-claim{font-size:var(--type-tertiary)}
+.identity-evidence button,.identity-conflict-claim>button,.review-open-passage{min-height:var(--control-target);font-size:var(--type-tertiary)}
+.identity-actions button{min-height:var(--control-target);font-size:var(--type-tertiary)}
+.identity-endpoint-ids code,.identity-endpoint code,.evidence-identity code{font-size:var(--type-tertiary)}
+.repo-open-label,.repository-picker>button{min-height:var(--control-target)}
+.repository-picker>button strong{font-size:var(--type-tertiary)}
+.repository-picker>button small{font-size:var(--type-tertiary)}
+.correction-form>strong{font-size:var(--type-tertiary)}
+.correction-form>p,.correction-form label,.correction-evidence blockquote{font-size:var(--type-tertiary)}
+.correction-form input,.correction-form select{min-height:var(--control-target);height:auto;font-size:var(--type-tertiary)}
+.correction-evidence blockquote span{font-size:var(--type-tertiary)}
+.correction-form .form-actions .button{min-height:var(--control-target);height:auto;font-size:var(--type-tertiary)}
+.source-document-heading span,.source-document-content,.source-line{font-size:var(--type-tertiary)}
+.connection-form label,.connection-form label small,.connection-card,.connection-picker button{font-size:var(--type-tertiary)}
+.connection-form input,.connection-form select,.operation-form .ui-select,.operation-form input,.operation-form button{min-height:var(--control-target);height:auto;font-size:var(--type-tertiary)}
+.review-actions button{min-width:var(--control-target);min-height:var(--control-target)}
+.arch-node .node-copy span{font-size:var(--type-tertiary);line-height:1.35}
+.graph-selection-summary.is-open .linked-option-rationale{display:block;overflow:visible;-webkit-line-clamp:unset}
+.scenario-panel .option-rationale{display:block;overflow:visible;-webkit-line-clamp:unset}
+@media(max-width:640px){
+  .main-nav .nav-item{font-size:var(--type-tertiary)}
+  .repo-card span{font-size:var(--type-tertiary)}
+  .app-scenarios .page-heading{gap:5px;margin-bottom:8px}
+  .app-scenarios .scenario-panel .scenario-copy{font-size:var(--type-tertiary)}
+  .graph-selection-summary.is-open .linked-option-heading .linked-option{font-size:var(--type-tertiary)}
+  .graph-selection-summary.is-open .linked-option-rationale{font-size:var(--type-tertiary)}
+  .graph-selection-summary.is-open .linked-option-card .linked-evidence{min-height:var(--control-target);font-size:var(--type-tertiary)}
+}
+
+/* Map layout (src/map/): kind groups, hover/selection highlight, zoom-scaled edge labels, full screen. */
+.react-flow__node-architecture .arch-node{width:100%!important;height:100%;min-height:0;box-sizing:border-box;transition:opacity .15s,border-color .15s}
+.react-flow__node-architecture .arch-node .node-copy{min-width:0}
+/* Sized in graph units so titles stay >=12px and captions >=11px on screen at the 0.6 minimum fit zoom. */
+.react-flow__node-architecture .arch-node{gap:8px;padding:8px 10px}
+.react-flow__node-architecture .arch-node .node-mark{display:none}
+.react-flow__node-architecture .arch-node .node-copy{flex:1 1 auto}
+.react-flow__node-architecture .arch-node .node-copy strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;font-size:21px;line-height:1.15}
+.react-flow__node-architecture .arch-node .node-copy span{font-size:19px;line-height:1.2;letter-spacing:.02em}
+.react-flow__node-mapGroup{pointer-events:none!important}
+.map-group{position:relative;width:100%;height:100%;border:1px dashed var(--theme-line);border-radius:12px;background:color-mix(in srgb,var(--theme-panel) 60%,transparent)}
+.map-group-label{position:absolute;top:12px;left:16px;display:inline-flex;align-items:center;gap:6px;color:var(--theme-muted);font:700 20px/1.3 'DM Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.map-group-label small{padding:1px 7px;border:1px solid var(--theme-line);border-radius:999px;background:var(--theme-panel-raised);font-size:19px;letter-spacing:0}
+.react-flow__node.map-node-dimmed{opacity:.25}
+.react-flow__node.map-node-focus .arch-node{border:2px solid var(--theme-brand);box-shadow:0 0 0 3px var(--theme-brand-soft)}
+.react-flow__node.map-node-neighbor .arch-node{border:2px solid var(--theme-brand)}
+.relationship-label.map-edge-label{font-size:12.5px!important;line-height:1.25;padding:3px 6px;white-space:nowrap;transition:opacity .15s}
+.relationship-label.map-edge-label.is-dimmed{opacity:.25}
+.relationship-label.map-edge-label.is-highlighted{z-index:2;border:2px solid var(--theme-brand)!important;font-weight:700}
+.map-fullscreen-toggle{display:inline-grid;place-items:center;flex:none;width:32px;height:32px;margin-left:8px;border:1px solid var(--theme-line);border-radius:6px;background:var(--theme-panel-raised);color:var(--theme-ink)}
+.map-fullscreen-toggle:hover{background:var(--theme-hover)}
+.map-fullscreen-toggle:focus-visible{outline:2px solid var(--theme-brand);outline-offset:2px}
+.map-fullscreen-toggle[aria-pressed=true]{border-color:var(--theme-brand);background:var(--theme-selected)}
+@media(min-width:1025px){.graph-canvas .selection-hint{right:247px}}
+html.map-fullscreen,html.map-fullscreen body{overflow:hidden}
+html.map-fullscreen .graph-frame.is-fullscreen{position:fixed;inset:0;z-index:6;display:flex;flex-direction:column;margin:0;border-radius:0;background:var(--theme-panel)}
+html.map-fullscreen .graph-frame.is-fullscreen .graph-canvas{flex:1 1 auto;height:auto!important;min-height:0}
+html.map-fullscreen .graph-selection-summary.is-open,html.map-fullscreen .delta-editor[role="dialog"],html.map-fullscreen .architecture-scenario-open .scenario-panel{top:60px;max-height:calc(100dvh - 84px)}
+html.map-fullscreen .architecture-overlay-backdrop{inset:0}
+html.map-fullscreen .architecture-layout.panel-editor .architecture-overlay-backdrop{display:none}
+.graph-frame{overflow:clip}
+.graph-breadcrumb{min-width:0}
+.graph-breadcrumb>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.graph-breadcrumb .graph-filter{min-width:0;flex:0 1 auto}
+.graph-breadcrumb .graph-filter .ui-select-trigger{min-width:0;max-width:100%}
+@media(min-width:1025px){.map-start-guide .map-start-action{flex:0 0 340px;min-width:0;justify-content:space-between;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}}
+/* Full screen keeps What-if and map editing controls reachable in a toolbar band above the canvas. */
+html.map-fullscreen{--map-fs-band:52px}
+html.map-fullscreen .graph-frame.is-fullscreen .graph-canvas{margin-top:var(--map-fs-band)}
+html.map-fullscreen .architecture-layout .graph-tools,html.map-fullscreen .architecture-layout .map-actions{position:fixed;z-index:7;top:44px;width:auto;margin:0;padding:0}
+html.map-fullscreen .architecture-layout .graph-tools{left:12px}
+html.map-fullscreen .architecture-layout .graph-tools .legend{display:none}
+html.map-fullscreen .architecture-layout .map-actions{right:12px;left:auto;max-width:calc(100vw - 140px);justify-content:flex-end}
+@media(max-width:640px){html.map-fullscreen{--map-fs-band:136px}}
+@media(max-width:1024px){html.map-fullscreen .architecture-layout[class*="panel-"] .graph-tools,html.map-fullscreen .architecture-layout[class*="panel-"] .map-actions{visibility:hidden}}
+@media(min-width:1025px){html.map-fullscreen .graph-selection-summary.is-open,html.map-fullscreen .delta-editor[role="dialog"],html.map-fullscreen .architecture-scenario-open .scenario-panel{top:calc(44px + var(--map-fs-band));max-height:calc(100dvh - 68px - var(--map-fs-band))}}
+
+/* Readability floor (loaded last): controls and body text >=12px, mono captions >=11px,
+   theme-token colours that pass WCAG AA in both themes, non-selectable chrome, visible focus. */
+:root{--type-caption:11px;--focus-ring:var(--theme-source)}
+:root :is(.page-footer,.page-footer i,.text-button,.selection-hint,.form-actions .button,.button.subtle,.chat-mode-switch button,.suggestions>span,.suggestions>button,.legend,.graph-breadcrumb,.sync-pill,.branch-pill,.repo-open-label,.repo-card span,.profile span,.mcp-callout span,.chat-intro p,.chat-intro small,.scenario-note,.linked-option-state,.linked-evidence,.linked-evidence span,.linked-decisions-title span,.facts-intro,.progress-grid span,.scenario-outcome-grid li span,.scenario-outcome-heading span,.scenario-history-heading,.scenario-history-heading>span,.scenario-history-heading strong,.scenario-summary-counts span,.evidence-identity,.evidence-identity span,.page-context-links button,.page-context-links span,.identity-review-heading>span,.source-document-heading span,.review-heading span){font-size:12px}
+:root :is(.eyebrow,.section-kicker,.panel-kicker,.nav-label,.linked-decisions-title,.nav-badge,.review-status,.review-confidence,.chat-input kbd,.graph-minimap-rail>span,.scenario-history-kind,.layer-label){font-size:var(--type-caption)}
+
+/* Muted text and captions use the theme's AA muted token on panel and canvas surfaces. */
+:root :is(.nav-label,.eyebrow,.section-kicker,.panel-kicker,.sync-pill,.profile span,.repo-card span,.mcp-callout span,.branch-pill,.page-footer,.page-footer i,.legend span,.map-overview-line>span,.graph-breadcrumb span,.facts-intro,.facts-group-label,.identity-empty,.chat-intro p,.chat-intro small,.suggestions>span,.suggestions>button,.chat-mode-switch button,.evidence-identity span,.evidence-identity code,.modal-head p,.source-document-heading span,.scenario-history-heading>span,.progress-grid span,.scenario-outcome-grid li span,.page-context-links span,.chat-input kbd,.selection-hint,.scenario-note,.review-heading span){color:var(--theme-muted)}
+:root :is(.source-document-heading strong,.scenario-outcome-grid>div>strong,.map-overview-line strong,.chat-mode-switch button.active){color:var(--theme-ink)}
+:root :is(.text-button,.log-explore,.page-context-links button,.nav-item.active,.nav-item.active .nav-label-full,.nav-item.active .nav-label-short,.scenario-history-kind,.scenario-summary-counts span,.repo-open-label){color:var(--theme-source)}
+:root .nav-badge{color:var(--theme-warning)}
+:root :is(.review-status.inferred,.review-confidence.inferred){color:var(--theme-warning)}
+:root .scenario-outcome-grid .has-warnings :is(strong,li,li span){color:var(--theme-warning)}
+:root .repo-open-label{background:var(--theme-panel-raised);border-color:var(--theme-line)}
+:root .review-heading span{background:var(--theme-panel-raised)}
+:root .chat-input kbd{background:var(--theme-panel);border-color:var(--theme-line)}
+:root[data-theme='dark'] .nav-badge{background:#3a2f1d}
+:root[data-theme='dark'] :is(.chat-mode-switch,.progress-grid>div,.suggestions>button){background:var(--theme-panel-raised);border-color:var(--theme-line)}
+:root[data-theme='dark'] .chat-mode-switch button.active{background:var(--theme-panel)}
+:root[data-theme='dark'] .progress-grid strong{color:var(--theme-brand)}
+/* Dark surfaces for controls whose base rules in styles.css hard-code white. */
+:root[data-theme='dark'] :is(.review-list,.review-actions button,.button.subtle,.provider-chip,.chat-input){background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
+:root[data-theme='dark'] .review-item{border-color:var(--theme-line)}
+:root[data-theme='dark'] :is(.review-actions button,.provider-chip){color:var(--theme-muted)}
+:root[data-theme='dark'] :is(.review-actions button:first-child:hover,.button.subtle:hover){background:var(--theme-hover);color:var(--theme-brand);border-color:var(--theme-line)}
+:root[data-theme='dark'] .review-actions button:last-child:hover{background:#3a2422;color:var(--theme-danger);border-color:var(--theme-line)}
+:root[data-theme='dark'] .review-open-passage{color:var(--theme-source)}
+:root[data-theme='dark'] .review-copy strong{color:var(--theme-ink)}
+:root[data-theme='dark'] .review-copy span{color:var(--theme-muted)}
+:root[data-theme='dark'] .chat-input input{background:transparent;color:var(--theme-ink)}
+:root[data-theme='dark'] .chat-input input::placeholder{color:var(--theme-muted)}
+:root[data-theme='dark'] :is(.review-status.inferred,.review-confidence.inferred){background:#3a2f1d}
+:root[data-theme='dark'] :is(.provider-orb,.chat-spark){background:var(--theme-brand-soft);color:var(--theme-brand)}
+:root[data-theme='dark'] .node-state.confirmed{background:var(--theme-selected);color:var(--theme-ink)}
+:root[data-theme='dark'] .linked-decisions-title span{background:var(--theme-brand-soft);color:var(--theme-brand)}
+:root[data-theme='dark'] .button.tiny-button{color:var(--theme-ink)}
+
+/* Graph editor, settings and discovery dialogs: same floor (controls >=12px, captions 11px, AA token colours). */
+:root :is(.editor-head strong,.editor-head span,.delta-editor .ui-select-trigger,.delta-editor .ui-select-trigger span,.ui-select-item,.ui-select-item span,.operation-toolbar span,.operation-list code,.delta-editor textarea,.editor-foot span,.delta-editor .ui-button-base,.scenario-save-form button,.saved-scenarios-heading strong,.connection-top span,.connection-meta span,.connection-meta small,.agent-separation span,.add-provider small,.discover-modes legend,.discover-modes strong,.discover-modes small,label.discover-connection,.discover-connection small,.diagnostics-empty){font-size:12px}
+:root :is(.operation-index,.connection-status,.diagnostics-title span){font-size:var(--type-caption)}
+:root :is(.discover-connection select,.delta-editor select){font-size:13px}
+:root :is(.editor-head span,.delta-editor .ui-select-trigger span,.operation-toolbar span,.editor-foot span,.connection-top span,.connection-meta span,.connection-meta small,.agent-separation span,.add-provider span,.add-provider small,.diagnostics-title span,.diagnostics-empty,.connection-status,.discover-modes legend,.discover-modes small,label.discover-connection,.discover-connection small){color:var(--theme-muted)}
+:root :is(.operation-index,.delta-preview strong,.canvas-edit-notice strong){color:var(--theme-source)}
+:root :is(.delta-editor textarea,.connection-meta strong,.saved-scenarios-heading strong){color:var(--theme-ink)}
+:root :is(.delta-preview span,.canvas-edit-notice span){color:var(--theme-muted)}
+:root[data-theme='dark'] :is(.button.primary,.ui-button-default){color:var(--theme-canvas)}
+:root[data-theme='dark'] :is(.connection-mark,.brand-icon){background:var(--theme-brand-soft);color:var(--theme-brand)}
+
+/* Non-text icons keep >=3:1 against their surface in both themes. */
+:root :is(.tiny-icon,.mcp-callout,.breadcrumbs,.provider-chip,.graph-breadcrumb,.chat-input,.agent-separation)>svg,:root button>svg.lucide-x{color:var(--theme-muted)}
+:root .nav-item.active>svg{color:var(--theme-source)}
+
+/* Chrome is not text to copy; passages, rationale, IDs and source lines stay selectable. */
+:root :is(.sidebar,.main-nav,.page-links,.graph-tools,.facts-filters,.map-actions,.breadcrumbs,button,[role=button],.nav-label,.eyebrow,.section-kicker,.panel-kicker,.sync-pill,.branch-pill,.nav-badge,.repo-open-label){-webkit-user-select:none;user-select:none}
+
+/* One visible focus ring for keyboard focus in both themes; programmatic focus targets stay unmarked. */
+:root :focus-visible:not([tabindex='-1']){outline:2px solid var(--focus-ring)!important;outline-offset:2px}
+:root [tabindex='-1']:focus:not(:focus-visible),:root .page-heading:focus{outline:none}
+
+/* Keep trailing arrows on the same line as their short label. */
+:root .linked-decision-explore{display:inline-flex;align-items:center;gap:5px}
+:root :is(.linked-decision-explore,.text-button){white-space:nowrap}
+:root :is(.linked-decision-explore,.text-button)>svg{flex:none}

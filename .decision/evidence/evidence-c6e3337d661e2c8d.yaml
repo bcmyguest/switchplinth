@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c6e3337d661e2c8d
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 4: derived indexes and grounded retrieval'
+  normalized_passage_sha256: 2d2e88976f2b178989d92e0749322540154ac82cbbb26da9232b7bfdabae7e0c
+  context_before: repository Qdrant collection recreation/isolation in the current
+    Compose image and the seeded “Why are we using Kafka?” answer with focused evidence
+    after scan.
+  context_after: '- [x] Display an interactive architecture graph and entity detail/evidence
+    panel. - [x] Support human confirm/reject and corrected asserted overrides for
+    claims'
+  display_line: 47
+text: 'Verification: backend tests delete/recreate SQLite index state, validate Qdrant
+  collection recreation, verify provider vectors are used consistently for indexing/query,
+  and exercise the LiteLLM embedding adapter against a loopback OpenAI-compatible
+  mock. Without a configured embedding model the deterministic token-hash fallback
+  is explicitly reported and is not described as semantic retrieval. Root''s earlier
+  Compose smoke verified 98 points in the root repository collection and a separate
+  7-point `examples` collection. Scenario-aware search tests verify Kafka/SQS rationale
+  and evidence change with the selection map.'
+state: current

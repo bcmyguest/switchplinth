@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-0dc0768fe4e79c52
+source:
+  path: CLAUDE.md
+  git_blob: null
+  content_sha256: cbb751b97f45cc8e25a58a68b8bf1a71adf4aef92a1529f8c91f315b4866a808
+location:
+  heading_path:
+  - Project orientation
+  - Backend boundaries
+  normalized_passage_sha256: c9bb73fa2894f9abf75ce05042d541e9f087e23434f91bc47db893c607fcd69c
+  context_before: When excluded task evidence is reconciled, current-source inferred
+    references can keep a task-seeded entity supported after its excluded evidence
+    is removed.
+  context_after: 'For `why` searches, the backend reports `grounded: true` only when
+    effective claims cite the returned current passages. When passages exist without
+    claim suppor'
+  display_line: 19
+text: Architecture map details, What-if controls, and the typed graph editor open
+  in separate closable side panels. When a panel changes the available map width,
+  the graph refits its nodes to the canvas. Independent Playwright gate 11 passed
+  the live map bounds, panel, focus/Escape, narrow selection-scroll, source-click,
+  SQS detail, and no-write preview/Discard checks in Chromium and Firefox. Gate 10
+  had already passed fixture-only Save. Keep the full V0 acceptance audit open until
+  all 12 acceptance criteria have been reviewed; passing the panel gate does not constitute
+  V0 acceptance.
+state: current

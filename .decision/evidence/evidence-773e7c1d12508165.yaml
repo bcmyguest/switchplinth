@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-773e7c1d12508165
+source:
+  path: .agents/skills/maintain-task-ledger/SKILL.md
+  git_blob: null
+  content_sha256: 31e6ac47472a50a0fe95903804d3a5a5f6b59f9185b9da9bf33dd364060889f0
+location:
+  heading_path:
+  - Maintain Task Ledger
+  normalized_passage_sha256: 77fd5a446904b1d8cab56a15e9e91def0b51099152aef73e483062b15bcf9273
+  context_before: ' reviewer gate. - Status: `open`, `in_progress`, `blocked`, `in_review`,
+    `completed`, or `deferred`. - Acceptance criteria and concrete evidence. - Next
+    action.'
+  context_after: Use the ledger as the source for status reports, context-compaction
+    notes, and handoffs. Summarize only active blockers, decisions, verification,
+    reviewer gates
+  display_line: 18
+text: Create or update the entry when work starts, reaches a milestone, hits a blocker,
+  enters or exits review, or completes. Do not mark a task complete until its acceptance
+  criteria pass. Keep completed work as a short evidence record; keep unresolved work
+  actionable.
+state: unresolved

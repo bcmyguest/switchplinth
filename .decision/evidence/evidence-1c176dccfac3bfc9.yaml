@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-1c176dccfac3bfc9
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: df647c4e7d19a11877b24b0c14b68576322ea0e348897c87babaf65a4501ce96
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 6: MCP and end-to-end acceptance'
+  normalized_passage_sha256: 526e08f812cfe50d092090a5668449f68b40348c9cc128ace835b1ec0935c922
+  context_before: option delta. Root's Compose smoke verified SQS entity detail and
+    the selected option under the active scenario. The browser UI has not been manually
+    exercised.
+  context_after: 'Verification: Prior Compose startup and HTTP health/proxy checks
+    passed. Discovery scan returned HTTP 200 with generated/cache paths excluded.
+    After `docker com'
+  display_line: 61
+text: '- [x] Expose query/search and graph inspection through MCP over shared services.
+  - [x] Document local setup, provider config, portability, rebuild, and troubleshooting.
+  - [x] Run V0 acceptance matrix and record verified outcomes below.'
+state: unresolved

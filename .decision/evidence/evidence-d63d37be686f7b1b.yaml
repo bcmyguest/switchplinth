@@ -1,0 +1,49 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-d63d37be686f7b1b
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - Implementation decisions and deviations
+  normalized_passage_sha256: 3d751290f02f72d43d85a4ef61abcf8a83dcf1712c21188d90700c05ad3787cf
+  context_before: d source Markdown passage highlighting passed. Fixture-only Save
+    had passed gate 10. This closes the panel gate; it does not close the full V0
+    acceptance audit.
+  context_after: '| Date | Milestone | Change / decision | Verification | |---|---|---|---|
+    | 2026-10-05 | 1 | Built the three-service Compose app with FastAPI, React, shadcn/ui,'
+  display_line: 76
+text: '- Compose mounts `${DECISION_WORKSPACE_HOST:-.}` to `/workspace/repos`. The
+  picker lists eligible relative directory paths, rejects traversal/symlinks, and
+  separates disposable SQLite/Qdrant state by canonical repository path. A first open
+  of a Markdown-only repo bootstraps its v1 schema, config, and extraction instructions.
+  - Compose host ports bind to `127.0.0.1`; the backend maps `host.docker.internal`
+  to the host gateway for Linux local-model connectivity. CORS accepts only `localhost:3000`
+  and `127.0.0.1:3000`. The API has no authentication; remote access is unresolved
+  and not part of the local V0 listener setup. - Portable schema version `decision/v1`
+  is validated; unknown versions are rejected. A future v1→v2 migration is not implemented
+  and remains a requirement before schema evolution. - Markdown discovery excludes
+  `.decision/`, `.decision-cache/`, `.pytest_cache/`, and standard build/cache directories
+  by default. Additional path-segment exclusions and `max_candidates` (default 50)
+  are configurable in `.decision/config.yaml`. - `POST /api/v1/discovery/scan` is
+  the full scan/index rebuild path: it rebuilds SQLite and replaces the Qdrant collection.
+  The SQLite index records `index_version`. Canonical YAML is restored if the synchronous
+  scan raises; this rollback does not protect against abrupt process or host termination.
+  - Scenario save writes only selection records under `.decision/scenarios/`. AI proposals
+  are previews; applying one writes the same option delta as manual editing. - Provider
+  embeddings use an optional `embedding_model` on a connection with `capabilities.embeddings:
+  true`; the same LiteLLM embedder is used for Qdrant rebuild and query. Missing model
+  configuration reports `unsupported` and uses deterministic token-hash vectors as
+  an offline fallback. A configured provider failure reports `error` and does not
+  silently switch vectorizers. SQLite and Qdrant remain derived indexes. - LangGraph
+  is intentionally not used in V0: scan is synchronous and there is no workflow checkpoint,
+  resumability, or human approval pause requiring persisted orchestration state. -
+  No external provider credentials or remote model endpoint were used; provider interoperability
+  was exercised with the local OpenAI-compatible mock. - Corrected aliases/claims
+  append asserted records that supersede original and prior human judgments, preserve
+  evidence, validate changed entity references, and remain effective after provider
+  re-extraction.'
+state: current

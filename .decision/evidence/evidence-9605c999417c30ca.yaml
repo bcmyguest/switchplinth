@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-9605c999417c30ca
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - CODE-ANALYSIS — Design a distinct code-derived evidence extension
+  normalized_passage_sha256: ae922a37bf7a46ebd1e5a5e3153d0bcc5ae9a16737868ca3dba4a0ce3e81388e
+  context_before: o-v2 migration exists or is currently planned. - **Next action:**
+    Reopen when a schema change is proposed; do not claim migration support before
+    implementation.
+  context_after: '- **Outcome:** Define authentication and exposure rules for any
+    non-loopback API or MCP listener. - **Blockers:** Product/security design decision.
+    - **Owner:**'
+  display_line: 123
+text: '- **Outcome:** Add code-derived claims/evidence without mixing them with Markdown
+  evidence or making extraction part of V0. - **Blockers:** Future product scope and
+  an explicit schema/API design. - **Owner:** TBD. - **Reviewer gate:** Review the
+  provenance and portability model before implementation. - **Status:** `deferred`.
+  - **Acceptance/evidence:** V1 has no normative or runtime-supported `source_kind`
+  field; code analysis remains out of V0. - **Next action:** Reopen only when code
+  analysis enters scope; define evidence type and provenance before changing the schema/API.'
+state: unresolved

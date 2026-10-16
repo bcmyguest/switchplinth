@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-f8cb2d84a3be46d9
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 2: portable domain and compiler'
+  normalized_passage_sha256: 1c4693e7f3a0db8f86969a21d66fc732a8dd3450e31473ce0b73c2b784e31210
+  context_before: eslint .`, and `./node_modules/.bin/vite build`; all exited
+    0 (Vite 7.3.6, 1,892 modules, 2.31s). The production frontend image also built
+    in Compose.
+  context_after: 'Verification: The demo overlay is schema/reference validated by
+    the backend suite. Tests verify unknown schema versions fail before a record write.
+    V1→v2 transf'
+  display_line: 23
+text: '- [x] Add versioned schemas and `.decision/` records for entities, evidence
+  anchors, aliases, claims, decisions/options, scenarios, and config; validate referenced
+  IDs. - [x] Implement deterministic parsing, v1 schema/reference validation, explicit
+  unknown-version rejection, claim precedence, and typed delta application independent
+  of storage. - [x] Implement stable source anchors and relocation with ambiguity
+  handling. - [x] Add synthetic fixtures and meaningful tests for portability, human-over-inference
+  precedence, delta application, and provenance relocation.'
+state: current

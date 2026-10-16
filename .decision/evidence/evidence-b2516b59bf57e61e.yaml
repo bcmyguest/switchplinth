@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-b2516b59bf57e61e
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Extension boundary
+  normalized_passage_sha256: 99e1ccd2e95af486fd8c0cee6feb9930db4614aa71a6624ac2cb8a7f9e4160ac
+  context_before: cal model servers. The API is unauthenticated, so external listener
+    access remains unresolved and outside the V0 listener contract. Avoid adding services
+    in V0.
+  context_after: ''
+  display_line: 53
+text: Later code analysis may contribute evidence and claims such as `implements`,
+  `calls`, `depends_on`, `conforms_to_decision`, and `violates_decision`. V1 does
+  not define or consume a normative `source_kind` field or code-evidence API. A future
+  code-analysis extension needs an explicit schema/API design with a distinct provenance
+  type and must feed the same claim/provenance model. No code-analysis subsystem is
+  part of V0.
+state: current

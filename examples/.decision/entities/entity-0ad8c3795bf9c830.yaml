@@ -1,0 +1,5 @@
+schema_version: decision/v1
+record_type: entity
+id: entity-0ad8c3795bf9c830
+kind: technology
+name: Amazon SQS

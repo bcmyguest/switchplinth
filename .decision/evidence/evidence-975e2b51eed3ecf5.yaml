@@ -1,0 +1,20 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-975e2b51eed3ecf5
+source:
+  path: examples/synthetic/decisions/messaging.md
+  git_blob: null
+  content_sha256: 7516b0f81cff7c0da672c458b26118bbb911bc5d3b41816b58c6056da729a3d8
+location:
+  heading_path:
+  - Event delivery for order processing
+  - Consequences
+  normalized_passage_sha256: d9c075f3daca07e4ea97e91e87c234c0dfafaf45dc81f6e9cefb22033595e24f
+  context_before: ure work. A dead-letter queue would hold messages after repeated
+    failures, but replaying a selected range of old events would require extra application
+    support.
+  context_after: ''
+  display_line: 17
+text: The team operates Kafka and monitors consumer lag. The decision can be revisited
+  if operational load becomes more important than replay.
+state: current

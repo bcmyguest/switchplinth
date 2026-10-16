@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-4c20096c68edbb17
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 6: MCP and end-to-end acceptance'
+  normalized_passage_sha256: 8154afa422589062e14ed6192dd2dc6871b6e60fc64c03b4eefe1e0280ce8bad
+  context_before: tion restored, and grounded retrieval available both before and
+    after. This fixture used a test endpoint; external provider interoperability remains
+    unverified.
+  context_after: '- Compose mounts `${DECISION_WORKSPACE_HOST:-.}` to `/workspace/repos`.
+    The picker lists eligible relative directory paths, rejects traversal/symlinks,
+    and sepa'
+  display_line: 72
+text: 'UI-PANELS independent live gate 11: Playwright 1.58.2 ran against a disposable
+  repository graph in Chromium and Firefox. Each browser passed 14/14 layout/interaction
+  cases at 1440×900, 500×900, 500×667, and 375×667, plus source clicks, focused panel
+  checks, SQS selected detail, and no-write editor preview/Discard. All nine live
+  cards remained inside the map; detail, What-if, and editor panels were adjacent,
+  with no document horizontal overflow or page scroll on selection. Focus/Tab/Escape
+  and source Markdown passage highlighting passed. Fixture-only Save had passed gate
+  10. This closes the panel gate; it does not close the full V0 acceptance audit.'
+state: current

@@ -1,0 +1,30 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-de77c5750d8c05d4
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 5: graph and scenario vertical slice'
+  normalized_passage_sha256: 8e48efb733c9f8e5046b51380ae8c435356b967fb0647bac41862694436149ec
+  context_before: tory collection and a separate 7-point `examples` collection. Scenario-aware
+    search tests verify Kafka/SQS rationale and evidence change with the selection
+    map.
+  context_after: 'Verification: deterministic tests cover option switching, added/removed
+    elements, cross-decision invalid assumptions, scenario-aware claim projection
+    for option'
+  display_line: 51
+text: '- [x] Display an interactive architecture graph and entity detail/evidence
+  panel. - [x] Support human confirm/reject and corrected asserted overrides for claims
+  and aliases, preserving original inferences. - [x] Let user select options and compose
+  a scenario; recompute affected graph, decisions, conflicts, invalid assumptions,
+  evidence, selected-entity rationale, and readable entity names in the scenario diff.
+  - [x] Support YAML/API edits through the same typed delta model; support conversational
+  requests to propose, preview, and apply edits to that same model with human confirmation.
+  - [x] Support no-write server preview of manual delta edits and scenario selections.
+  - [x] Verify Kafka→SQS through the running API, including SQS entity detail and
+  rationale under the active selection.'
+state: current

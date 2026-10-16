@@ -1,0 +1,26 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-fe5572b9087d9d0f
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 1: minimal runnable service skeleton'
+  normalized_passage_sha256: a4b13ea2810b38865ed8e6eeb64008e48b204533b97f13bcb4b811b6d108fb88
+  context_before: dd `/health` API, frontend API connection, and service health/dependency
+    behavior. - [x] Add synthetic Markdown demo sources that do not assume an ADR
+    template.
+  context_after: '- [x] Add versioned schemas and `.decision/` records for entities,
+    evidence anchors, aliases, claims, decisions/options, scenarios, and config; validate
+    referen'
+  display_line: 19
+text: 'Verification: `docker compose config` passed. Root ran `docker compose up --build`;
+  Qdrant, backend, and frontend became healthy, backend `/health` returned 200, frontend
+  `/` returned 200, and frontend proxy `/api/v1/project` returned 200. Reviewer independently
+  ran `./node_modules/.bin/tsc --noEmit`, `./node_modules/.bin/eslint .`, and `./node_modules/.bin/vite
+  build`; all exited 0 (Vite 7.3.6, 1,892 modules, 2.31s). The production frontend
+  image also built in Compose.'
+state: current

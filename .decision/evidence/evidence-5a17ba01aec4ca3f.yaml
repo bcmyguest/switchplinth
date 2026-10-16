@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-5a17ba01aec4ca3f
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 3: discovery, extraction, and provider boundary'
+  normalized_passage_sha256: 6883e07b1de8cd039b7b3080fac3b515422abb198265a73a0140ba6dc2e3fbaa
+  context_before: n and diagnostics UI. Show each capability as `supported`, `unsupported`,
+    or `error`, with latency and raw/normalized error detail; never silently skip
+    a check.
+  context_after: '- [x] Build disposable SQLite index and Qdrant collections from
+    canonical Markdown and overlay. - [x] Implement lexical retrieval, configured
+    provider embedding'
+  display_line: 38
+text: 'Verification: deterministic extraction and human-review precedence are covered
+  by backend tests. A loopback OpenAI-compatible HTTP server exercised the real LiteLLM
+  structured-extraction and embedding adapters; diagnostics probed auth, endpoint,
+  model, structured output, streaming, and embedding capability. A reachable HTTP
+  401 reports authentication `error` while endpoint reachability remains `supported`.
+  No live external provider was used. Anthropic-specific structured-output and streaming
+  probes are not implemented and are reported as unverified errors, not unsupported
+  capabilities.'
+state: current

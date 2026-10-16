@@ -1,0 +1,43 @@
+# Python build and runtime caches (any depth)
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyrefly/
+build/
+dist/
+*.egg-info/
+
+# Generated decision graph indexes and local secrets
+.decision-cache/
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!.env.example
+
+# Frontend dependencies and build output
+node_modules/
+
+# OpenRig local managed blocks (claude-code seats; do not check in)
+AGENTS.local.md
+CLAUDE.local.md
+
+# Review session artifacts / browser profile (not source)
+.firefox-review-*/
+.review-*.png
+# Local agent/tool runtime state (not source)
+.openrig/
+.claude/
+.tasks/
+.aws/
+.opencode/
+.codex/
+
+# TypeScript incremental build state
+*.tsbuildinfo
+
+# Interrupted atomic YAML writes
+.decision/**/.*.tmp

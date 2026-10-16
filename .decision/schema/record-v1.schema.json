@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://decision-graph.local/schema/record-v1.schema.json",
+  "title": "Decision graph portable v1 record",
+  "type": "object",
+  "required": ["schema_version", "record_type", "id"],
+  "properties": {
+    "schema_version": {"const": "decision/v1"},
+    "record_type": {"enum": ["config", "entity", "evidence", "alias", "claim", "relationship", "decision", "scenario", "model_connection", "agent_connection"]},
+    "id": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]*$"},
+    "epistemic_state": {"enum": ["inferred", "confirmed", "rejected", "asserted"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "supersedes": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "kind": {"type": "string"}, "name": {"type": "string"}, "description": {"type": "string"},
+    "entity_id": {"type": "string"}, "subject": {"type": "string"}, "predicate": {"type": "string"}, "object": {"type": "string"},
+    "source_path": {"type": "string"}, "source": {"$ref": "#/$defs/source"}, "location": {"$ref": "#/$defs/location"}, "text": {"type": "string"}, "state": {"enum": ["current", "unresolved"]},
+    "from": {"type": "string"}, "to": {"type": "string"}, "status": {"type": "string"}, "context": {"type": "string"}, "selected_option": {"type": ["string", "null"]},
+    "title": {"type": "string"}, "options": {"type": "array", "items": {"$ref": "#/$defs/option"}},
+    "selections": {"type": "object", "additionalProperties": {"type": "string"}},
+    "provider": {"type": "string"}, "endpoint": {"type": "string"}, "model": {"type": "string"}, "credential_ref": {"type": "string"}, "capabilities": {"type": "object"},
+    "extraction": {"$ref": "#/$defs/extraction"}, "connections": {"type": "array"}
+  },
+  "$defs": {
+    "extraction": {
+      "type": "object",
+      "properties": {
+        "mode": {"type": "string"},
+        "ignore": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "include": {"type": "array", "items": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"}},
+        "max_candidates": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": true
+    },
+    "source": {"type": "object", "required": ["path", "content_sha256", "git_blob"], "properties": {"path": {"type": "string", "minLength": 1}, "git_blob": {"type": ["string", "null"]}, "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}, "additionalProperties": false},
+    "location": {"type": "object", "required": ["heading_path", "normalized_passage_sha256", "context_before", "context_after"], "properties": {"heading_path": {"type": "array", "items": {"type": "string"}}, "normalized_passage_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "context_before": {"type": "string"}, "context_after": {"type": "string"}, "display_line": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
+    "entity": {"type": "object", "required": ["id", "kind", "name"], "properties": {"id": {"type": "string"}, "kind": {"type": "string"}, "name": {"type": "string"}, "description": {"type": "string"}}, "additionalProperties": false},
+    "relationship": {"type": "object", "required": ["id", "from", "to", "kind"], "properties": {"id": {"type": "string"}, "from": {"type": "string"}, "to": {"type": "string"}, "kind": {"type": "string"}}, "additionalProperties": false},
+    "option": {
+      "type": "object",
+      "required": ["id", "delta"],
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "rationale": {"type": "string"},
+        "evidence": {"type": "array", "items": {"type": "string"}},
+        "delta": {
+          "type": "object",
+          "required": ["operations"],
+          "properties": {"base": {"type": "string"}, "operations": {"type": "array", "items": {"$ref": "#/$defs/operation"}}},
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "operation": {"type": "object", "required": ["op"], "properties": {"op": {"enum": ["add_entity", "remove_entity", "replace_entity", "add_relationship", "remove_relationship", "replace_relationship"]}, "entity": {"type": "object"}, "relationship": {"type": "object"}, "expect": {"type": "object", "properties": {"exists": {"type": "boolean"}}, "additionalProperties": false}}, "allOf": [
+      {"if": {"properties": {"op": {"enum": ["add_entity", "replace_entity"]}}}, "then": {"required": ["entity"], "properties": {"entity": {"$ref": "#/$defs/entity"}}}},
+      {"if": {"properties": {"op": {"const": "remove_entity"}}}, "then": {"required": ["entity"], "properties": {"entity": {"type": "object", "required": ["id"], "properties": {"id": {"type": "string"}}, "additionalProperties": false}}}},
+      {"if": {"properties": {"op": {"enum": ["add_relationship", "replace_relationship"]}}}, "then": {"required": ["relationship"], "properties": {"relationship": {"$ref": "#/$defs/relationship"}}}},
+      {"if": {"properties": {"op": {"const": "remove_relationship"}}}, "then": {"required": ["relationship"], "properties": {"relationship": {"type": "object", "required": ["id"], "properties": {"id": {"type": "string"}}, "additionalProperties": false}}}}
+    ], "additionalProperties": false}
+  },
+  "allOf": [
+    {"if": {"properties": {"record_type": {"const": "config"}}}, "then": {"required": ["extraction", "connections"]}},
+    {"if": {"properties": {"record_type": {"const": "entity"}}}, "then": {"required": ["kind", "name"]}},
+    {"if": {"properties": {"record_type": {"const": "entity"}, "epistemic_state": {"const": "inferred"}}, "required": ["record_type", "epistemic_state"]}, "then": {"required": ["confidence", "evidence"]}},
+    {"if": {"properties": {"record_type": {"const": "evidence"}}}, "then": {"required": ["source", "location", "text"]}},
+    {"if": {"properties": {"record_type": {"const": "alias"}}}, "then": {"required": ["entity_id", "name", "epistemic_state", "confidence", "evidence"]}},
+    {"if": {"properties": {"record_type": {"const": "claim"}}}, "then": {"required": ["subject", "predicate", "object", "epistemic_state", "confidence", "evidence"]}},
+    {"if": {"properties": {"record_type": {"const": "relationship"}}}, "then": {"required": ["from", "to", "kind"]}},
+    {"if": {"properties": {"record_type": {"const": "decision"}}}, "then": {"required": ["title", "options"]}},
+    {"if": {"properties": {"record_type": {"const": "scenario"}}}, "then": {"required": ["selections"]}},
+    {"if": {"properties": {"record_type": {"const": "model_connection"}}}, "then": {"required": ["provider", "model"]}},
+    {"if": {"properties": {"record_type": {"const": "agent_connection"}}}, "then": {"required": ["provider"]}}
+  ],
+  "additionalProperties": true
+}

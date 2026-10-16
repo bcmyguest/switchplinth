@@ -1,0 +1,19 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-66fc2263e5bcf915
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  normalized_passage_sha256: c39eb3442e3637c3e698f88470af5a2b5320db4ff5ada8e82906a7d1d2050b52
+  context_before: ''
+  context_after: '- [x] Write repository guidance and product, architecture, portable
+    format, and V0 plan specifications. - [x] Review specifications for internal contradictions '
+  display_line: 3
+text: This is the executable implementation sequence. Keep this document updated with
+  actual completion, decisions, deviations, and exact verification results. A milestone
+  is complete only when its listed checks run successfully.
+state: current

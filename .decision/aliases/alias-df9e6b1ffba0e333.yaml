@@ -1,0 +1,9 @@
+schema_version: decision/v1
+record_type: alias
+id: alias-df9e6b1ffba0e333
+entity_id: entity-0ad8c3795bf9c830
+name: sqs
+epistemic_state: inferred
+confidence: 0.85
+evidence:
+- evidence-7b45165f75eb7d14

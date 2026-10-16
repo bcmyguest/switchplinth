@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-d4070ff0c968026b
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Common claim and evidence shape
+  normalized_passage_sha256: 2dd57e1207caaddb1dd44caca2500324d3cae550fe18eda5b30c69bfc9a7a46c
+  context_before: ' source text. `asserted` records a human override and may optionally
+    reference the inference it supersedes. Human edits outrank model output during
+    compilation.'
+  context_after: '```yaml schema_version: decision/v1 record_type: entity id: entity-kafka
+    kind: technology name: Apache Kafka description: Distributed event streaming platform
+    `'
+  display_line: 70
+text: '`source_kind` is not a normative v1 claim field and the V0 runtime assigns
+  it no meaning. A future code-analysis source/type needs an explicit schema and API
+  design before clients can rely on it.'
+state: current

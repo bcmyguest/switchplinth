@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-f85f1b9a3addff89
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Decision, option, and delta records
+  normalized_passage_sha256: b2adfbdf85c15cfa1f80e842147e772d7c4a3f915bf92fea1b5ce4ffb71deb2b
+  context_before: y kinds or relationship kinds to a closed vocabulary. It types claim
+    predicates as strings; the compiler recognizes a code-defined set of structural
+    predicates.
+  context_after: The compiler's code-defined structural predicate set contributes
+    graph nodes and edges to the base. Context, motivation, consequence, rationale,
+    and other descr
+  display_line: 175
+text: For this example, the `architecture` base is compiled from effective portable
+  entities and relationships after rejected claims are excluded and human precedence
+  is applied. It contains `service-orders` and has no selected event transport. Each
+  option independently adds its own technology and `publishes_to` relationship. Applying
+  Kafka and SQS as competing selections together is invalid because the decision permits
+  one selected option. A removal must identify its target; an optional `expect` precondition
+  can state whether that target must exist in the base or an earlier composed operation.
+state: current

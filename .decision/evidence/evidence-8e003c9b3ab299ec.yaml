@@ -1,0 +1,17 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-8e003c9b3ab299ec
+source:
+  path: backend/.pytest_cache/README.md
+  git_blob: null
+  content_sha256: 73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad
+location:
+  heading_path:
+  - pytest cache directory
+  normalized_passage_sha256: ce14028dedc13a05aee6a55d34b95ba8643227fd0bfcc5d4adeaca08fab31964
+  context_before: ''
+  context_after: '**Do not** commit this to version control.'
+  display_line: 3
+text: This directory contains data from the pytest's cache plugin, which provides
+  the `--lf` and `--ff` options, as well as the `cache` fixture.
+state: unresolved

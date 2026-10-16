@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-0b1db8da3038bc01
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Portable data and generated state
+  normalized_passage_sha256: 791cdc5fa7bc8ca9fd9472dc93853f842160bb6874517ae2811d03c3667f0ff8
+  context_before: ' synchronous scan operation raises, the backend restores the previous
+    `.decision/` files. Abrupt process or host termination is outside that rollback
+    guarantee.'
+  context_after: SQLite is stored in the `decision-cache` volume and Qdrant data in
+    `qdrant-data`. Both are rebuildable. `docker compose down -v` removes those generated
+    volumes
+  display_line: 29
+text: Markdown and `.decision/` YAML are portable project data. Provider credentials
+  are referenced through environment variable names such as `env:MODEL_API_KEY`; secret
+  values are not written to YAML. Local `openai_compatible` endpoints may omit `credential_ref`;
+  an explicit `env:` reference is preserved and used when configured. Blank optional
+  connection fields are omitted from saved `model_connection` records. Inferred records
+  retain evidence anchors and confidence, and human reviews are appended as superseding
+  records.
+state: current

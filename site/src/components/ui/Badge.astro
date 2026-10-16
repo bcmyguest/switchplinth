@@ -1,0 +1,9 @@
+---
+interface Props { variant?: 'inferred' | 'outline'; class?: string }
+const { variant = 'outline', class: className = '' } = Astro.props;
+const variants = {
+  inferred: 'bg-inferred-soft text-warning',
+  outline: 'border border-line text-muted',
+};
+---
+<span class={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${variants[variant]} ${className}`}><slot /></span>

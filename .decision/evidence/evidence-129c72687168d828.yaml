@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-129c72687168d828
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 908fc06fa0411247422c44676dcb2dba5490754f5e8d85b5b1ec054564877b21
+location:
+  heading_path:
+  - Portable repository format
+  - Decision, option, and delta records
+  normalized_passage_sha256: deb941837f43edd32d26d2e07aa6a03c80b6df2606df81ded5ed30f5b2c41efe
+  context_before: be changes relative to the shared base, not full copied snapshots.
+    Actual object schemas and allowed entity/relationship kinds belong in versioned
+    JSON Schemas.
+  context_after: Only entity and relationship records/predicates designated structural
+    by the schema contribute graph nodes and edges to the base. Context, motivation,
+    consequen
+  display_line: 162
+text: For this example, the `architecture` base is compiled from effective portable
+  entity and relationship claims after rejected claims are excluded and human precedence
+  is applied. It contains `service-orders` and has no selected event transport. Each
+  option independently adds its own technology and `publishes_to` relationship. Applying
+  Kafka and SQS as competing selections together is invalid because the decision permits
+  one selected option. A replacement delta removing an existing component must identify
+  the target and include an `expect` precondition matching the base or an earlier
+  composed operation.
+state: unresolved

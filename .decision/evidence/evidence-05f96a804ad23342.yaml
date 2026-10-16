@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-05f96a804ad23342
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Build and deployment
+  normalized_passage_sha256: b44d0faa8fc50e1f4675b3d6bc9cb1346aca9397fcdfa8a6e040f958efba584b
+  context_before: orkflow or review checkpoint. CRUD, YAML validation, compilation,
+    delta application, indexing, and deterministic retrieval orchestration remain
+    ordinary Python.
+  context_after: Later code analysis may contribute evidence and claims such as `implements`,
+    `calls`, `depends_on`, `conforms_to_decision`, and `violates_decision`. V1 does
+    not
+  display_line: 49
+text: 'Use narrow Docker contexts: each service context includes only its subtree
+  and required root files, with caches/build outputs re-ignored. Keep Dockerfiles
+  and Compose understandable. Persist `.decision/` in the opened repository; generated
+  SQLite/Qdrant data lives in disposable volumes/cache locations. Compose publishes
+  UI, API, and Qdrant ports on loopback only and maps `host.docker.internal` to the
+  host gateway for local model servers. The API is unauthenticated, so external listener
+  access remains unresolved and outside the V0 listener contract. Avoid adding services
+  in V0.'
+state: current

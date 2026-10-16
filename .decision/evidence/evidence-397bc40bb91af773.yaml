@@ -1,0 +1,35 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-397bc40bb91af773
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: cfa913c6120cd8da265b089384da946c4cd058f125fa71bcdb506b06e7265552
+location:
+  heading_path:
+  - Task ledger
+  - Open and deferred
+  - UI-SCENARIO-DETAIL — Keep selected rationale and scenario diff aligned after option
+    changes
+  normalized_passage_sha256: 48ec19ce5d3a7e2d33ef949580140a9594d32b5774d158f1299e198182e256f5
+  context_before: r fallback. No external provider credentials or external-provider
+    diagnostics were tested. - **Next action:** None for this baseline. See open follow-ups
+    below.
+  context_after: '- **Outcome:** Preserve canonical records through a deterministic,
+    reviewable schema transformation. - **Blockers:** A new schema version and migration
+    requirem'
+  display_line: 33
+text: '- **Outcome:** After switching to SQS, retain the selected entity and show
+  SQS rationale/evidence; render scenario diff with readable entity names instead
+  of raw IDs. - **Blockers:** Live scenario-detail path still needs a focused reproduction
+  and implementation. - **Owner:** Frontend implementer TBD. - **Reviewer gate:**
+  `/root/usability_gate2` browser pass after a live switch. - **Status:** `open`.
+  - **Acceptance/evidence:** A live test reported that switching Kafka→SQS while Kafka
+  was selected left SQS paired with Kafka rationale and displayed raw IDs in the scenario
+  diff. A later live capture verified graph IDs changed and clicking `queue-sqs-orders`
+  showed SQS rationale/evidence. A live grounded SQS search also returns correct rationale/evidence;
+  neither check verifies stale selected-entity detail or readable diff labels. Demo-mode
+  switching passed. - **Next action:** Reproduce the stale-selection path and inspect
+  scenario diff labels, fix each issue, and verify a live Kafka→SQS switch with SQS
+  selected before and after the change.'
+state: unresolved

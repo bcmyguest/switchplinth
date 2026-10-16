@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-22350a5ea9a2fbe7
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Unresolved choices
+  normalized_passage_sha256: 50f9a1524947f8da130dff454dc26412afe21f24d0e821506157aa1d46fb7f5e
+  context_before: y capability as supported, unsupported, or error, including actionable
+    raw and normalized failures; unsupported checks are visible rather than silently
+    skipped.
+  context_after: '- Which repositories/remotes and path-selection UX are supported
+    at first launch (local filesystem repository is the V0 baseline). - Whether provider
+    credential'
+  display_line: 73
+text: 'The discovery conversation''s latest agreed direction is captured by this specification:
+  use a three-service runtime, make Decision the central concept, use stable provenance
+  anchors, keep aliases as claims, represent options as operation deltas, and defer
+  code analysis. Where the discussion did not settle a detail, the choice remains
+  listed below.'
+state: current

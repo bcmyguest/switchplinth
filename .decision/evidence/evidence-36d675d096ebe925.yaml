@@ -1,0 +1,18 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-36d675d096ebe925
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Run locally
+  normalized_passage_sha256: 66fc5cf868a77c68fde4787b4ea418ea5c7d717774c122ce35b0fe497683d4b4
+  context_before: 'Docker Compose starts three services:'
+  context_after: '- Web app: <http://localhost:3000> - Backend API and OpenAPI docs:
+    <http://localhost:8000/docs> - Qdrant: <http://localhost:6333>'
+  display_line: 11
+text: '```sh docker compose up --build ```'
+state: current

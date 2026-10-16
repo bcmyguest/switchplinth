@@ -1,0 +1,5 @@
+schema_version: decision/v1
+record_type: entity
+id: datastore-postgres
+kind: datastore
+name: PostgreSQL

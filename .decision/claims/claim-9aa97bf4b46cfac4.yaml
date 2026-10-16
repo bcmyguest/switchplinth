@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-9aa97bf4b46cfac4
+subject: entity-a478b4566be5cb00
+predicate: mentioned_in
+object: AGENTS.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: AGENTS.md
+evidence:
+- evidence-f44c0e9bd786e86e

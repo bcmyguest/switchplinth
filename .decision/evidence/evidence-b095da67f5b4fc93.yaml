@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-b095da67f5b4fc93
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Verified V0 checks
+  normalized_passage_sha256: f00461dc4a1f62381785543cb087f2c837eae9ce1bebf905dede42711d4f7a55
+  context_before: tity and alias routing requires a complete multiword name, while
+    single-word aliases remain searchable. Generic lexical searches retain passage-based
+    grounding.
+  context_after: ''
+  display_line: 56
+text: On the Architecture page, selecting a map component opens its details in a closable
+  side panel. The What-if control and graph editor use separate closable panels; map
+  editing controls sit below the canvas. When a panel changes the available map width,
+  the graph refits its nodes to the canvas. Escape closes a panel and returns focus
+  to its opener. Independent live Playwright gate 11 passed in Chromium and Firefox,
+  including narrow node bounds and selection scroll checks. V0 acceptance remains
+  pending the complete 12-criterion audit.
+state: current

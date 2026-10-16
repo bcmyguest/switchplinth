@@ -1,0 +1,5 @@
+schema_version: decision/v1
+record_type: entity
+id: entity-34fb46c847bb9df9
+kind: datastore
+name: Redis

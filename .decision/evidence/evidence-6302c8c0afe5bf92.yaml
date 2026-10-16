@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-6302c8c0afe5bf92
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Identity, relocation, and migration
+  normalized_passage_sha256: 419c7fd4503022346f0f083a5867a1b1835098e5281c737191293cef96b3ff9b
+  context_before: tions, affected decisions, invalid assumptions, and evidence links.
+    Ordering and conflict resolution must be deterministic and surfaced, never silently
+    guessed.
+  context_after: Each record declares `schema_version` and `record_type`. `.decision/schema/record-v1.schema.json`
+    validates the shared envelope and supported record shapes, inc
+  display_line: 195
+text: Evidence IDs survive edits when the indexing process unambiguously relocates
+  the same passage. Relocation compares passages within the same repository-relative
+  source path, first by normalized passage hash, then by heading path and surrounding
+  context. The source record also stores Git blob and file-content hashes when available,
+  but the current relocation matcher does not use those values. Reordering or line
+  shifts alone do not create new evidence. Ambiguous relocation creates a reviewable
+  unresolved anchor rather than silently attaching evidence to a different passage.
+  Display lines are optional conveniences.
+state: current

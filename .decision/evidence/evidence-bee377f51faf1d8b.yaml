@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-bee377f51faf1d8b
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Discovery, retrieval, and model access
+  normalized_passage_sha256: 8b6cb2efd52c920b0f04bcc15db49231f1f8ca379ddd863c8ecdb1121a997cf3
+  context_before: OpenAI and Anthropic adapters use their hosted endpoints; local/custom
+    URLs belong to compatible/local providers. Secret values remain outside committed
+    config.
+  context_after: LangGraph remains a future seam for workflows that need resumability
+    or human checkpoints, such as long-running extraction/review. It is intentionally
+    absent fr
+  display_line: 43
+text: MCP exposes query operations over the same domain and retrieval services so
+  Codex, Claude Code, and other clients need not depend on UI internals. Local/remote
+  transport and authentication remain unresolved and must be selected before exposing
+  a listener beyond localhost.
+state: current

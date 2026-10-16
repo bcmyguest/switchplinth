@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-0f4fe55b54906127
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Decision, option, and delta records
+  normalized_passage_sha256: 3f21a2a34d0059d1ef943867763b156cc9cf87bdedd7dde612be218c653597b6
+  context_before: 'qs, kind: technology, name: Amazon SQS} - op: add_relationship
+    relationship: {id: edge-events-sqs, from: service-orders, to: entity-sqs, kind:
+    publishes_to} ```'
+  context_after: For this example, the `architecture` base is compiled from effective
+    portable entities and relationships after rejected claims are excluded and human
+    precedence
+  display_line: 173
+text: V0 operations add, remove, or replace entities and relationships. Each operation
+  has a compiler-validated shape and stable target ID. Operations may carry `expect`
+  preconditions to detect stale base assumptions; the field is optional. Deltas describe
+  changes relative to the shared base, not full copied snapshots. V1 requires `kind`
+  strings but does not constrain entity kinds or relationship kinds to a closed vocabulary.
+  It types claim predicates as strings; the compiler recognizes a code-defined set
+  of structural predicates.
+state: current

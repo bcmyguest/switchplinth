@@ -1,0 +1,69 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-b2e73fe4c9d7f6a0
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - Progress log
+  normalized_passage_sha256: bcbae2bfaa47f6b2311816fd727871847dc273623f594dd4a70bd2a2ca6ca0f9
+  context_before: rds that supersede original and prior human judgments, preserve
+    evidence, validate changed entity references, and remain effective after provider
+    re-extraction.
+  context_after: ''
+  display_line: 89
+text: '| Date | Milestone | Change / decision | Verification | |---|---|---|---| |
+  2026-10-05 | 1 | Built the three-service Compose app with FastAPI, React, shadcn/ui,
+  graph/scenario UI, MCP, demo Markdown, and portable overlay. | `docker compose config`
+  passed. Root verified Compose build/start and HTTP health/proxy responses (200).
+  | | 2026-10-06 | 2–3 | Implemented typed portable records, evidence relocation,
+  human review precedence, deterministic extraction, LiteLLM adapter, provider diagnostics,
+  scenario deltas, and reviewable option proposals. | Escalated `UV_CACHE_DIR=/tmp/uv-cache
+  uv run --python 3.12 pytest -q` → 16 passed (12.24s). Standard sandbox run → 15
+  passed, 1 skipped because loopback binding is blocked. Reviewer independently verified
+  frontend `tsc --noEmit`, ESLint, and Vite build (all exit 0). | | 2026-10-06 | 4–6
+  | Added disposable SQLite/Qdrant retrieval, scenario-aware entity details, invalid-assumption
+  detection, focused rationale answers, MCP lifespan/route, discovery exclusions/limits,
+  and rollback for canonical overlay writes on synchronous scan exceptions. Repaired
+  the dangling inferred alias left by the earlier live scan. | Root verified scan
+  exclusions, root collection with 98 points, examples collection with 7 points, Why
+  Kafka after switching back, SQS detail, picker traversal rejection, and MCP initialize/tools-list/query.
+  | | 2026-10-06 | 2–6 update | Added anchored relationship/consequence extraction,
+  additive decision precedence, safe workspace picker and v1 bootstrap, per-repository
+  Qdrant namespaces, and corrected human alias/claim assertions. | At that point,
+  the backend suite had 22 passing tests before the correction-UX additions. The later
+  30-test result is recorded below. Frontend checks passed; no browser click-through
+  was performed. | | 2026-10-06 | V0 backend correction | Added scenario-aware option-entity
+  claims, no-write option-delta preview, scenario selection for API/MCP search, provider-backed
+  embeddings with consistent Qdrant indexing/query vectorizers, explicit provider
+  diagnostics, and loopback-only Compose ports. | `env UV_CACHE_DIR=/tmp/uv-cache
+  uv run --locked --python 3.12 pytest -q` → 30 passed, 1 skipped, 1 LiteLLM deprecation
+  warning; added a regression for a legacy no-state base entity duplicating an option-owned
+  ID and retained explicit asserted-base conflicts. Local mock verified real LiteLLM
+  extraction/embedding requests. `docker compose config` showed all port host IPs
+  as `127.0.0.1` and `host.docker.internal=host-gateway`; a disposable backend container
+  resolved `host.docker.internal` to `172.17.0.1`. The Compose application services
+  were stopped during verification. | | 2026-10-06 | Usability and docs follow-up
+  | Added selected-component summary, readable edge labels, narrow MiniMap behavior,
+  revisable human review controls, and repository task ledger. | Reviewer passed 1440×900
+  and 375×667 browser captures and demo graph interactions. Root reports backend suite
+  31 passed (one LiteLLM deprecation warning), Compose frontend/backend/Qdrant healthy
+  after `up -d --build`, and Vite built 1,895 modules. Live SQS search returned grounded
+  SQS rationale/evidence using deterministic-local vectors. | | 2026-10-07 | Scenario
+  detail and invalid preview follow-up | Verified retained component selection and
+  readable scenario diff after Kafka→SQS switching; added the null-operation preview
+  API regression. | Live Firefox showed SQS rationale/evidence for the retained selection
+  and readable entity/relationship names in the diff. The backend suite passed 33
+  tests, including HTTP 422 and canonical-file preservation for a null preview operation.
+  | | 2026-10-07 | UI-PANELS gate 11 and synthetic provider fixture | Completed independent
+  live Chromium/Firefox panel gate and provider extraction/rebuild on a disposable
+  synthetic Markdown repository. | Gate 11 passed 14/14 cases per browser plus source,
+  focus, SQS detail, and no-write editor checks; gate 10 fixture-only Save had passed
+  earlier. Provider extraction sent one authorized structured request; rebuild evidence
+  records nine canonical YAML files preserved byte-for-byte and grounded retrieval
+  before/after. External provider interoperability remains unverified. The full 12-criterion
+  V0 audit remains open. |'
+state: current

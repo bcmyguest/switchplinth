@@ -1,0 +1,18 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-0b00a09d78f322ab
+source:
+  path: .decision/instructions.md
+  git_blob: null
+  content_sha256: 69db8ab24daeab08dab6a4af0d0ad0ffbb4c0314b16edc9c98c2e04ef6c9eeb3
+location:
+  heading_path: []
+  normalized_passage_sha256: bd513ae53b8dc52234c364d6dc1c99df975922bf7c73bf79dc3e00cef7f6cfdc
+  context_before: ''
+  context_after: ''
+  display_line: 1
+text: Use the document's own section names. Treat a decision as selected only when
+  the source makes an outcome explicit. Treat alternatives as unselected options,
+  and cite a specific evidence passage for every inferred claim and alias. Keep ambiguous
+  entity matches separate for human review.
+state: unresolved

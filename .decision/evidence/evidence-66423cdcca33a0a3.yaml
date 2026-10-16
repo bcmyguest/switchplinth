@@ -1,0 +1,19 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-66423cdcca33a0a3
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  normalized_passage_sha256: c142f8e7ed586fd0d497f1e1b4e3b9bfb560af5e5260d16b9ad4bf2d9e674528
+  context_before: ''
+  context_after: Decision Graph turns repository Markdown into a portable, reviewable
+    architecture graph. It discovers ADRs, RFCs, design notes, and other Markdown
+    without requi
+  display_line: 3
+text: This repository uses “Decision Graph” as a working project title. The UI currently
+  displays “Waypoint” as a provisional label; product branding remains open.
+state: current

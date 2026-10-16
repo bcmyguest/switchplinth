@@ -1,0 +1,35 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-9a5127774a5c9265
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 5: graph and scenario vertical slice'
+  normalized_passage_sha256: 07ed5c1e42ec3a7314436b80dc35edbb9f349b9a3ca58b2afd1ba02caa2893e2
+  context_before: anual delta edits and scenario selections. - [x] Verify Kafka→SQS
+    through the running API, including SQS entity detail and rationale under the active
+    selection.
+  context_after: 'Additional API regression: a preview request containing a null operation
+    returns HTTP 422 and leaves all canonical `.decision/` files byte-identical. The
+    focuse'
+  display_line: 58
+text: 'Verification: deterministic tests cover option switching, added/removed elements,
+  cross-decision invalid assumptions, scenario-aware claim projection for option-created
+  entities, scenario-aware search, no-write server delta preview, delta validation,
+  scenario-aware entity details, and proposal preview/apply over the shared option
+  delta. Root''s Compose smoke verified SQS entity detail and the selected option
+  under the active selection. Live Firefox verification selected Kafka, switched to
+  SQS, retained the selected entity, and showed SQS rationale/evidence without Kafka
+  rationale; repeated scenario resolution displayed readable entity and relationship
+  names instead of raw IDs. A live SQS search returned grounded rationale/evidence
+  with deterministic-local vector fallback. The reviewer opened a human-reviewed claim
+  correction form and intercepted a Reject request to check its payload; it did not
+  submit the request to the backend. External provider credentials and external-provider
+  diagnostics were not tested. The adjacent detail panel labels entity-linked unselected
+  options as alternatives and generic passages as source context; reviewed rows keep
+  confirm/reject/correct controls.'
+state: current

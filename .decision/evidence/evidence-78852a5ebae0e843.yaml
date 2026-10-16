@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-78852a5ebae0e843
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Out of scope
+  normalized_passage_sha256: 8958049394fe94b8b6e206c29792f5d92eee847dd4d5f240f00ef03d8f8889ad
+  context_before: structured output, embeddings, streaming, latency, and useful raw/normalized
+    errors. - Docker Compose local runtime with frontend, backend, and Qdrant separate.
+  context_after: 'V0 is accepted when:'
+  display_line: 48
+text: '- Requiring or managing a proprietary ADR template. - Code parsing, Tree-sitter/codegraph
+  indexing, and implementation-versus-design conformance analysis. V1 has no normative
+  `source_kind` field or code-evidence API; future code-derived evidence needs an
+  explicit schema/API design and distinct provenance type. - A hosted multi-tenant
+  service, required cloud account, or canonical remote database. - Postgres, Redis,
+  Neo4j, or making SQLite/Qdrant canonical. - Marketing site work in the application
+  V0. Reusable visual/theme primitives may be retained; a future static React/Tailwind/shadcn
+  marketing/docs site and synthetic scenario demo are separate work.'
+state: current

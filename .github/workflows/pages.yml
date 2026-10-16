@@ -1,0 +1,58 @@
+# Builds the static site in site/ and deploys it to GitHub Pages.
+# Enable Pages with "Source: GitHub Actions" before the first run.
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      # Reads the pnpm version from the packageManager field.
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: site/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: site/pnpm-lock.yaml
+      - uses: actions/configure-pages@v5
+      - run: pnpm install --frozen-lockfile
+      # `pnpm build` also runs the privacy check on dist/.
+      - run: pnpm build
+        env:
+          SITE_URL: https://bcmyguest.github.io
+          BASE_PATH: /switchplinth/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,33 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-229e0fef26151de7
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: cfa913c6120cd8da265b089384da946c4cd058f125fa71bcdb506b06e7265552
+location:
+  heading_path:
+  - Task ledger
+  - Completed
+  - V0-BASELINE — Deliver and verify the V0 decision graph
+  normalized_passage_sha256: 896416a06e8bc98d2ceebba4401c222e990573eda254fb17fa1d071f6deee751
+  context_before: '`; ledger contains current verified V0 work and actionable remaining
+    work. - **Next action:** Address reviewer findings, then mark complete after explicit
+    pass.'
+  context_after: '- **Outcome:** After switching to SQS, retain the selected entity
+    and show SQS rationale/evidence; render scenario diff with readable entity names
+    instead of ra'
+  display_line: 21
+text: '- **Outcome:** Three-service local app with portable `.decision/` records,
+  discovery, graph/scenario operations, evidence, provider adapters, MCP, and repository
+  switching. - **Blockers:** None for the recorded V0 baseline. - **Owner:** `/root`
+  implementation team. - **Reviewer gate:** `/root/usability_gate2` — passed frontend
+  usability gate on 2026-10-06. - **Status:** `completed`. - **Acceptance/evidence:**
+  Backend suite passed 31 tests with one LiteLLM deprecation warning; Compose started
+  all three healthy services; Vite built 1,895 modules. Reviewer captured 1440×900
+  and 375×667 layouts, exercised graph selection/evidence opening, demo-mode Kafka→SQS
+  switching, and checked an intercepted review request payload. A live search request
+  for SQS returned grounded rationale/evidence with deterministic-local vector fallback.
+  No external provider credentials or external-provider diagnostics were tested. -
+  **Next action:** None for this baseline. See open follow-ups below.'
+state: unresolved

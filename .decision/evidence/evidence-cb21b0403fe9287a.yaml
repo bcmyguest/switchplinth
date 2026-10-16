@@ -1,0 +1,21 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-cb21b0403fe9287a
+source:
+  path: AGENTS.md
+  git_blob: null
+  content_sha256: e30293b4887acd5268aa03016951d9895f3fcfa94898ded0fd452ac53c0df6dd
+location:
+  heading_path:
+  - Repository guidance
+  - Commands
+  normalized_passage_sha256: 2c382e75b782633f3d419feff36f2947b472f1e7cf389ee23868c04169f0be3d
+  context_before: 'ild docker compose down docker compose down -v                 #
+    deletes disposable service volumes cd backend && uv run pytest cd frontend &&
+    npm run build ```'
+  context_after: ''
+  display_line: 27
+text: Run service-specific checks from the service directory and report the exact
+  command and result. Do not claim a command works until the files and dependencies
+  exist and it has been run.
+state: unresolved

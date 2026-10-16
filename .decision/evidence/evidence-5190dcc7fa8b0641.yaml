@@ -1,0 +1,29 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-5190dcc7fa8b0641
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 6: MCP and end-to-end acceptance'
+  normalized_passage_sha256: 6a8b939271b8568bf3505fdef9ff62534ae0b02a425e2d9603dcf29813d58b74
+  context_before: the synthetic provider-extraction/rebuild fixture, and the independent
+    UI-PANELS gate are verified; review the remaining criteria before claiming V0
+    acceptance.
+  context_after: 'Additional synthetic fixture verification: a real Markdown scan
+    sent one structured extraction request to the configured OpenAI-compatible test
+    endpoint and sav'
+  display_line: 68
+text: 'Verification: Compose startup and HTTP health/proxy checks passed. Discovery
+  returned HTTP 200 with generated/cache paths excluded. The chooser opened/scanned
+  Markdown-only `examples`, rejected traversal, and root verified separate Qdrant
+  collections (98 and 7 points) plus root retrieval after switching back without rescanning.
+  “Why are we using Kafka?” returned selected-option rationale with direct source
+  evidence; Kafka→SQS API detail returned the active SQS choice. MCP initialize, tools/list,
+  and query succeeded over streamable HTTP. Local OpenAI-compatible mock tests exercised
+  real LiteLLM; no external provider credentials or external-provider diagnostics
+  were used.'
+state: current

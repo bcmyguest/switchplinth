@@ -1,0 +1,88 @@
+schema_version: decision/v1
+record_type: decision
+id: decision-91cc427bec1aecce
+title: Event delivery for order processing
+status: decided
+epistemic_state: inferred
+context: We chose Apache Kafka because replay and ordering across fulfillment events
+  matter more than operating a managed queue. The Order Service publishes order events
+  to Kafka, and the Fulfillment Service consumes them.
+selected_option: option-a88a72bd855f8bdc
+evidence:
+- evidence-1229e380f3c20fc8
+options:
+- id: option-a88a72bd855f8bdc
+  title: Apache Kafka
+  rationale: replay and ordering across fulfillment events matter more than operating
+    a managed queue
+  evidence:
+  - evidence-1229e380f3c20fc8
+  delta:
+    base: architecture
+    operations:
+    - op: add_entity
+      entity:
+        id: entity-8bcf11933046c744
+        kind: technology
+        name: Apache Kafka
+      expect:
+        exists: false
+    - op: add_relationship
+      relationship:
+        id: relationship-122bed7ff0aac6dd
+        from: entity-225ac6a9466f917c
+        to: entity-8bcf11933046c744
+        kind: publishes_to
+      expect:
+        exists: false
+- id: option-2bc94a6bf4f0815d
+  title: Amazon SQS
+  rationale: Amazon SQS would reduce infrastructure work. A dead-letter queue would
+    hold messages after repeated failures, but replaying a selected range of old events
+    would require extra application support.
+  evidence:
+  - evidence-2e2f77f2397a751f
+  delta:
+    base: architecture
+    operations:
+    - op: add_entity
+      entity:
+        id: entity-0ad8c3795bf9c830
+        kind: technology
+        name: Amazon SQS
+      expect:
+        exists: false
+    - op: add_relationship
+      relationship:
+        id: relationship-70047c2f08fc2396
+        from: entity-225ac6a9466f917c
+        to: entity-0ad8c3795bf9c830
+        kind: publishes_to
+      expect:
+        exists: false
+- id: option-da0e0733171948b9
+  title: Redis
+  rationale: Redis is useful for short lived cache data but does not replace the durable
+    order database.
+  evidence:
+  - evidence-433ecbdd6594221f
+  delta:
+    base: architecture
+    operations:
+    - op: add_entity
+      entity:
+        id: entity-34fb46c847bb9df9
+        kind: datastore
+        name: Redis
+      expect:
+        exists: false
+    - op: add_relationship
+      relationship:
+        id: relationship-ef9d29b860b20593
+        from: entity-225ac6a9466f917c
+        to: entity-34fb46c847bb9df9
+        kind: publishes_to
+      expect:
+        exists: false
+extraction:
+  extractor: mock-rules-v1

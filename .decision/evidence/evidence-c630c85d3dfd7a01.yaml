@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c630c85d3dfd7a01
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Claims, precedence, and provenance
+  normalized_passage_sha256: 8fde3edc4696a6886f20ca77c346ec364d8ba918c09a0e0ddc884bbf87d0e073
+  context_before: 'ted state removed. LangGraph is intentionally not used in V0: the
+    synchronous scan has no resumability or human checkpoint flow that needs workflow
+    persistence.'
+  context_after: Evidence identity combines repository-relative source identity, Git
+    blob/commit identity when available, structural heading path, normalized passage
+    hash, and s
+  display_line: 29
+text: 'Claims carry an epistemic state: `inferred`, `confirmed`, `rejected`, or `asserted`
+  (human override). Machine extraction emits inference claims with evidence anchors
+  and confidence. Human actions create durable records and do not mutate the historical
+  inference into an indistinguishable fact. Effective graph projection filters rejected
+  claims and resolves precedence so asserted/confirmed human decisions outrank inference.
+  Alias records follow the same lifecycle independently of claims about the entity
+  itself.'
+state: current

@@ -1,0 +1,50 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-ec884ebb708bedc6
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Run locally
+  normalized_passage_sha256: 582af19c4d9b10a00525c0870078308b112b8424afdb393376b8f85eab495e60
+  context_before: ' portable `.decision/` v1 schema, config, and instructions on first
+    open. To mount a different workspace, set `DECISION_WORKSPACE_HOST` before starting
+    Compose.'
+  context_after: The repository chooser filters hidden/generated directories and only
+    lists candidates containing Markdown, `.git`, or `.decision`. The discovery scan
+    excludes `
+  display_line: 23
+text: 'The workspace navigation provides separate **Architecture**, **Architecture
+  log**, **Progress**, and **Facts** pages. Architecture places the Decision assistant
+  near the top of the system map flow. Architecture log lists decisions and links
+  to scenario options; Progress reports counts from the current graph and Markdown
+  evidence; Facts contains **Needs a closer look** review controls and links back
+  to the system map. Scenarios and Explore retain scenario selection and grounded
+  assistant workflows. All **Discover** actions (Source Types, the page heading, and
+  the source card) open the same mode choice: deterministic/mock extraction or a configured
+  model connection. Provider mode sends that connection ID to `POST /api/v1/extraction/run`;
+  its result names the provider/model and reports saved record counts or a visible
+  error. After provider records are saved, SQLite and Qdrant are rebuilt from the
+  canonical Markdown and `.decision/` data so search sees the new records. The sidebar’s
+  **Source Types** control opens V0 Markdown source details and the shared Discover
+  action. The UI can inspect inferred entities and evidence, review claims and aliases,
+  switch decision options, edit their shared typed deltas, and resolve a scenario.
+  Selecting a map node opens component details beside the map without changing page
+  scroll. The details show rationale and evidence from an option that changes that
+  entity, label unselected option rationale as an alternative, and label other passages
+  as source context. Review controls remain available on human-reviewed rows so judgments
+  can be confirmed, rejected, or corrected again; new records supersede earlier judgments
+  and preserve evidence. Claims may reference entities introduced by option deltas;
+  projection includes those relationships only while both endpoints exist in the selected
+  scenario. Saving a scenario writes its decision selections to `.decision/scenarios/`.
+  A configured model can propose a delta for preview; manual delta edits can also
+  use `POST /api/v1/scenarios/preview-delta` for server validation and scenario resolution
+  without writing `.decision/`. Malformed operations return HTTP 422 before writing
+  canonical files. Accepting the proposal updates the same option delta used by manual
+  editing. Search accepts the current `selections` map so rationale and evidence follow
+  the visible scenario. Without a configured model, proposal returns an unsupported
+  response. Search returns answers only when supporting evidence is available.'
+state: current

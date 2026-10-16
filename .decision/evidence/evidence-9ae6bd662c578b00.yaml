@@ -1,0 +1,26 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-9ae6bd662c578b00
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Claims, precedence, and provenance
+  normalized_passage_sha256: 00419db8087042c57b4a1b2b609c938e6dfef90fbf3d9eba05f0a10ebbd6d294
+  context_before: ves precedence so asserted/confirmed human decisions outrank inference.
+    Alias records follow the same lifecycle independently of claims about the entity
+    itself.
+  context_after: An option is a list of typed operations against a base graph, not
+    a copied architecture snapshot. Scenario composition applies selected decision
+    options in stab
+  display_line: 31
+text: Evidence identity combines repository-relative source identity, Git blob/commit
+  identity when available, structural heading path, normalized passage hash, and surrounding
+  normalized context. On indexing, exact passage fingerprint is preferred; if changed,
+  structural and context similarity can relocate an anchor. Keep the evidence ID when
+  relocation is sufficiently unambiguous; retain an unresolved/changed state when
+  it is not. Line numbers may be display hints only.
+state: current

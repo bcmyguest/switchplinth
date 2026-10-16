@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-025204266813acc2
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: ffc4ea9d223c4638d956f3687731197bf7005d964525894852d27a11bfcbf49b
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 5: graph and scenario vertical slice'
+  normalized_passage_sha256: 9e5326aaea0411f30b15286271a17e11ddd8c8f05d6fbbabdcb1d7837e087645
+  context_before: rce evidence; root is repeating the HTTP smoke after this ranking
+    change. Empty-state live Qdrant recreation remains open, so milestone acceptance
+    remains open.
+  context_after: 'Verification: deterministic tests cover option switching, added/removed
+    elements, cross-decision invalid assumptions, delta validation, and scenario-aware
+    entit'
+  display_line: 51
+text: '- [x] Display an interactive architecture graph and entity detail/evidence
+  panel. - [x] Support human confirm/reject/override for claims and independent alias
+  review. - [x] Let user select options and compose a scenario; recompute affected
+  graph, decisions, conflicts, invalid assumptions, and evidence. - [x] Support YAML/API
+  edits through the same typed delta model; support conversational requests to propose,
+  preview, and apply edits to that same model with human confirmation. - [ ] Verify
+  Kafka→SQS in the running UI, including SQS entity detail and rationale under the
+  active selection.'
+state: unresolved

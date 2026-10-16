@@ -1,0 +1,30 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-812dc709420d5d8b
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Terms
+  normalized_passage_sha256: 0372560a45883a49b9a09e13dddaa99387986016749bf7c78a4c8ab685de9c2e
+  context_before: ' passages and claims. 8. Edit the same domain model in the UI,
+    via portable YAML, or through conversational assistance. Re-extraction preserves
+    human decisions.'
+  context_after: '- Local repository opening and recursive Markdown discovery with
+    generated/build directories excluded by documented defaults and user-configurable
+    ignore rules.'
+  display_line: 24
+text: '- **Source artifact:** repository content, initially Markdown, from which evidence
+  is anchored. - **Entity:** an architecture concept such as a service, technology,
+  datastore, or interface. - **Claim:** a proposition about an entity, alias, relationship,
+  decision, or consequence, with epistemic state and provenance as applicable. - **Alias
+  claim:** a separately reviewable claim that a name refers to an entity. - **Decision:**
+  the selected-or-undecided choice and its rationale/context. - **Option:** a candidate
+  response to a decision, represented by typed operations against a base graph. -
+  **Scenario:** a composition of selected options across decisions. - **Evidence anchor:**
+  a stable locator and content identity for a source passage. - **Inference:** a machine-proposed
+  interpretation, never an unchangeable fact.'
+state: current

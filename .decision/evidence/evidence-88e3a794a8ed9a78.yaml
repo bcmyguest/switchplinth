@@ -1,0 +1,32 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-88e3a794a8ed9a78
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Development checks
+  normalized_passage_sha256: 0f8474e1a9a52009c0b83a3598da79380ca4eb8d0d4416cab2c0c6b76a6630db
+  context_before: '```sh cd backend && uv run --locked --python 3.12 pytest -q cd
+    frontend && pnpm install --frozen-lockfile && pnpm typecheck && pnpm lint && pnpm
+    build ```'
+  context_after: '- Compose build/start: frontend, backend, and Qdrant healthy; backend
+    `/health`, frontend `/`, and proxied `/api/v1/project` returned HTTP 200. - Backend:
+    from '
+  display_line: 40
+text: 'The backend exposes deterministic mock extraction and a LiteLLM adapter for
+  configured providers. Local `openai_compatible` endpoints can perform structured
+  extraction without an API key; hosted OpenAI and Anthropic connections still use
+  their configured credentials. A loopback OpenAI-compatible mock test exercises keyless
+  and credentialed structured extraction, streaming, and configured embeddings without
+  external credentials. Configure `embedding_model` with `capabilities.embeddings:
+  true` to use provider embeddings for both Qdrant indexing and querying. Without
+  that configuration, V0 reports that provider embeddings are unsupported and uses
+  deterministic token-hash vectors as an offline fallback; those vectors are not semantic
+  embeddings. Use connection diagnostics to inspect endpoint and model connectivity
+  before running provider extraction or proposal. For an HTTP-level check, the backend
+  exposes `/health`, OpenAPI at `/docs`, and MCP streamable HTTP at `/mcp`.'
+state: current

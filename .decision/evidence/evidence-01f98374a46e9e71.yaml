@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-01f98374a46e9e71
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 5: graph and scenario vertical slice'
+  normalized_passage_sha256: 677a184a03985485938bce1173a4e343d2672d35faa15b46bec343d926cc9c68
+  context_before: detail panel labels entity-linked unselected options as alternatives
+    and generic passages as source context; reviewed rows keep confirm/reject/correct
+    controls.
+  context_after: '- [x] Expose query/search and graph inspection through MCP over
+    shared services. - [x] Document local setup, provider config, portability, rebuild,
+    and troubles'
+  display_line: 60
+text: 'Additional API regression: a preview request containing a null operation returns
+  HTTP 422 and leaves all canonical `.decision/` files byte-identical. The focused
+  backend review passed, and the full backend suite passed 33 tests.'
+state: current

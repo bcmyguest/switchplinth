@@ -1,0 +1,12 @@
+schema_version: decision/v1
+record_type: alias
+id: human-alias-311cc02188734b479228a05fe9032255
+entity_id: broker-kafka
+name: Kafka
+epistemic_state: rejected
+confidence: 0.99
+evidence:
+- evidence-ad0e2cd1b4d9bcc4
+reviewed_alias: alias-kafka
+reviewer: human
+supersedes: []

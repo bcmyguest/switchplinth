@@ -1,0 +1,31 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-1b651d64bf395109
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Users and primary flow
+  normalized_passage_sha256: 30dac965a2d4ab0ee46a2f6a43c5e7cd371a1318468908a84692edde53aac4bd
+  context_before: The current UI label is **Waypoint**, a provisional working name
+    rather than a finalized product brand.
+  context_after: '- **Source artifact:** repository content, initially Markdown, from
+    which evidence is anchored. - **Entity:** an architecture concept such as a service,
+    technol'
+  display_line: 13
+text: 1. Open a local repository. 2. Select a configured AI provider or use deterministic/mock
+  extraction. 3. Discover likely decision-bearing Markdown artifacts and extract candidate
+  decisions, options, entities, aliases, relationships, evidence, and consequences.
+  4. Review “what we think your architecture is.” Inspect evidence and confirm, reject,
+  or correct uncertain claims and alias mappings. 5. Browse the resulting graph. Select
+  an entity to see rationale from an active linked option, any linked unselected option
+  marked as an alternative, related decisions, and source evidence. 6. Select different
+  decision options to compose a scenario. The graph and affected decisions, conflicts,
+  invalid assumptions, and evidence update promptly. 7. Ask a grounded question such
+  as “Why are we using Kafka?” and inspect the supporting passages and claims. 8.
+  Edit the same domain model in the UI, via portable YAML, or through conversational
+  assistance. Re-extraction preserves human decisions.
+state: current

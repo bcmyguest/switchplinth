@@ -1,0 +1,18 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-0109ece3121f4284
+source:
+  path: synthetic/decisions/storage.md
+  git_blob: null
+  content_sha256: 31d7bb71f50bc2ec970ddd8fe37aec2714d5521a8d3a46a1e4228060fcb7dfe3
+location:
+  heading_path:
+  - Order service persistence
+  - Context
+  normalized_passage_sha256: db388d4c656aca8bb03e5e4bfa44e5b4c4634cb4c244ebbcd2eca3c6213cd7bc
+  context_before: ''
+  context_after: We selected PostgreSQL for the Order Service. PostgreSQL keeps order
+    updates transactional and supports reporting queries without a separate store.
+  display_line: 5
+text: Order records require transactions and relational queries.
+state: current

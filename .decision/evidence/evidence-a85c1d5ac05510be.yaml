@@ -1,0 +1,26 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-a85c1d5ac05510be
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Proposed layout
+  normalized_passage_sha256: c2b2cf5ab90f6add539adb9ba74230a8a6e4ff08efd8d88b02c34d7dea36a1ad
+  context_before: es are rebuildable. Never commit provider secrets. All YAML validates
+    against a versioned schema; unsupported versions fail clearly and migrations are
+    explicit.
+  context_after: One record per file supports focused diffs and merges. Human-authored
+    IDs should be stable opaque slugs/UUIDs rather than mutable display names. V0
+    inferred ent
+  display_line: 9
+text: '```text .decision/ config.yaml schema/ record-v1.schema.json # versioned discriminated
+  schema for all record types entities/<entity-id>.yaml evidence/<evidence-id>.yaml
+  aliases/<alias-id>.yaml claims/<claim-id>.yaml relationships/<relationship-id>.yaml
+  decisions/<decision-id>.yaml scenarios/<scenario-id>.yaml connections/<connection-id>.yaml
+  agents/<agent-id>.yaml # optional external coding-agent connection references instructions.md
+  ```'
+state: current

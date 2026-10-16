@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-5256cefcfe44ac8f
+source:
+  path: AGENTS.md
+  git_blob: null
+  content_sha256: e30293b4887acd5268aa03016951d9895f3fcfa94898ded0fd452ac53c0df6dd
+location:
+  heading_path:
+  - Repository guidance
+  - Commands
+  normalized_passage_sha256: b628fa8cd443deb46984bb2aab1a3f3f328e4ad55943ec436064bb64819b66df
+  context_before: ' definitions after constants in each source file. Keep changes
+    small, inspectable, and documented in `README.md` and `CLAUDE.md` when setup or
+    behavior changes.'
+  context_after: '```sh docker compose up --build docker compose down docker compose
+    down -v                 # deletes disposable service volumes cd backend && uv
+    run pytest cd f'
+  display_line: 17
+text: 'The repository is being bootstrapped; these are the intended V0 commands once
+  the corresponding files exist:'
+state: unresolved

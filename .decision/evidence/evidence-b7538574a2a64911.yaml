@@ -1,0 +1,26 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-b7538574a2a64911
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: a48abe3287fc1af9a477c56ce85da4d955a33dd2c2fc89e277d18ead1c192999
+location:
+  heading_path:
+  - Decision Graph
+  - Development checks
+  normalized_passage_sha256: de44888e2a70b404de8c72fc456c6a00d9b0f8569af65e1fe4e895c966bf2e40
+  context_before: '```sh cd backend && uv run --python 3.12 pytest -q cd frontend
+    && pnpm install && pnpm typecheck && pnpm lint && pnpm build ```'
+  context_after: '- Compose build/start: frontend, backend, and Qdrant healthy; backend
+    `/health`, frontend `/`, and proxied `/api/v1/project` returned HTTP 200. - Backend:
+    `UV_C'
+  display_line: 36
+text: The backend exposes deterministic mock extraction and a LiteLLM adapter for
+  configured providers. A loopback OpenAI-compatible mock test exercises structured
+  output and streaming diagnostics without credentials; no external provider is needed
+  for local development. Use the connection diagnostics in the UI to inspect endpoint
+  and model connectivity before running provider extraction or proposal. For an HTTP-level
+  check, the backend exposes `/health`, OpenAPI at `/docs`, and MCP streamable HTTP
+  at `/mcp`.
+state: unresolved

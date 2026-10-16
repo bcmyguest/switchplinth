@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-aa7e554a9046c8fa
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: a48abe3287fc1af9a477c56ce85da4d955a33dd2c2fc89e277d18ead1c192999
+location:
+  heading_path:
+  - Decision Graph
+  - Verified V0 checks
+  normalized_passage_sha256: 2ec36568df1a9f438075e4fb86ad9ff1ace03c3cfa27f581fa65271f4e2a349b
+  context_before: 'se acceptance: a fresh volume rebuild indexed 96 Qdrant points;
+    grounded Kafka rationale/evidence, Kafka→SQS detail, and MCP initialize/tools-list/query
+    passed.'
+  context_after: ''
+  display_line: 45
+text: The provider was tested against a local OpenAI-compatible mock; no external
+  provider credentials were tested. Scan restores `.decision/` files after synchronous
+  exceptions, but abrupt termination and concurrent writers are outside that rollback
+  guarantee. V1 schemas reject unknown versions; a v1-to-v2 transformation still needs
+  an explicit migration before any future schema upgrade.
+state: unresolved

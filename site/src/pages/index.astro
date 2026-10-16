@@ -1,0 +1,207 @@
+---
+import Landing from '../layouts/Landing.astro';
+import HeroMap from '../components/landing/HeroMap.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import { site } from '../site.config';
+import { withBase } from '../lib/url';
+
+const title = `${site.name}: architecture decisions from your Markdown, with evidence`;
+const description =
+  'Local-first: reads the ADRs, RFCs, and design docs in your repo, extracts decisions with cited passages, draws the architecture map, and previews what-if option switches.';
+
+const features = [
+  { title: 'Reads the Markdown you have', body: 'ADRs, RFCs, design notes, READMEs. No template, no required syntax. Your files stay untouched.' },
+  { title: 'Evidence on every inference', body: 'Each extracted claim cites an anchored source passage. Anchors relocate when a passage moves; ambiguous moves become reviewable.' },
+  { title: 'Human review outranks the model', body: 'Confirm, reject, or correct claims and aliases. Reviews append to a log and survive re-extraction. Undo works through the API; the UI is pending.', tag: 'Undo: API only' },
+  { title: 'An architecture map', body: 'Services, datastores, and technologies drawn from effective claims. Select a component to read the rationale and open its source.' },
+  { title: 'What-if scenarios', body: 'Options are typed deltas over one base graph. Switch options to preview changed entities and edges, affected decisions, and assumptions.' },
+  { title: 'Grounded “why” answers', body: '“Why are we using Kafka?” returns the claims and passages behind the answer, and says so when an answer is not fully grounded.' },
+  { title: 'MCP for your agents', body: 'Four read-only tools (list_decisions, search_decisions, inspect_architecture, inspect_entity) over streamable HTTP on localhost or stdio.' },
+  { title: 'Portable YAML, disposable indexes', body: 'Canonical data is one validated YAML file per record in .decision/, beside your Markdown. SQLite and Qdrant rebuild from it.' },
+  { title: 'Your choice of model', body: 'Deterministic mock, a local OpenAI-compatible server, or a hosted provider. Hosted providers are untested.', tag: 'Hosted: untested' },
+];
+
+const steps = [
+  { n: '1', title: 'Markdown', body: 'Discovery reads the repository’s Markdown, skipping generated and hidden folders.' },
+  { n: '2', title: 'Evidence', body: 'Passages become evidence anchors: source path, heading path, passage hash, context.' },
+  { n: '3', title: 'Decisions', body: 'Extraction proposes decisions, options, entities, and claims, each citing evidence. You review them.' },
+  { n: '4', title: 'Map', body: 'The compiler applies the selected options to a base graph and draws the result.' },
+  { n: '5', title: 'What-if', body: 'Switch an option; the scenario shows what changed and which decisions it touches.' },
+];
+
+const works = [
+  'Separate frontend, backend, and Qdrant services under Docker Compose, bound to loopback',
+  'Non-template Markdown opens and bootstraps a portable .decision/ folder',
+  'Human reviews survive re-extraction and outrank inference',
+  'Option switches recompute the scenario graph',
+  'Grounded “why” answers with inspectable passages',
+  'Indexes rebuild from canonical files after deletion',
+  'MCP initialize, tools list, and query over streamable HTTP',
+  'One-command demo of the food-delivery sample',
+];
+const limits = [
+  'Hosted providers (OpenAI, Anthropic) are untested',
+  'Extraction recall is unmeasured',
+  'The sample uses mock extraction tuned to its own text: it shows the model, not extraction quality',
+  'API and MCP are unauthenticated and loopback-only',
+  'Markdown only: no code, PDFs, or other formats',
+  'Single local user; schema v1 with no migration path yet',
+];
+---
+<Landing title={title} description={description}>
+  <header class="sticky top-0 z-40 border-b border-line bg-canvas/90 backdrop-blur">
+    <nav class="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:px-6" aria-label="Main">
+      <a href={withBase('/')} class="flex items-center gap-2 font-bold">
+        <img src={withBase('favicon.svg')} alt="" width="24" height="24" />
+        <span>{site.name}</span>
+      </a>
+      <div class="ml-auto flex items-center gap-1 text-sm">
+        <a href={withBase('docs/getting-started/')} class="rounded-md px-3 py-2 hover:bg-hover">Docs</a>
+        <a href="#limits" class="hidden rounded-md px-3 py-2 hover:bg-hover sm:inline">Limits</a>
+        <a href={site.repoUrl} class="rounded-md px-3 py-2 hover:bg-hover">Source</a>
+        <button type="button" id="theme-toggle" class="rounded-md p-2 hover:bg-hover" aria-label="Toggle dark mode">
+          <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+          <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-10 sm:px-6 lg:grid-cols-[22rem_minmax(0,1fr)] lg:pt-14">
+      <div>
+        <Badge variant="outline">Local-first · Docker Compose · work in progress</Badge>
+        <h1 class="mt-4 text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-[2.5rem]">{site.tagline}</h1>
+        <p class="mt-5 text-lg leading-relaxed text-muted">
+          Your decisions are the plinth your architecture stands on. Point this at a repository: it reads your existing ADRs, RFCs, and design notes, extracts decisions with the passages behind them, and lets you switch a decision’s option to see what the architecture would become.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <Button href="#try" size="lg">Try it locally</Button>
+          <Button href={withBase('docs/getting-started/')} variant="outline" size="lg">Read the docs</Button>
+        </div>
+      </div>
+      <HeroMap />
+    </section>
+
+    <section class="border-y border-line bg-panel py-16" aria-labelledby="features-h">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 id="features-h" class="text-3xl font-bold tracking-tight">What it does</h2>
+        <p class="mt-3 max-w-2xl text-muted">The decision is the domain object. Documents are evidence for it.</p>
+        <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f) => (
+            <Card as="li" class="bg-panel-raised">
+              <h3 class="flex flex-wrap items-center gap-2 font-semibold">
+                {f.title}
+                {f.tag && <Badge variant="inferred">{f.tag}</Badge>}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-muted">{f.body}</p>
+            </Card>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="py-16" aria-labelledby="how-h">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 id="how-h" class="text-3xl font-bold tracking-tight">How it works</h2>
+        <ol class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {steps.map((s) => (
+            <li class="relative rounded-xl border border-line bg-panel p-5">
+              <span class="flex h-8 w-8 items-center justify-center rounded-full bg-brand-soft text-sm font-bold text-source" aria-hidden="true">{s.n}</span>
+              <h3 class="mt-3 font-semibold">{s.title}</h3>
+              <p class="mt-1 text-sm leading-relaxed text-muted">{s.body}</p>
+            </li>
+          ))}
+        </ol>
+        <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Card class="min-w-0">
+            <h3 class="font-semibold">An option is a delta, not a copy</h3>
+            <pre class="mt-3 overflow-x-auto rounded-lg bg-code p-4 text-xs leading-relaxed"><code>{`- id: option-sqs
+  title: Amazon SQS
+  evidence: [evidence-sqs-rationale]
+  delta:
+    base: architecture
+    operations:
+      - op: add_entity
+        entity: {id: entity-sqs, kind: technology, name: Amazon SQS}
+      - op: add_relationship
+        relationship: {id: edge-events-sqs, from: service-orders,
+                       to: entity-sqs, kind: publishes_to}`}</code></pre>
+          </Card>
+          <Card class="min-w-0">
+            <h3 class="font-semibold">Inference stays inference</h3>
+            <p class="mt-3 text-sm leading-relaxed text-muted">
+              Model output is stored as <code>inferred</code> with evidence and confidence. A human <code>confirmed</code>, <code>rejected</code>, or <code>asserted</code> judgment appends a new record that supersedes it. Nothing is rewritten, so you can always see what the model proposed and what a person decided.
+            </p>
+            <p class="mt-3 text-sm leading-relaxed text-muted">
+              Markdown and <code>.decision/</code> YAML are canonical. Delete the SQLite and Qdrant indexes and they rebuild from those files.
+            </p>
+          </Card>
+        </div>
+      </div>
+    </section>
+
+    <section id="limits" class="border-y border-line bg-panel py-16" aria-labelledby="limits-h">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 id="limits-h" class="text-3xl font-bold tracking-tight">What works today, and what doesn’t</h2>
+        <p class="mt-3 max-w-2xl text-muted">From the project’s recorded local checks. Nothing here is extrapolated.</p>
+        <div class="mt-10 grid gap-4 md:grid-cols-2">
+          <Card class="bg-panel-raised">
+            <h3 class="font-semibold">Verified locally</h3>
+            <ul class="mt-3 space-y-2 text-sm">
+              {works.map((w) => <li class="flex gap-2"><span class="text-source" aria-hidden="true">✓</span><span>{w}</span></li>)}
+            </ul>
+          </Card>
+          <Card class="bg-panel-raised">
+            <h3 class="font-semibold">Known limits</h3>
+            <ul class="mt-3 space-y-2 text-sm">
+              {limits.map((l) => <li class="flex gap-2"><span class="text-warning" aria-hidden="true">!</span><span>{l}</span></li>)}
+            </ul>
+          </Card>
+        </div>
+        <p class="mt-6 text-sm"><a class="font-semibold text-source underline underline-offset-4" href={withBase('docs/limits/')}>Full list of verified behavior and limits</a></p>
+      </div>
+    </section>
+
+    <section id="try" class="py-16" aria-labelledby="try-h">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6">
+        <h2 id="try-h" class="text-3xl font-bold tracking-tight">Try it</h2>
+        {!site.demo.ready && (
+          <p class="mt-4 rounded-lg border border-warning p-3 text-sm text-warning">
+            <strong>Placeholder.</strong> A one-command demo is not in the repository yet. Today you clone the repository and start the stack; the sample needs one extra step described in the docs.
+          </p>
+        )}
+        <pre class="mt-6 overflow-x-auto rounded-lg border border-line bg-code p-4 text-sm"><code>{`git clone ${site.repoUrl}
+cd ${site.repoUrl.split('/').pop()}
+${site.demo.command}`}</code></pre>
+        <p class="mt-4 text-sm leading-relaxed text-muted">
+          The script builds the images, copies the fictional food-delivery sample into a demo workspace, extracts it with deterministic mock extraction, starts the stack, rebuilds the search indexes, and prints <code>http://localhost:3000</code>. It needs Docker with Compose v2 and curl; no model, credentials, Python, or Node. Run it again with <code>--down</code> to stop, or <code>--purge</code> to remove the stack and the demo workspace.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <Button href={withBase('docs/getting-started/')}>Getting started</Button>
+          <Button href={withBase('docs/providers/')} variant="outline">Connect a model</Button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-line py-10 text-sm text-muted">
+    <div class="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 sm:px-6">
+      <span>{site.name}</span>
+      <a class="hover:text-ink" href={withBase('docs/getting-started/')}>Docs</a>
+      <a class="hover:text-ink" href={withBase('docs/faq/')}>FAQ</a>
+      <a class="hover:text-ink" href={withBase('llms.txt')}>llms.txt</a>
+      <a class="hover:text-ink" href={site.repoUrl}>Source</a>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('theme-toggle')?.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem('starlight-theme', next);
+    });
+  </script>
+</Landing>

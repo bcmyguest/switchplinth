@@ -1,0 +1,37 @@
+schema_version: decision/v1
+record_type: decision
+id: decision-6533600350e8ce6b
+title: Messaging choice
+status: decided
+epistemic_state: inferred
+context: The Order Service publishes events through Apache Kafka. We chose Kafka for
+  replay after outages. Amazon SQS remains an option with less operational work.
+selected_option: option-738aeb88033fcd2e
+evidence:
+- evidence-0ee34e7059919a57
+options:
+- id: option-738aeb88033fcd2e
+  title: Apache Kafka
+  rationale: replay after outages
+  evidence:
+  - evidence-0ee34e7059919a57
+  delta:
+    base: architecture
+    operations:
+    - op: add_entity
+      entity:
+        id: entity-8bcf11933046c744
+        kind: technology
+        name: Apache Kafka
+      expect:
+        exists: false
+    - op: add_relationship
+      relationship:
+        id: relationship-122bed7ff0aac6dd
+        from: entity-225ac6a9466f917c
+        to: entity-8bcf11933046c744
+        kind: publishes_to
+      expect:
+        exists: false
+extraction:
+  extractor: mock-rules-v1

@@ -1,0 +1,9 @@
+schema_version: decision/v1
+record_type: alias
+id: alias-02d9e6a3a9514aac
+entity_id: entity-a478b4566be5cb00
+name: postgres
+epistemic_state: inferred
+confidence: 0.85
+evidence:
+- evidence-5f4ba7bedd33fc9c

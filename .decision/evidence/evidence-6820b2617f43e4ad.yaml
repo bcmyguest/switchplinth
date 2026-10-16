@@ -1,0 +1,29 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-6820b2617f43e4ad
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Completed
+  - DOC-ALIGN-2026-10-06 — Align repository guidance with V0 runtime
+  normalized_passage_sha256: 56e52c0788ecac05655fa3330de408f1112d0f31a6285cf7fcc0559588a33412
+  context_before: Update this ledger at task starts, milestones, blockers, review
+    transitions, and completion. Use it as the source for status and handoff summaries.
+  context_after: '- **Outcome:** Three-service local app with portable `.decision/`
+    records, discovery, graph/scenario operations, evidence, provider adapters, MCP,
+    repository sw'
+  display_line: 9
+text: '- **Outcome:** Correct command guidance, portable v1 examples, product terminology,
+  acceptance evidence, and create the repository task-ledger workflow. - **Blockers:**
+  None. - **Owner:** `<agent seat>` (original draft by `/root/frontend_fix2`). - **Reviewer
+  gate:** `<agent seat>` — passed after corrections. - **Status:** `completed`. -
+  **Acceptance/evidence:** Eight YAML examples in `docs/PORTABLE_FORMAT.md` validate
+  against `.decision/schema/record-v1.schema.json` using `uv run --locked`; wording
+  matches the current runtime; skill passes `quick_validate.py`; ledger contains current
+  verified V0 work and actionable remaining work. - **Next action:** None for this
+  documentation alignment task; update docs again as behavior changes.'
+state: unresolved

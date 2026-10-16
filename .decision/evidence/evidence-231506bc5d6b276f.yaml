@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-231506bc5d6b276f
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Scenarios and deltas
+  normalized_passage_sha256: 40953c4cb08b61661d4cfbde9c4313c68d71f92f593eb0e38fca77eb12ae91dc
+  context_before: or. Keep the evidence ID when relocation is sufficiently unambiguous;
+    retain an unresolved/changed state when it is not. Line numbers may be display
+    hints only.
+  context_after: Markdown discovery is deterministic and configurable. Extraction
+    may use rules/mock behavior or a provider. Retrieval combines lexical lookup,
+    Qdrant vector loo
+  display_line: 35
+text: An option is a list of typed operations against a base graph, not a copied architecture
+  snapshot. Scenario composition applies selected decision options in stable order
+  to a common graph. Compiler validation checks operation preconditions, referenced
+  entities, duplicate/conflicting writes, and decision dependency constraints. The
+  scenario view derives changed entities and edges, affected decisions, assumptions
+  invalidated, conflicts, and supporting evidence. The same delta payload is read/written
+  by YAML, graphical editing, and conversational AI.
+state: current

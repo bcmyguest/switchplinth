@@ -1,0 +1,96 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-caa704755d96ac32
+source:
+  path: CLAUDE.md
+  git_blob: null
+  content_sha256: cbb751b97f45cc8e25a58a68b8bf1a71adf4aef92a1529f8c91f315b4866a808
+location:
+  heading_path:
+  - Project orientation
+  - Backend boundaries
+  normalized_passage_sha256: 6751f53e28242a0bba2b4e72876985bd23838694c6795543948e5a9233ba4508
+  context_before: ' and avoid line numbers as identity. Options are typed deltas over
+    one base graph. YAML edits, API graph edits, and provider proposals use the same
+    delta shape.'
+  context_after: The workspace has separate Architecture, Architecture log, Progress,
+    and Facts pages. Architecture puts Decision assistant near the system map; Architecture
+    log
+  display_line: 13
+text: '`docker compose up --build` starts the local stack. Compose mounts `${DECISION_WORKSPACE_HOST:-.}`
+  at `/workspace/repos`; the repository chooser accepts only relative directories
+  beneath this mount and rejects symlink traversal. It filters generated/hidden folders
+  and lists only directories with Markdown, `.git`, or `.decision`. Opening a Markdown-only
+  repository bootstraps portable v1 schema/config/instructions without imposing an
+  ADR template. SQLite caches and Qdrant collections are namespaced per canonical
+  repository path. Discovery excludes `.decision/`, `.tasks/`, and generated caches
+  by default; `.decision/config.yaml` supports additional path exclusions, source-specific
+  includes such as `extraction.include: [.tasks]`, and a `max_candidates` limit. Excluded
+  task evidence remains unresolved for historical provenance; mixed-support inferred
+  claims, decisions, options, entities, aliases, and evidence-bearing relationships
+  have excluded IDs filtered, and safe task-only inferred records and entirely task-grounded
+  inferred decisions are removed when unselected and unreferenced. Human-reviewed
+  records and review chains are preserved byte-for-byte. Saved scenario selections
+  are matched by `(decision_id, option_id)`, so option IDs reused by different decisions
+  do not cross-reference each other. A scan fails closed if a task-only option is
+  selected or scenario-referenced, if a task-only entity or relationship remains referenced,
+  or if a task-only relationship is used by an active selected option or human-reviewed
+  decision delta. `POST /api/v1/discovery/scan` performs the full Markdown scan and
+  per-repository SQLite/Qdrant rebuild; it restores portable YAML on synchronous exceptions,
+  not abrupt termination or concurrent writes. Corrected aliases/claims use `/api/v1/aliases/{id}/correct`
+  and `/api/v1/claims/{id}/correct`; appended asserted records preserve evidence and
+  supersede original/prior judgments. Confirm, reject, and correct controls remain
+  available on effective human-reviewed claim/alias rows so judgments can be revised
+  again. Structural claims may reference option-created entities; graph projection
+  includes a corrected relationship only in scenarios where both endpoints exist,
+  and reports an invalid assumption otherwise. The graph opens selected-component
+  rationale/evidence in an adjacent panel. Independent live Playwright gate 11 passed
+  in Chromium and Firefox: all nine live graph cards stayed within the map at 1440,
+  500, and 375 CSS px; detail, What-if, and editor panels remained adjacent; document
+  horizontal overflow and page scroll on selection were absent; focus, Escape, source
+  clicks, SQS detail, and no-write preview/Discard passed. Fixture-only Save passed
+  gate 10. The gate used a disposable synthetic repository fixture, not this repository''s
+  canonical data. The detail panel uses rationale and evidence from an entity-linked
+  active option, labels an entity-linked unselected option as an alternative, and
+  labels generic passages as source context; stale detail requests must not replace
+  the current selection. Parallel edge labels use separate readable positions; the
+  MiniMap is hidden at narrow viewport widths. The UI label “Waypoint” is provisional;
+  the product brand remains undecided. `POST /api/v1/scenarios/preview-delta` validates
+  and resolves a candidate option delta without writing it; a null operation returns
+  HTTP 422. `POST /api/v1/search` and MCP `search_decisions` accept a scenario `selections`
+  map. Entity and alias routing matches complete multiword names, while single-word
+  aliases remain searchable. Provider records may declare `embedding_model` with `capabilities.embeddings:
+  true`; LiteLLM-backed embeddings are reused for Qdrant indexing and queries. When
+  no model is configured, the backend reports the deterministic local vector fallback,
+  which is not semantic embedding retrieval. Provider diagnostics treat reachable
+  401/403 as an authentication failure while preserving endpoint reachability; hosted
+  OpenAI/Anthropic connections ignore stale local endpoints. LangGraph is intentionally
+  not used in V0 because the synchronous scan has no checkpoint or resumability requirement.
+  The unauthenticated API and MCP are published on loopback only; external access
+  remains unresolved. Backend verification from `backend/`: `env UV_CACHE_DIR=/tmp/uv-cache
+  uv run --locked --python 3.12 pytest -q` passed **57 tests** with two deprecation
+  warnings in **77.95s**. After the scenario-key fix, `env UV_CACHE_DIR=/tmp/uv-cache
+  uv run --locked --python 3.12 pytest -q tests/test_domain.py -k ''task or excluded
+  or scenario_scopes_saved_scenario_options_to_their_decision''` passed **11 tests**,
+  with 46 deselected, in **0.78s**. Backend verification from an earlier baseline,
+  before the current task-only reconciliation edits, passed 33 tests with Starlette
+  and LiteLLM deprecation warnings. `docker compose config` showed loopback port binds
+  and a host-gateway mapping; a disposable backend container resolved `host.docker.internal`
+  to `172.17.0.1`. Frontend checks from `frontend/` passed: `./node_modules/.bin/tsc
+  -b`, `./node_modules/.bin/eslint .`, and `./node_modules/.bin/vite build`. The independent
+  usability review captured 1440×900 and 375×667 layouts, exercised graph selection,
+  evidence opening, and demo Kafka→SQS switching, and opened a human-reviewed claim
+  correction form. It intercepted a Reject request and checked its payload without
+  submitting it to the backend. A live Firefox Kafka→SQS switch with Kafka selected
+  first retained the selected entity and showed SQS rationale/evidence; the scenario
+  diff displayed entity and relationship names. A live SQS search returned grounded
+  rationale/evidence with deterministic-local vector fallback. No external provider
+  credentials or external-provider diagnostics were tested; real hosted/local provider
+  interoperability remains unverified. A separate disposable synthetic Markdown fixture
+  completed provider extraction through the OpenAI-compatible test endpoint and a
+  subsequent index rebuild; nine canonical `.decision/` YAML files were byte-identical
+  across the rebuild, and grounded evidence remained available. V1 rejects unknown
+  schema versions; no v1-to-v2 migration exists. Saved scenarios persist selections
+  under `.decision/scenarios/`. Update this file and `README.md` when setup or behavior
+  changes. Follow `AGENTS.md` for the remaining engineering constraints.'
+state: current

@@ -1,0 +1,16 @@
+*
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!index.html
+!vite.config.ts
+!tsconfig.json
+!theme.yml
+!nginx.conf
+!src/
+!src/**
+!public/
+!public/**
+node_modules/
+dist/
+coverage/

@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c2d036fde24814b5
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Intent
+  normalized_passage_sha256: fdd32eec7a22c7704595500249707407588e3ee70d469e8aa3b8795572c92c8f
+  context_before: ''
+  context_after: 'The central domain concept is a **Decision**: a choice with context,
+    options, and consequences. ADRs, RFCs, design docs, proposals, READMEs, tickets,
+    and arbitr'
+  display_line: 5
+text: Help a team understand and evolve the architecture expressed across its existing
+  repository documents. The product discovers likely decisions, options, architecture
+  entities, aliases, relationships, evidence, and consequences from heterogeneous
+  Markdown. It makes the evidence and uncertainty inspectable, supports human correction,
+  and lets users explore coherent what-if scenarios.
+state: current

@@ -1,0 +1,19 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-0eb79f0cd3484380
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  normalized_passage_sha256: 0957dfdfd1ebfec545417e4ed5456c937cd0b1a9ef3827c325d9cc25fb3f7e25
+  context_before: ''
+  context_after: '- **Outcome:** Correct command guidance, portable v1 examples, product
+    terminology, acceptance evidence, and create the repository task-ledger workflow.
+    - **Blo'
+  display_line: 3
+text: Update this ledger at task starts, milestones, blockers, review transitions,
+  and completion. Use it as the source for status and handoff summaries.
+state: unresolved

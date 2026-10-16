@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-9f806482a561cd89
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Provider configuration
+  normalized_passage_sha256: 3f821926c45c208aa65354626468b1fedd71fe76eee8f08d82c1f9688b42c0a0
+  context_before: pplied, otherwise they report embeddings as unsupported. Credential
+    references resolve from runtime environment/secret storage and never inline secret
+    material.
+  context_after: An optional `agents/` record references an external coding/engineering
+    agent and its invocation configuration; it is distinct from `model_connection`
+    and does n
+  display_line: 102
+text: '```yaml schema_version: decision/v1 record_type: model_connection id: model-local-main
+  provider: openai_compatible endpoint: http://host.docker.internal:1234/v1 # host
+  model server from the Compose backend model: local-model-id embedding_model: local-embedding-model-id
+  # optional; required to probe/use provider embeddings credential_ref: env:DECISION_MODEL_API_KEY
+  capabilities: structured_output: true embeddings: true streaming: true ```'
+state: current

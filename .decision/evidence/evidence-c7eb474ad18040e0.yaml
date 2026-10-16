@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c7eb474ad18040e0
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Entity and alias records
+  normalized_passage_sha256: 5454ade89370ae65f9ffe75521407b6304a47124c3555604c70d3f66a9cb3367
+  context_before: '/v1 record_type: alias id: alias-kafka-short entity_id: entity-kafka
+    name: Kafka epistemic_state: inferred confidence: 0.97 evidence: [evidence-01j-example]
+    ```'
+  context_after: Every extraction-created decision, option rationale, relationship,
+    or consequence also cites evidence IDs. Evidence is required for inferred propositions.
+    Human
+  display_line: 94
+text: Alias mappings are independently evidenced and confirmed/rejected/overridden.
+  Do not treat aliases as unreviewable strings attached to an entity.
+state: current

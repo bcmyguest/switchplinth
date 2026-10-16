@@ -1,0 +1,20 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-e5481c02a60ce91a
+source:
+  path: synthetic/decisions/messaging.md
+  git_blob: null
+  content_sha256: 7516b0f81cff7c0da672c458b26118bbb911bc5d3b41816b58c6056da729a3d8
+location:
+  heading_path:
+  - Event delivery for order processing
+  - Context
+  normalized_passage_sha256: 402032f1c249b8af4b567c6cffeaea88c886c2e84687426331038704bc76a1da
+  context_before: ''
+  context_after: We chose Apache Kafka because replay and ordering across fulfillment
+    events matter more than operating a managed queue. The Order Service publishes
+    order events
+  display_line: 5
+text: The Order Service sends fulfillment updates to the Fulfillment Service. The
+  team needs durable delivery and a way to replay events after outages.
+state: current

@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-bf7179571805a655
+subject: entity-225ac6a9466f917c
+predicate: mentioned_in
+object: synthetic/decisions/storage.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: synthetic/decisions/storage.md
+evidence:
+- evidence-5f4ba7bedd33fc9c

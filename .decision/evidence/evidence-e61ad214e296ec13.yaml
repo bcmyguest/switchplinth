@@ -1,0 +1,32 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-e61ad214e296ec13
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - UI-BASE-DOCS — Connect evidence and scenario context to source Markdown
+  normalized_passage_sha256: 85297ca1732110ed6c9e29ce8074ba71d2c5f7b526cb7e21dddcf7407c92356a
+  context_before: 'ionship names with no raw IDs. Screenshot: `<local review artifact>`.
+    - **Next action:** None for this task; retain it in final V0 acceptance browser
+    sweep.'
+  context_after: '- **Outcome:** Add-operation and drawn-line edits automatically
+    preview their option delta and expose Discard and Save actions. - **Blockers:**
+    None for the typ'
+  display_line: 53
+text: '- **Outcome:** `Open passage` and What-if source controls open the actual repository
+  Markdown at the relevant evidence; the evidence dropdown remains usable. - **Blockers:**
+  None for the source-document flow. - **Owner:** `<agent seat>` (agent backend) and
+  `<agent seat>` (agent frontend). - **Reviewer gate:** `<agent seat>` passed route
+  after FIFO fix; `<agent seat>` passed frontend re-review after scroll-to-highlight
+  fix; live Firefox click-through passed. - **Status:** `completed`. - **Acceptance/evidence:**
+  On rebuilt Compose, Firefox opened full repository Markdown from `Open passage`,
+  an active What-if option source, and the All evidence dropdown. Each viewer showed
+  a highlighted passage in its scroll viewport, including a later passage in `docs/V0_PLAN.md`.
+  Screenshot: `<local review artifact>`. - **Next action:** None for this flow; preserve
+  it in the final acceptance sweep.'
+state: unresolved

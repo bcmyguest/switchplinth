@@ -1,0 +1,31 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-dce09a8f62aa8579
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Discovery, retrieval, and model access
+  normalized_passage_sha256: d1fcbad203b3a8c69f44a2f1a2fc5cbd6ad42e3352ff731b0a65515fc803248a
+  context_before: s queries. Without one, V0 uses deterministic token-hash vectors
+    as an offline fallback; this is not semantic embedding retrieval and the API reports
+    that mode.
+  context_after: 'MCP exposes query operations over the same domain and retrieval
+    services so Codex, Claude Code, and other clients need not depend on UI internals.
+    Local/remote '
+  display_line: 41
+text: Public provider configuration is the application's own versioned schema. An
+  adapter maps it to LiteLLM. Keep model connections (inference, embedding, structured
+  output, streaming) separate from coding/engineering agent connections. Diagnostics
+  report authentication, endpoint reachability, model availability, structured-output
+  support, embedding support, streaming, and latency. `unsupported` means the capability
+  is known unavailable; a capability with no implemented protocol-specific probe is
+  reported as an error with `capability_probe_not_implemented`, meaning unverified.
+  A reachable HTTP 401/403 is an authentication error while endpoint reachability
+  remains supported. Hosted OpenAI and Anthropic adapters use their hosted endpoints;
+  local/custom URLs belong to compatible/local providers. Secret values remain outside
+  committed config.
+state: current

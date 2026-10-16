@@ -1,0 +1,21 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c81e042aed0bcd9a
+source:
+  path: CLAUDE.md
+  git_blob: null
+  content_sha256: cbb751b97f45cc8e25a58a68b8bf1a71adf4aef92a1529f8c91f315b4866a808
+location:
+  heading_path:
+  - Project orientation
+  - Backend boundaries
+  normalized_passage_sha256: b4be46d8b0da6cfeef46efe17d7069107b2ad542e6e70c654b831d1fcb39aa62
+  context_before: only Save. Keep the full V0 acceptance audit open until all 12 acceptance
+    criteria have been reviewed; passing the panel gate does not constitute V0 acceptance.
+  context_after: ''
+  display_line: 21
+text: 'For `why` searches, the backend reports `grounded: true` only when effective
+  claims cite the returned current passages. When passages exist without claim support,
+  it returns the passages and labels the answer as not fully grounded. Generic lexical
+  searches retain passage-based grounding.'
+state: current

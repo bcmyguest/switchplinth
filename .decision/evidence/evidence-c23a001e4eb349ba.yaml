@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c23a001e4eb349ba
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Entity and alias records
+  normalized_passage_sha256: b6db5d67c72a32ae13bb7e87a8f0f4d50e3211036633b7727f21fa307b821902
+  context_before: Alias mappings are independently evidenced and confirmed/rejected/overridden.
+    Do not treat aliases as unreviewable strings attached to an entity.
+  context_after: 'The public model connection contract is provider-neutral and contains
+    no credentials. `provider` selects an adapter name; hosted OpenAI and Anthropic
+    use their '
+  display_line: 96
+text: Every extraction-created decision, option rationale, relationship, or consequence
+  also cites evidence IDs. Evidence is required for inferred propositions. Human-authored
+  statements may omit it when they are explicit assertions rather than source-derived
+  claims.
+state: current

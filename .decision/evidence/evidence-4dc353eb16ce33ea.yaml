@@ -1,0 +1,26 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-4dc353eb16ce33ea
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: df647c4e7d19a11877b24b0c14b68576322ea0e348897c87babaf65a4501ce96
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 4: derived indexes and grounded retrieval'
+  normalized_passage_sha256: ca9bd421e204d40dcfa0b05d9392074f59e4872706651ed14a036ad10ae5d4bb
+  context_before: tput, streaming, and unsupported embeddings. Invalid credentials
+    produced raw HTTP 401 and normalized `invalid_credentials`. No live external provider
+    was used.
+  context_after: 'Verification: backend tests delete/recreate SQLite index state and
+    validate Qdrant collection deletion/recreation and deterministic vectors using
+    a fake client.'
+  display_line: 42
+text: '- [x] Build disposable SQLite index and Qdrant collections from canonical Markdown
+  and overlay. - [x] Implement lexical + local deterministic semantic retrieval, entity/alias
+  resolution, graph expansion, provenance-aware ranking, and grounded answer shape.
+  - [x] Add explicit full rebuild path and index version tracking. - [x] Verify live
+  Qdrant collection recreation and the seeded “Why are we using Kafka?” answer with
+  focused evidence after scan.'
+state: unresolved

@@ -1,0 +1,37 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-f44c0e9bd786e86e
+source:
+  path: AGENTS.md
+  git_blob: null
+  content_sha256: b8493d09d47dc1555e89664121d3e034324a66a56bf7f924ee8140892add34db
+location:
+  heading_path:
+  - Repository guidance
+  - Engineering rules
+  normalized_passage_sha256: 40373770d27134e657c94cd472893ddfc8fc9cdcc5dc2047cfff9a57c04ba937
+  context_before: ''
+  context_after: 'Install and run the service checks with the repository''s pinned
+    tools:'
+  display_line: 5
+text: '- Treat Markdown sources and validated, versioned YAML under `.decision/` as
+  the only canonical knowledge. SQLite, Qdrant, embeddings, workflow state, and generated
+  graph data are disposable. - Keep deterministic domain and compiler logic independent
+  of storage, UI, and model providers. Model output is an inference; confirmed, rejected,
+  or overridden human records take precedence. - Preserve provenance for inferred
+  claims and aliases. Use relocatable content/structure anchors, never line numbers
+  as identity. - Model options as typed operations over a base graph. YAML, graph
+  editing, and conversation must write the same delta model. - Validate portable YAML
+  against versioned schemas and make migrations explicit. Rebuild generated state
+  from canonical files. - Keep `frontend`, `backend`, and `qdrant` as distinct Compose
+  services. Do not add Postgres, Redis, Neo4j, or another canonical database in V0.
+  - Keep provider configuration behind the product''s provider-neutral contract; LiteLLM
+  is an implementation detail. Keep inference model connections separate from coding-agent
+  connections. - Keep code-analysis extraction out of V0; leave a documented extension
+  point with distinct code-derived evidence types. - Add function and class definitions
+  after constants in each source file. Keep changes small, inspectable, and documented
+  in `README.md` and `CLAUDE.md` when setup or behavior changes. - For substantial
+  multi-step work, use `.agents/skills/maintain-task-ledger/SKILL.md` and update `.tasks/ledger.md`
+  at start, milestones, blockers, review gates, and completion. Derive compaction
+  and handoff state from the ledger.'
+state: current

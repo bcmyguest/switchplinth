@@ -1,0 +1,40 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-e81bdb335254e715
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Acceptance criteria
+  normalized_passage_sha256: 28c8c0644454acc3f6abb8da7eaeb70a2cdc9550c60d1e807a9a445d8f6f5099
+  context_before: 'V0 is accepted when:'
+  context_after: 'The discovery conversation''s latest agreed direction is captured
+    by this specification: use a three-service runtime, make Decision the central
+    concept, use stab'
+  display_line: 58
+text: 1. `docker compose up --build` starts distinct frontend, backend, and Qdrant
+  services locally. 2. A repository with synthetic, non-template-specific Markdown
+  can be opened and discovered without ADR-specific formatting. 3. A mock path and
+  at least one configured provider path produce candidate portable overlay data. 4.
+  Every inferred architectural claim has provenance. Evidence anchors use repository-relative
+  identity, Git/content identity where available, structural location, normalized
+  passage fingerprint, and context sufficient for relocation; re-indexing reuses anchor
+  identity when passage relocation succeeds. 5. Alias mappings have independent confidence,
+  evidence, and epistemic status. 6. Human confirmed/rejected/overridden records survive
+  extraction and outrank inference. 7. Decisions and options are represented using
+  typed deltas over a base graph; selecting/composing options recomputes scenario
+  graph effects. 8. The UI supports graph browsing, evidence inspection, entity-linked
+  rationale and alternatives, and scenario option switching. 9. A grounded “why are
+  we using X?” query returns claims and passages that support the answer and can be
+  inspected. 10. Deleting generated SQLite/Qdrant state and rebuilding from canonical
+  files restores usable indexes without losing meaningful knowledge. 11. Versioned
+  schema validation rejects unsupported versions before mutation; portability, precedence,
+  delta application, and anchor relocation are covered by automated checks. Any future
+  schema evolution must add and test an explicit deterministic migration. 12. Provider
+  diagnostics report every capability as supported, unsupported, or error, including
+  actionable raw and normalized failures; unsupported checks are visible rather than
+  silently skipped.
+state: current

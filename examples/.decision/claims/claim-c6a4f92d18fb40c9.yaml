@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-c6a4f92d18fb40c9
+subject: entity-8bcf11933046c744
+predicate: mentioned_in
+object: synthetic/decisions/messaging.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: synthetic/decisions/messaging.md
+evidence:
+- evidence-df068a5e6656b3d8

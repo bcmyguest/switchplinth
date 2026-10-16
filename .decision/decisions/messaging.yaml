@@ -1,0 +1,46 @@
+schema_version: decision/v1
+record_type: decision
+id: decision-messaging-platform
+title: Select the event transport
+status: decided
+context: Fulfillment updates need durable delivery and replay after outages.
+selected_option: option-kafka
+options:
+  - id: option-kafka
+    title: Apache Kafka
+    rationale: Replay and ordering across fulfillment events matter more than operating a managed queue.
+    evidence: [evidence-ad0e2cd1b4d9bcc4]
+    delta:
+      base: architecture
+      operations:
+        - op: add_entity
+          entity: {id: broker-kafka, kind: technology, name: Apache Kafka}
+          expect: {exists: false}
+        - op: add_relationship
+          relationship: {id: order-publishes-kafka, from: service-order, to: broker-kafka, kind: publishes_to}
+          expect: {exists: false}
+        - op: add_relationship
+          relationship: {id: kafka-to-fulfillment, from: broker-kafka, to: service-fulfillment, kind: delivers_to}
+          expect: {exists: false}
+  - id: option-sqs
+    title: Amazon SQS
+    rationale: Less infrastructure work, with additional application support needed for replaying old events.
+    evidence: [evidence-bfe7a30411140e69]
+    delta:
+      base: architecture
+      operations:
+        - op: add_entity
+          entity: {id: queue-sqs-orders, kind: queue, name: Amazon SQS}
+          expect: {exists: false}
+        - op: add_entity
+          entity: {id: queue-sqs-dlq, kind: queue, name: Order Dead Letter Queue}
+          expect: {exists: false}
+        - op: add_relationship
+          relationship: {id: order-publishes-sqs, from: service-order, to: queue-sqs-orders, kind: sends_to}
+          expect: {exists: false}
+        - op: add_relationship
+          relationship: {id: sqs-to-fulfillment, from: queue-sqs-orders, to: service-fulfillment, kind: delivers_to}
+          expect: {exists: false}
+        - op: add_relationship
+          relationship: {id: sqs-dlq, from: queue-sqs-orders, to: queue-sqs-dlq, kind: dead_letters_to}
+          expect: {exists: false}

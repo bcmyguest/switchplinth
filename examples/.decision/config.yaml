@@ -1,0 +1,8 @@
+schema_version: decision/v1
+record_type: config
+id: project
+extraction:
+  mode: mock
+  ignore: [.git, .decision, .decision-cache, .venv, node_modules, dist, build, __pycache__, .pytest_cache, .mypy_cache, .ruff_cache, .tox, .cache]
+  max_candidates: 50
+connections: []

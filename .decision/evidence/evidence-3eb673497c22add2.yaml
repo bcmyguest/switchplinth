@@ -1,0 +1,21 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3eb673497c22add2
+source:
+  path: AGENTS.md
+  git_blob: null
+  content_sha256: b8493d09d47dc1555e89664121d3e034324a66a56bf7f924ee8140892add34db
+location:
+  heading_path:
+  - Repository guidance
+  - Commands
+  normalized_passage_sha256: 149d217777523a0b875b2e064d50a77687cccbbca6872983b6e311bb51c8b1fe
+  context_before: edger/SKILL.md` and update `.tasks/ledger.md` at start, milestones,
+    blockers, review gates, and completion. Derive compaction and handoff state from
+    the ledger.
+  context_after: '```sh docker compose up --build docker compose down docker compose
+    down -v                 # deletes disposable service volumes cd backend && uv
+    run --locked --'
+  display_line: 18
+text: 'Install and run the service checks with the repository''s pinned tools:'
+state: current

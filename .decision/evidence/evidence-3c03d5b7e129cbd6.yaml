@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3c03d5b7e129cbd6
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Entity and alias records
+  normalized_passage_sha256: 11646497fb39abeb6ce76f7ce09d8612a3acecf2d3f468e4ff2930e28af0ba0c
+  context_before: '`yaml schema_version: decision/v1 record_type: entity id: entity-kafka
+    kind: technology name: Apache Kafka description: Distributed event streaming platform
+    ```'
+  context_after: Alias mappings are independently evidenced and confirmed/rejected/overridden.
+    Do not treat aliases as unreviewable strings attached to an entity.
+  display_line: 83
+text: '```yaml schema_version: decision/v1 record_type: alias id: alias-kafka-short
+  entity_id: entity-kafka name: Kafka epistemic_state: inferred confidence: 0.97 evidence:
+  [evidence-01j-example] ```'
+state: current

@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-ea6521f8a8e0ce57
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Entity and alias records
+  normalized_passage_sha256: 96bf9bbc031a8361aa15724bd00d98a78dda7c9296ee5baf14a6b7152dbf72cb
+  context_before: ' claim field and the V0 runtime assigns it no meaning. A future
+    code-analysis source/type needs an explicit schema and API design before clients
+    can rely on it.'
+  context_after: '```yaml schema_version: decision/v1 record_type: alias id: alias-kafka-short
+    entity_id: entity-kafka name: Kafka epistemic_state: inferred confidence: 0.97
+    evid'
+  display_line: 74
+text: '```yaml schema_version: decision/v1 record_type: entity id: entity-kafka kind:
+  technology name: Apache Kafka description: Distributed event streaming platform
+  ```'
+state: current

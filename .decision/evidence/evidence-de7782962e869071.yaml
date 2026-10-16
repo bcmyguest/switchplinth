@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-de7782962e869071
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Verified V0 checks
+  normalized_passage_sha256: 959c111f3180a1e2fa19abe1aab7389db3aba4605c7f32b76e79a93d80a0d08b
+  context_before: outside that rollback guarantee. V1 schemas reject unknown versions;
+    no v1-to-v2 migration exists, and any future schema upgrade requires an explicit
+    migration.
+  context_after: On the Architecture page, selecting a map component opens its details
+    in a closable side panel. The What-if control and graph editor use separate closable
+    panel
+  display_line: 54
+text: 'For `why` searches, the backend reports `grounded: true` only when effective
+  claims cite the returned current passages. When passages exist without claim support,
+  it returns the passages and labels the answer as not fully grounded. Entity and
+  alias routing requires a complete multiword name, while single-word aliases remain
+  searchable. Generic lexical searches retain passage-based grounding.'
+state: current

@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-75a0c7d6bb569ea6
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Evidence records and references
+  normalized_passage_sha256: 10c66b8eb5e6def52d8922ad9df654fc6ff6600411e3688dcd6141ee166102b5
+  context_before: 'a1b880115754c6817b1e0867c87a65757ba502" context_before: "..." context_after:
+    "..." display_line: 42 # hint only; never identity text: Kafka supports replay.
+    ```'
+  context_after: 'Illustrative YAML (field names are normative for V0; examples are
+    illustrative):'
+  display_line: 49
+text: The passage hash is SHA-256 of the case-folded, whitespace-collapsed `text`.
+  The content hash is SHA-256 of the source file bytes; the example value above is
+  a format placeholder.
+state: current

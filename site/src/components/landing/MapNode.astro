@@ -1,0 +1,36 @@
+---
+// One diagram card: kind icon, name, drafting-style kind label.
+export type Kind = 'service' | 'stream' | 'queue';
+interface Props {
+  x: number;
+  y: number;
+  w: number;
+  name: string;
+  kind: Kind;
+  class?: string;
+}
+const { x, y, w, name, kind, class: cls = '' } = Astro.props;
+const kindLabel = { service: 'Service', stream: 'Event stream', queue: 'Queue' }[kind];
+---
+<g class={`node node-${kind} ${cls}`} transform={`translate(${x} ${y})`}>
+  <rect class="card" width={w} height="56" rx="10" />
+  <rect class="icon-bg" x="10" y="12" width="32" height="32" rx="8" />
+  <g class="icon" transform="translate(14 16)">
+    {kind === 'service' && (
+      <>
+        <rect x="2" y="3" width="20" height="7" rx="2" />
+        <rect x="2" y="14" width="20" height="7" rx="2" />
+        <path d="M6 6.5h.01M6 17.5h.01M11 6.5h7M11 17.5h7" />
+      </>
+    )}
+    {kind === 'stream' && <path d="M3 7h13M3 12h17M3 17h13M17 9l3 3-3 3" />}
+    {kind === 'queue' && (
+      <>
+        <rect x="2" y="7" width="20" height="10" rx="2" />
+        <path d="M8 7v10M14 7v10" />
+      </>
+    )}
+  </g>
+  <text class="node-name" x="52" y="27">{name}</text>
+  <text class="node-kind" x="52" y="43">{kindLabel.toUpperCase()}</text>
+</g>

@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-d02749719805a54d
+subject: entity-8bcf11933046c744
+predicate: mentioned_in
+object: README.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: README.md
+evidence:
+- evidence-a59d0bf23d7ef68c

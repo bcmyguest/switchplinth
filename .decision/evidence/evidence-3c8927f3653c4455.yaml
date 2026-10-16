@@ -1,0 +1,21 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3c8927f3653c4455
+source:
+  path: CLAUDE.md
+  git_blob: null
+  content_sha256: cbb751b97f45cc8e25a58a68b8bf1a71adf4aef92a1529f8c91f315b4866a808
+location:
+  heading_path:
+  - Project orientation
+  normalized_passage_sha256: dca8577b9064ebd52fc555cf0c062706bea0e8049453c7211ded5c8388c9a10f
+  context_before: ''
+  context_after: Docker Compose runs separate `frontend`, `backend`, and `qdrant`
+    services. The frontend is React/TypeScript with Tailwind and shadcn/ui. The backend
+    is Python 3
+  display_line: 3
+text: Read `AGENTS.md` and the specifications in `docs/` before implementation. Decision
+  is the domain object; ADRs and other Markdown are source artifacts. Markdown and
+  validated `.decision/` YAML are canonical. SQLite, Qdrant, model workflow state,
+  and graph indexes are disposable.
+state: current

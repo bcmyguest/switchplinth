@@ -1,0 +1,40 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-261e1dddcdac22e2
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - In progress
+  - V0-BASELINE — Deliver and verify the full V0 decision graph
+  normalized_passage_sha256: 81de7df7a971f87b872ef239284d1ec37ff13737b6193f1210dc4674b1f71673
+  context_before: ns current verified V0 work and actionable remaining work. - **Next
+    action:** None for this documentation alignment task; update docs again as behavior
+    changes.
+  context_after: '- **Outcome:** Verify claim-derived relationship removal in the
+    affected list and stale inferred-alias evidence repair without weakening human
+    review precedence'
+  display_line: 21
+text: '- **Outcome:** Three-service local app with portable `.decision/` records,
+  discovery, graph/scenario operations, evidence, provider adapters, MCP, repository
+  switching, and the agreed usable V0 flow. - **Blockers:** Interlinked page layout,
+  side panels and below-map controls, documentation updates, and requirement-by-requirement
+  acceptance review. - **Owner:** `<agent seat>` coordinating narrow agent implementation
+  and independent reviewer gates. - **Reviewer gate:** `/root/usability_gate2` passed
+  its earlier frontend checks; a final independent gate remains required after the
+  open work. - **Status:** `in_progress`. - **Acceptance/evidence:** Backend suite
+  re-ran during UI-PAGES work with `env UV_CACHE_DIR=/tmp/uv-cache uv run --locked
+  --python 3.12 pytest -q` from `backend/`: 31 passed, 1 skipped in 72.65s. Earlier
+  Compose started all three healthy services; Vite built 1,895 modules. Reviewer captured
+  1440×900 and 375×667 layouts, exercised graph selection/evidence opening, demo-mode
+  Kafka→SQS switching, and checked an intercepted review request payload. A live search
+  request for SQS returned grounded rationale/evidence with deterministic-local vector
+  fallback. These checks do not cover all remaining UI interactions. No external provider
+  credentials or external-provider diagnostics were tested. - **Next action:** Implement
+  and gate UI-PAGES, then UI-PANELS; update `README.md`, `CLAUDE.md`, and `docs/V0_PLAN.md`
+  to match current behavior; run full relevant suites, Compose/browser checks, and
+  a criterion-by-criterion audit against `docs/PRODUCT_SPEC.md`.'
+state: unresolved

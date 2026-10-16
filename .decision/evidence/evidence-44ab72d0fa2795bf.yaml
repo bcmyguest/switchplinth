@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-44ab72d0fa2795bf
+source:
+  path: CLAUDE.md
+  git_blob: null
+  content_sha256: cbb751b97f45cc8e25a58a68b8bf1a71adf4aef92a1529f8c91f315b4866a808
+location:
+  heading_path:
+  - Project orientation
+  - Runtime
+  normalized_passage_sha256: a8370a5c8d395700aa92525288cd3136f2c0e5e83133019ced9cad8b6456c841
+  context_before: r Markdown are source artifacts. Markdown and validated `.decision/`
+    YAML are canonical. SQLite, Qdrant, model workflow state, and graph indexes are
+    disposable.
+  context_after: The deterministic domain/compiler does not depend on HTTP, SQLite,
+    Qdrant, or model providers. Keep provider-neutral connection records portable
+    and secrets out
+  display_line: 7
+text: Docker Compose runs separate `frontend`, `backend`, and `qdrant` services. The
+  frontend is React/TypeScript with Tailwind and shadcn/ui. The backend is Python
+  3.12/FastAPI. Published ports bind to loopback. The backend maps `host.docker.internal`
+  to the Linux host gateway for local model connections. Local API docs are at `http://localhost:8000/docs`,
+  the frontend at `http://localhost:3000`, and Qdrant at `http://localhost:6333`.
+state: current

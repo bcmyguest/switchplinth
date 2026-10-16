@@ -1,0 +1,42 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-d884f9e87ac9c059
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  - Run locally
+  normalized_passage_sha256: aa11b78fb34e0493dc5f89cb1e1d159de9e468164d337f6dd691fb14fefd3feb
+  context_before: w the visible scenario. Without a configured model, proposal returns
+    an unsupported response. Search returns answers only when supporting evidence
+    is available.
+  context_after: Markdown and `.decision/` YAML are portable project data. Provider
+    credentials are referenced through environment variable names such as `env:MODEL_API_KEY`;
+    se
+  display_line: 25
+text: 'The repository chooser filters hidden/generated directories and only lists
+  candidates containing Markdown, `.git`, or `.decision`. The discovery scan excludes
+  `.decision/`, `.decision-cache/`, `.tasks/`, `.pytest_cache/`, and common build/cache
+  directories by default. Add path segments under `extraction.ignore` in `.decision/config.yaml`
+  to exclude more paths. To index task Markdown intentionally, add a source path or
+  directory such as `extraction.include: [.tasks]`; this opts in only that source
+  and does not override other ignored directories. When `.tasks/` is excluded, a scan
+  marks prior evidence unresolved for historical provenance, filters excluded IDs
+  from mixed-support inferred claims, decisions, options, entities, aliases, and evidence-bearing
+  relationships, and removes safe task-only inferred content, including entirely task-grounded
+  inferred decisions when they are unselected and unreferenced. Current-source inferred
+  references can continue supporting a shared entity after task evidence is removed.
+  Human-reviewed records and their review chains stay byte-for-byte unchanged. The
+  scan fails closed when removing a selected or saved-scenario-referenced option,
+  or when a task-only inferred entity or relationship remains referenced, including
+  relationships referenced by active selected options or human-reviewed decision deltas.
+  `extraction.max_candidates` limits inferred decision and candidate-passage output
+  (default 50). `POST /api/v1/discovery/scan` performs discovery, extraction, and
+  a full SQLite/Qdrant index rebuild; SQLite stores its index version, and Qdrant
+  collections are namespaced by canonical repository path. If a synchronous scan operation
+  raises, the backend restores the previous `.decision/` files. Abrupt process or
+  host termination is outside that rollback guarantee.'
+state: current

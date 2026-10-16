@@ -1,0 +1,23 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-69c229c064cf1e8d
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Scenarios
+  normalized_passage_sha256: 6bd6fcae7606bbd762ad8fc4a5c0af4fbf6defe5e29365c9aa3d0efddb008534
+  context_before: sequence, rationale, and other descriptive claims remain attached
+    to decision/evidence records and do not imply that an option's components are
+    already present.
+  context_after: Scenario application composes selected option operations over one
+    base graph. Compilation reports invalid references, conflicting operations, affected
+    decisions
+  display_line: 181
+text: '```yaml schema_version: decision/v1 record_type: scenario id: scenario-managed-queue
+  name: Managed queue migration selections: decision-messaging: option-sqs decision-storage:
+  option-dynamodb ```'
+state: current

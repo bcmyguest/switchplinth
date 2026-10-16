@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-70e5265847412b3f
+source:
+  path: .tasks/ledger.md
+  git_blob: null
+  content_sha256: 3e3a446a521a4501ba465a2ea1403e320068ecfb607dcd5146ac703ce230723e
+location:
+  heading_path:
+  - Task ledger
+  - Follow-ups
+  - REMOTE-AUTH — Decide the authentication boundary before external listeners
+  normalized_passage_sha256: 70bb2244f5a77bcf90e5c604c884cf464ca60dd560604ba9a8d98809181a8edb
+  context_before: ' analysis remains out of V0. - **Next action:** Reopen only when
+    code analysis enters scope; define evidence type and provenance before changing
+    the schema/API.'
+  context_after: ''
+  display_line: 133
+text: '- **Outcome:** Define authentication and exposure rules for any non-loopback
+  API or MCP listener. - **Blockers:** Product/security design decision. - **Owner:**
+  TBD. - **Reviewer gate:** Security review before enabling remote access. - **Status:**
+  `deferred`. - **Acceptance/evidence:** V0 binds published services to loopback and
+  the API is unauthenticated. - **Next action:** Keep external access disabled until
+  the boundary is defined and implemented.'
+state: unresolved

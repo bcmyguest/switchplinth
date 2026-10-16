@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-bc5a81602d36ad00
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 908fc06fa0411247422c44676dcb2dba5490754f5e8d85b5b1ec054564877b21
+location:
+  heading_path:
+  - Portable repository format
+  - Evidence records and references
+  normalized_passage_sha256: 2f6d2b8e1cf56b848d7b21d9d4db2fa05bf2fe10e536b4b7187f111a8896a7c4
+  context_before: on/evidence/<id>.yaml` record. On relocation, retain that record's
+    ID when the passage match is unambiguous. Claim status and evidence identity remain
+    separate.
+  context_after: 'Illustrative YAML (field names are normative for V0; examples are
+    illustrative):'
+  display_line: 31
+text: '```yaml schema_version: decision/v1 id: evidence-01j-example source: path:
+  docs/platform.md git_blob: "sha1:..." # nullable when Git is unavailable content_sha256:
+  "sha256:..." location: heading_path: [Messaging, Current platform] normalized_passage_sha256:
+  "sha256:..." context_before: "..." context_after: "..." display_line: 42 # hint
+  only; never identity ```'
+state: unresolved

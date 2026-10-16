@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-77a0a891218e4835
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: df647c4e7d19a11877b24b0c14b68576322ea0e348897c87babaf65a4501ce96
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 5: graph and scenario vertical slice'
+  normalized_passage_sha256: d1aab5b72fe5999e48809a6457b71db6e38cfe01623fb5ec16a2be49db76f26c
+  context_before: ontained 96 indexed passage points. The exact “Why are we using
+    Kafka?” query returned selected-option rationale, one direct evidence ID, and
+    two linked claims.
+  context_after: 'Verification: deterministic tests cover option switching, added/removed
+    elements, cross-decision invalid assumptions, delta validation, scenario-aware
+    entity de'
+  display_line: 51
+text: '- [x] Display an interactive architecture graph and entity detail/evidence
+  panel. - [x] Support human confirm/reject/override for claims and independent alias
+  review. - [x] Let user select options and compose a scenario; recompute affected
+  graph, decisions, conflicts, invalid assumptions, and evidence. - [x] Support YAML/API
+  edits through the same typed delta model; support conversational requests to propose,
+  preview, and apply edits to that same model with human confirmation. - [x] Verify
+  Kafka→SQS through the running API, including SQS entity detail and rationale under
+  the active selection.'
+state: unresolved

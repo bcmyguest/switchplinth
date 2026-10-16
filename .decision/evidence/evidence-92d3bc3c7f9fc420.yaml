@@ -1,0 +1,28 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-92d3bc3c7f9fc420
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 3: discovery, extraction, and provider boundary'
+  normalized_passage_sha256: c95ccc356a53920d6f799ecd4e22564d4e4ff0c607a9bf47b4f0e4f41a32fa50
+  context_before: ted; any future format change requires an explicit migration. Unit
+    tests verify deterministic Qdrant construction/query; Compose smoke checks are
+    tracked below.
+  context_after: 'Verification: deterministic extraction and human-review precedence
+    are covered by backend tests. A loopback OpenAI-compatible HTTP server exercised
+    the real Lit'
+  display_line: 32
+text: '- [x] Discover Markdown while honoring ignore/exclusion settings. - [x] Implement
+  deterministic/mock extractor for repeatable tests and a LiteLLM adapter for configured
+  providers. - [x] Write inferred records and provenance into portable overlay without
+  overwriting human records. - [x] Add model connection records separately from coding-agent
+  connections; implement provider diagnostics and actionable errors. - [x] Build provider
+  configuration and diagnostics UI. Show each capability as `supported`, `unsupported`,
+  or `error`, with latency and raw/normalized error detail; never silently skip a
+  check.'
+state: current

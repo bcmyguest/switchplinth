@@ -1,0 +1,25 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3069959e263ce55a
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: 9041f290c93da93d66cabb4cac3bfec0979b70512c08bc532da41e9b41896a34
+location:
+  heading_path:
+  - Architecture
+  - Build and deployment
+  normalized_passage_sha256: 4f3b97d7ec2ec71c5308e03494ae7461bc026895e7a579ccf38ebbd9865dc998
+  context_before: ng-running extraction/review. CRUD, YAML validation, compilation,
+    delta application, indexing, and deterministic retrieval orchestration remain
+    ordinary Python.
+  context_after: Later code analysis may contribute evidence and claims such as `implements`,
+    `calls`, `depends_on`, `conforms_to_decision`, and `violates_decision`. It must
+    use
+  display_line: 47
+text: 'Use narrow Docker contexts: each service context includes only its subtree
+  and required root files, with caches/build outputs re-ignored. Keep Dockerfiles
+  and Compose understandable. Persist `.decision/` in the opened repository; generated
+  SQLite/Qdrant data lives in disposable volumes/cache locations. Avoid adding services
+  in V0.'
+state: unresolved

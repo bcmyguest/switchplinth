@@ -1,0 +1,21 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-86724d5511b57759
+source:
+  path: README.md
+  git_blob: null
+  content_sha256: ba0884c1d011b0d0719052024c36fd30fbadbce884d448cc19571a3b1fecfff3
+location:
+  heading_path:
+  - Decision Graph
+  normalized_passage_sha256: a13384c23487ac50c7cf73f937f634316911e04edbbf556e638cce6c80b15f6e
+  context_before: This repository uses “Decision Graph” as a working project title.
+    The UI currently displays “Waypoint” as a provisional label; product branding
+    remains open.
+  context_after: 'Docker Compose starts three services:'
+  display_line: 5
+text: Decision Graph turns repository Markdown into a portable, reviewable architecture
+  graph. It discovers ADRs, RFCs, design notes, and other Markdown without requiring
+  a particular template. The source documents and validated YAML under `.decision/`
+  are canonical; SQLite and Qdrant are disposable indexes.
+state: current

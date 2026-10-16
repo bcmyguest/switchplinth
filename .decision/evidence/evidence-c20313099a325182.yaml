@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-c20313099a325182
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Evidence records and references
+  normalized_passage_sha256: d7b412e22862e15cc2f1a060dd4fda40c3dec3ada6bf01374669d0a17e310e47
+  context_before: nces, and model connection IDs by purpose; it excludes credentials.
+    `instructions.md` contains human extraction hints, not required syntax for source
+    documents.
+  context_after: '```yaml schema_version: decision/v1 record_type: evidence id: evidence-01j-example
+    source: path: docs/platform.md git_blob: null # null when Git is unavailable '
+  display_line: 30
+text: Evidence is canonical so multiple claims, aliases, decisions, options, and consequences
+  can refer to one source anchor without copying it or relying on a dangling ID. Every
+  evidence ID must resolve to exactly one `.decision/evidence/<id>.yaml` record. On
+  relocation, retain that record's ID when the passage match is unambiguous. Claim
+  status and evidence identity remain separate.
+state: current

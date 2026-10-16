@@ -1,0 +1,9 @@
+schema_version: decision/v1
+record_type: alias
+id: alias-07d3b0fd71a146e3
+entity_id: entity-8bcf11933046c744
+name: kafka
+epistemic_state: inferred
+confidence: 0.85
+evidence:
+- evidence-1229e380f3c20fc8

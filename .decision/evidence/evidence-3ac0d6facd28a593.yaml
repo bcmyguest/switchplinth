@@ -1,0 +1,30 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-3ac0d6facd28a593
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Identity, relocation, and migration
+  normalized_passage_sha256: 046b70294559df2d01526bc26a127cf860ee820adb806365dd91bee2b4d63c36
+  context_before: guous relocation creates a reviewable unresolved anchor rather than
+    silently attaching evidence to a different passage. Display lines are optional
+    conveniences.
+  context_after: '- Copy `.decision/` and Markdown into a fresh checkout; no local
+    index files are required to compile. - Delete generated SQLite/Qdrant data and
+    rebuild indexes '
+  display_line: 197
+text: Each record declares `schema_version` and `record_type`. `.decision/schema/record-v1.schema.json`
+  validates the shared envelope and supported record shapes, including typed operation
+  payloads. The V0 runtime validates fields it uses and checks evidence IDs, entity
+  IDs, decision options, and scenario selections. Although the v1 JSON Schema permits
+  additional top-level fields, the runtime ignores fields it does not define or consume;
+  in particular, decision `context_evidence` and `claims` are not supported v1 relations.
+  No v1-to-v2 migration exists. Any future migration must be an explicit deterministic
+  transformation that preserves IDs and produces reviewable diffs. Never silently
+  rewrite unknown/future versions. Application import validates portable records against
+  the schema; this checkout has no CI configuration.
+state: current

@@ -1,0 +1,19 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-433ecbdd6594221f
+source:
+  path: synthetic/decisions/storage.md
+  git_blob: null
+  content_sha256: 31d7bb71f50bc2ec970ddd8fe37aec2714d5521a8d3a46a1e4228060fcb7dfe3
+location:
+  heading_path:
+  - Order service persistence
+  - Considered alternative
+  normalized_passage_sha256: 2e7e7a16837bc790a3617a7aa6919f65fa3d85699b036fe0b0945d6a0c1e9645
+  context_before: We selected PostgreSQL for the Order Service. PostgreSQL keeps order
+    updates transactional and supports reporting queries without a separate store.
+  context_after: ''
+  display_line: 13
+text: Redis is useful for short lived cache data but does not replace the durable
+  order database.
+state: current

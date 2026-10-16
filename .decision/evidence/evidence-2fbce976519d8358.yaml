@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-2fbce976519d8358
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 4: derived indexes and grounded retrieval'
+  normalized_passage_sha256: d2dcc897a251bc4672b35058d01aa2e4e7e499a5a043c6f992f3bb35c6e63b44
+  context_before: der was used. Anthropic-specific structured-output and streaming
+    probes are not implemented and are reported as unverified errors, not unsupported
+    capabilities.
+  context_after: 'Verification: backend tests delete/recreate SQLite index state,
+    validate Qdrant collection recreation, verify provider vectors are used consistently
+    for indexin'
+  display_line: 42
+text: '- [x] Build disposable SQLite index and Qdrant collections from canonical Markdown
+  and overlay. - [x] Implement lexical retrieval, configured provider embeddings for
+  Qdrant, deterministic local vector fallback, entity/alias resolution, graph expansion,
+  provenance-aware ranking, and grounded answer shape. - [x] Add explicit full rebuild
+  path and index version tracking. - [x] Verify per-repository Qdrant collection recreation/isolation
+  in the current Compose image and the seeded “Why are we using Kafka?” answer with
+  focused evidence after scan.'
+state: current

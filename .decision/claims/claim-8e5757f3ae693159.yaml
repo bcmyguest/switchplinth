@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-8e5757f3ae693159
+subject: entity-8bcf11933046c744
+predicate: mentioned_in
+object: docs/PRODUCT_SPEC.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: docs/PRODUCT_SPEC.md
+evidence:
+- evidence-1b651d64bf395109

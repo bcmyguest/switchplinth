@@ -1,0 +1,24 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-b7a3b56047f30e40
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Decision evidence and consequences
+  normalized_passage_sha256: 55fb987b3ae7c5652bb54783f8bde4066093ea40509ffc7a9c25b336ef2bd7e6
+  context_before: 'nsequence as a claim with the decision or entity as its subject,
+    `consequence` as its predicate, a descriptive value as its object, and the supporting
+    evidence:'
+  context_after: The `evidence-kafka-rationale` and `evidence-sqs-rationale` IDs in
+    the option example are separate files under `.decision/evidence/`, each using
+    the canonical e
+  display_line: 123
+text: '```yaml schema_version: decision/v1 record_type: claim id: claim-kafka-replay-consequence
+  subject: decision-messaging predicate: consequence object: Event replay remains
+  available for downstream recovery. epistemic_state: inferred confidence: 0.82 evidence:
+  [evidence-kafka-rationale] ```'
+state: current

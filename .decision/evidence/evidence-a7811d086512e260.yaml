@@ -1,0 +1,27 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-a7811d086512e260
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Provider configuration
+  normalized_passage_sha256: 59d51d54ce123ca0dc3c48cb648945358849f7d4859699d05091ca6f07fcd24d
+  context_before: ' IDs. Evidence is required for inferred propositions. Human-authored
+    statements may omit it when they are explicit assertions rather than source-derived
+    claims.'
+  context_after: '```yaml schema_version: decision/v1 record_type: model_connection
+    id: model-local-main provider: openai_compatible endpoint: http://host.docker.internal:1234/v1'
+  display_line: 100
+text: The public model connection contract is provider-neutral and contains no credentials.
+  `provider` selects an adapter name; hosted OpenAI and Anthropic use their provider
+  endpoints, while `endpoint` configures compatible/local providers; `model` names
+  the inference model. An optional `embedding_model` names a distinct vector model
+  when `capabilities.embeddings` is enabled. Diagnostics probe embeddings only when
+  that model is supplied, otherwise they report embeddings as unsupported. Credential
+  references resolve from runtime environment/secret storage and never inline secret
+  material.
+state: current

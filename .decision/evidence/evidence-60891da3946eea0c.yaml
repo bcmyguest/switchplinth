@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-60891da3946eea0c
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 908fc06fa0411247422c44676dcb2dba5490754f5e8d85b5b1ec054564877b21
+location:
+  heading_path:
+  - Portable repository format
+  - Entity and alias records
+  normalized_passage_sha256: 7aa08c91eb570aa1c23de175bd00b692dfea473a5de90b6b343022cf6943cd8b
+  context_before: ' source text. `asserted` records a human override and may optionally
+    reference the inference it supersedes. Human edits outrank model output during
+    compilation.'
+  context_after: '```yaml schema_version: decision/v1 id: alias-kafka-short entity_id:
+    entity-kafka name: Kafka epistemic_state: inferred confidence: 0.97 evidence:
+    [evidence-01j'
+  display_line: 67
+text: '```yaml schema_version: decision/v1 id: entity-kafka kind: technology name:
+  Apache Kafka description: Distributed event streaming platform ```'
+state: unresolved

@@ -1,0 +1,22 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-97fedfa0ff58adda
+source:
+  path: docs/ARCHITECTURE.md
+  git_blob: null
+  content_sha256: ce2a2c5d1b92c9ebebe3a2c51c17bf5146e6f6d16fca4cf9aa024b99b86e6482
+location:
+  heading_path:
+  - Architecture
+  - Runtime shape
+  normalized_passage_sha256: decb14715d67ad21ccf935216f60f54bb4566d881e5d49de47eab21d08dcab8d
+  context_before: ''
+  context_after: 'Docker Compose runs three distinct services: `frontend`, `backend`,
+    and `qdrant`. The frontend uses React, TypeScript, shadcn/ui, Tailwind, and `@xyflow/react` '
+  display_line: 5
+text: '```mermaid flowchart LR UI[React + TypeScript UI] --> API[FastAPI] API -->
+  DOM[Domain and compiler] DOM --> PORT[Repository Markdown + .decision YAML] API
+  --> IDX[SQLite disposable index] API --> VEC[Qdrant disposable vectors] API -->
+  LLM[Provider abstraction] LLM --> LIT[LiteLLM adapter] API --> MCP[MCP interface]
+  ```'
+state: current

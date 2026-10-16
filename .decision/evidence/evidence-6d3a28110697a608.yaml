@@ -1,0 +1,26 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-6d3a28110697a608
+source:
+  path: docs/V0_PLAN.md
+  git_blob: null
+  content_sha256: daf38ef129f06b4802d4610981c662d390395452b044b07fdffb34ffcb0934b8
+location:
+  heading_path:
+  - V0 implementation plan
+  - 'Milestone 6: MCP and end-to-end acceptance'
+  normalized_passage_sha256: 1804240d07a4097c33a0d98479a29b0b4cad5724de1a7ef762c448162aa34b58
+  context_before: ed over streamable HTTP. Local OpenAI-compatible mock tests exercised
+    real LiteLLM; no external provider credentials or external-provider diagnostics
+    were used.
+  context_after: 'UI-PANELS independent live gate 11: Playwright 1.58.2 ran against
+    a disposable repository graph in Chromium and Firefox. Each browser passed 14/14
+    layout/intera'
+  display_line: 70
+text: 'Additional synthetic fixture verification: a real Markdown scan sent one structured
+  extraction request to the configured OpenAI-compatible test endpoint and saved two
+  entities, three claims, one evidence record, and one decision. A subsequent rebuild
+  report records nine canonical YAML files preserved byte-for-byte, the index and
+  collection restored, and grounded retrieval available both before and after. This
+  fixture used a test endpoint; external provider interoperability remains unverified.'
+state: current

@@ -1,0 +1,10 @@
+*
+!Dockerfile
+!pyproject.toml
+!README.md
+!uv.lock
+!src/
+!src/**/*.py
+src/**/__pycache__/
+src/**/*.pyc
+src/**/.pytest_cache/

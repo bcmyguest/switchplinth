@@ -1,0 +1,30 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-4c10d7394a1f5f9d
+source:
+  path: docs/PRODUCT_SPEC.md
+  git_blob: null
+  content_sha256: 393a04b5645ca5f4e40982ac90a8502b8c0cad65a523455e7934b40a5be33692
+location:
+  heading_path:
+  - Product specification
+  - Unresolved choices
+  normalized_passage_sha256: 6be54974b87399680271dbbd105a5fb29ca1918fd75d0b29a9857ce39a87a56c
+  context_before: liases as claims, represent options as operation deltas, and defer
+    code analysis. Where the discussion did not settle a detail, the choice remains
+    listed below.
+  context_after: ''
+  display_line: 75
+text: '- Which repositories/remotes and path-selection UX are supported at first launch
+  (local filesystem repository is the V0 baseline). - Whether provider credentials
+  are held only in environment/runtime secrets or can be stored locally encrypted;
+  never write secrets into portable YAML. - Default Markdown exclusions, maximum file
+  size, and whether PDFs or other formats are added after V0. - The precise API/MCP
+  transport and authentication boundary for local and remote clients. - Initial delta
+  operation vocabulary beyond add/remove/replace entity or relationship; operation
+  preconditions and conflict policy need implementation-time validation. - Exact thresholds
+  and interaction for scenario recomputation latency and alias/entity merge suggestions.
+  - Whether scenario records are committed as canonical files by default or treated
+  as user-selected saved artifacts. - Which real provider receives first-class acceptance
+  coverage; configuration remains provider-neutral.'
+state: current

@@ -1,0 +1,19 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-069a55173fc8856e
+source:
+  path: .agents/skills/maintain-task-ledger/SKILL.md
+  git_blob: null
+  content_sha256: 31e6ac47472a50a0fe95903804d3a5a5f6b59f9185b9da9bf33dd364060889f0
+location:
+  heading_path:
+  - Maintain Task Ledger
+  normalized_passage_sha256: 2a7ccda2afeccec2791ae40c41a249eefe290b285606fd393339af62c456eebe
+  context_before: Use `.tasks/ledger.md` to track substantial repository tasks across
+    turns and agents.
+  context_after: '- Stable task ID and outcome. - Blockers, owner, and any required
+    reviewer gate. - Status: `open`, `in_progress`, `blocked`, `in_review`, `completed`,
+    or `defer'
+  display_line: 10
+text: 'For each task, record:'
+state: unresolved

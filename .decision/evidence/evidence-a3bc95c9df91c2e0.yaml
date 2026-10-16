@@ -1,0 +1,20 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-a3bc95c9df91c2e0
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Common claim and evidence shape
+  normalized_passage_sha256: 5629017a03c892d03c35b8429397e319a9c8eae36c410f4b9a07d61a3361ac08
+  context_before: ' SHA-256 of the case-folded, whitespace-collapsed `text`. The content
+    hash is SHA-256 of the source file bytes; the example value above is a format
+    placeholder.'
+  context_after: '```yaml schema_version: decision/v1 record_type: claim id: claim-01j-example
+    subject: decision-messaging predicate: motivated_by object: event-replay-requiremen'
+  display_line: 53
+text: 'Illustrative YAML (field names are normative for V0; examples are illustrative):'
+state: current

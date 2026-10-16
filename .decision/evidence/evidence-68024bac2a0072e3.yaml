@@ -1,0 +1,20 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-68024bac2a0072e3
+source:
+  path: .agents/skills/maintain-task-ledger/SKILL.md
+  git_blob: null
+  content_sha256: 31e6ac47472a50a0fe95903804d3a5a5f6b59f9185b9da9bf33dd364060889f0
+location:
+  heading_path:
+  - Maintain Task Ledger
+  normalized_passage_sha256: 48385108ec6f4f12e3e37f36a2543f8c36574c1ecc796346c7201f3768f7e42a
+  context_before: ', or completes. Do not mark a task complete until its acceptance
+    criteria pass. Keep completed work as a short evidence record; keep unresolved
+    work actionable.'
+  context_after: ''
+  display_line: 20
+text: Use the ledger as the source for status reports, context-compaction notes, and
+  handoffs. Summarize only active blockers, decisions, verification, reviewer gates,
+  and next actions; do not reconstruct state from chat when the ledger has it.
+state: unresolved

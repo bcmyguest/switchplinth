@@ -1,0 +1,11 @@
+schema_version: decision/v1
+record_type: claim
+id: claim-89c7a6f5d5187b85
+subject: entity-0ad8c3795bf9c830
+predicate: mentioned_in
+object: smoke-repo/notes.md
+epistemic_state: inferred
+confidence: 0.99
+source_path: smoke-repo/notes.md
+evidence:
+- evidence-0ee34e7059919a57

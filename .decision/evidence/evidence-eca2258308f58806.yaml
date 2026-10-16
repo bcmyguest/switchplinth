@@ -1,0 +1,29 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-eca2258308f58806
+source:
+  path: docs/PORTABLE_FORMAT.md
+  git_blob: null
+  content_sha256: 2c9d96c6bb21be54903a53ef0679cd5172f9d26c48b15c531c5155b9c9c48526
+location:
+  heading_path:
+  - Portable repository format
+  - Proposed layout
+  normalized_passage_sha256: 7e32947a24a1a737b2a7ccd087066f393abfe2229689775e8b1d871ddc64cc37
+  context_before: ' scenarios/<scenario-id>.yaml connections/<connection-id>.yaml
+    agents/<agent-id>.yaml # optional external coding-agent connection references
+    instructions.md ```'
+  context_after: Evidence is canonical so multiple claims, aliases, decisions, options,
+    and consequences can refer to one source anchor without copying it or relying
+    on a dangli
+  display_line: 26
+text: One record per file supports focused diffs and merges. Human-authored IDs should
+  be stable opaque slugs/UUIDs rather than mutable display names. V0 inferred entity
+  IDs are deterministic from case-folded names, and inferred alias IDs include the
+  entity ID and alias name; renaming an extracted entity or alias can create a new
+  ID. Evidence anchors use separate source/content/structure identity and can survive
+  such renames when the same passage relocates unambiguously. `config.yaml` selects
+  a schema version, extraction/index preferences, and model connection IDs by purpose;
+  it excludes credentials. `instructions.md` contains human extraction hints, not
+  required syntax for source documents.
+state: current

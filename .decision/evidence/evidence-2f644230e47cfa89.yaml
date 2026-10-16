@@ -1,0 +1,19 @@
+schema_version: decision/v1
+record_type: evidence
+id: evidence-2f644230e47cfa89
+source:
+  path: backend/README.md
+  git_blob: null
+  content_sha256: e784589337622a49baf54d5ff138d89cab7127e980ea937df5cfe722e981420c
+location:
+  heading_path:
+  - Decision Graph backend
+  normalized_passage_sha256: dee8b55970cd3f04edd5fd368fa0ca88f0d62e699f56ee10442e6b7c2a786be0
+  context_before: ''
+  context_after: 'Run tests with `uv run --python 3.12 pytest -q`. The service uses
+    `DECISION_REPO` for the repository containing Markdown and `.decision/`, `DECISION_CACHE`
+    for '
+  display_line: 3
+text: FastAPI service and portable-data compiler for Decision Graph. Python 3.12 is
+  the supported runtime.
+state: current

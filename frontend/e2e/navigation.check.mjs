@@ -9,7 +9,7 @@ import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE ?? 'playwright')
 const BASE = process.env.BASE_URL ?? 'http://127.0.0.1:5173'
-const SETTLE_MS = 1500
+const FOCUS_TIMEOUT_MS = 10000
 
 async function openPage(browser, hash) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
@@ -31,6 +31,21 @@ function viewportTransform(page) {
 /** The selected option title per decision, read from the What-if option buttons (rendered even while hidden). */
 function pressedOptions(page) {
   return page.locator('.decision-select').evaluateAll((sections) => sections.map((section) => section.querySelector('button[aria-pressed="true"] span')?.textContent ?? null))
+}
+
+/** Waits until the picker marks `title` as the current location, its active option has focus, and the smooth scroll has
+ * brought every option of that decision inside the What-if panel. */
+function waitForDecisionFocused(page, title) {
+  return page.waitForFunction((title) => {
+    const picker = [...document.querySelectorAll('button[aria-current="location"]')].some((button) => button.getAttribute('aria-label') === `Jump to ${title} options`)
+    const section = [...document.querySelectorAll('.decision-select')].find((element) => [...(element.querySelector('.decision-name')?.childNodes ?? [])].some((node) => node.nodeType === Node.TEXT_NODE && node.textContent === title))
+    if (!picker || !section) return false
+    const active = document.activeElement
+    if (!section.contains(active) || active.getAttribute('aria-pressed') !== 'true') return false
+    const panel = section.closest('.scenario-panel').getBoundingClientRect()
+    const options = [...section.querySelectorAll('button[aria-pressed]')].map((button) => button.getBoundingClientRect())
+    return options.length > 0 && options.every((box) => box.height > 0 && box.top >= Math.max(panel.top, 0) && box.bottom <= Math.min(panel.bottom, window.innerHeight))
+  }, title, { timeout: FOCUS_TIMEOUT_MS })
 }
 
 async function assertDecisionFocused(page, title) {
@@ -55,7 +70,7 @@ async function checkExploreFullScenario(browser) {
   const entries = page.locator('.log-entry')
   const title = await entries.last().locator('h3').evaluate((element) => element.firstChild.textContent)
   await entries.last().getByRole('button', { name: /Explore full scenario/ }).click()
-  await page.waitForTimeout(SETTLE_MS)
+  await waitForDecisionFocused(page, title)
   assert.equal(await heading(page), 'Architecture', 'Explore full scenario opens the Architecture map')
   assert.ok(await page.locator('.react-flow').first().isVisible(), 'the system map is visible')
   assert.ok(await page.getByRole('button', { name: 'Close What-if panel' }).isVisible(), 'the What-if panel is open')

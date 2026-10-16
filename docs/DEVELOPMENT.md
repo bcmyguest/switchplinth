@@ -115,7 +115,7 @@ cd backend && uv run --locked --python 3.12 switchplinth mcp --repo /path/to/rep
 
 Stdio keeps passage vectors in an in-process index, rebuilt at startup, instead of Qdrant. Unless exactly one non-Anthropic connection sets `capabilities.embeddings: true` with an `embedding_model`, the index uses deterministic token-hash vectors and search reports `semantic_index.mode: deterministic_local`; these vectors are not semantic embeddings. With exactly one such connection, startup and each search call that model; if it is unreachable, vector search reports an error and lexical search still answers.
 
-To register it with an MCP client, use the command above with an absolute `--repo` path, or install the backend wheel and run `switchplinth mcp --repo PATH`. The server reports the MCP name `io.github.bcmyguest/switchplinth`.
+To register it with an MCP client, use the command above with an absolute `--repo` path, or install the backend wheel and run `switchplinth mcp --repo PATH`. The server reports the MCP name `io.github.bcmyguest/switchplinth` and the package version from `backend/pyproject.toml`. To run it from Docker over the bundled food-delivery fixture, with no network, run `docker build -f Dockerfile.mcp -t switchplinth-mcp .` from the repository root and then `docker run -i --rm --network none switchplinth-mcp`.
 
 ## Portable data and generated state
 

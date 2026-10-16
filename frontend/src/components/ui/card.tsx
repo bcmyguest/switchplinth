@@ -1,8 +1,11 @@
+import { Slot } from '@radix-ui/react-slot'
 import type { ComponentProps } from 'react'
 import { cn } from '../../lib/utils'
 
-export function Card({ className, ...props }: ComponentProps<'div'>) {
-  return <div data-slot="card" className={cn('flex flex-col gap-6 rounded-xl border border-(--theme-line) bg-(--theme-panel) py-6 text-(--theme-ink) shadow-sm', className)} {...props} />
+/** `asChild` renders the card styling on the single child element (for example an `<article>` or `<section>`). */
+export function Card({ className, asChild = false, ...props }: ComponentProps<'div'> & { asChild?: boolean }) {
+  const Component = asChild ? Slot : 'div'
+  return <Component data-slot="card" className={cn('flex flex-col gap-6 rounded-xl border border-(--theme-line) bg-(--theme-panel) py-6 text-(--theme-ink) shadow-sm', className)} {...props} />
 }
 
 export function CardHeader({ className, ...props }: ComponentProps<'div'>) {

@@ -8,7 +8,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.exceptions import ToolError
 from mcp.types import ToolAnnotations
 
-from switchplinth import MCP_SERVER_NAME
+from switchplinth import MCP_SERVER_NAME, __version__
 from switchplinth.service import DecisionService
 
 SERVER_INSTRUCTIONS = (
@@ -89,5 +89,7 @@ def register_tools(server: FastMCP, get_service: Callable[[], DecisionService]) 
 def create_mcp_server(get_service: Callable[[], DecisionService]) -> FastMCP:
     """Build a FastMCP server exposing the decision tools for any transport."""
     server = FastMCP(MCP_SERVER_NAME, instructions=SERVER_INSTRUCTIONS)
+    # FastMCP takes no version argument; without this, serverInfo.version reports the MCP SDK version.
+    server._mcp_server.version = __version__
     register_tools(server, get_service)
     return server

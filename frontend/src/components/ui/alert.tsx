@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react'
 import { cn } from '../../lib/utils'
 
 const alertVariants = cva(
-  'relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
+  'relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-[6px] border px-[12px] py-[10px] text-(length:--type-tertiary) has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
   {
     variants: {
       variant: {
@@ -28,5 +28,5 @@ export function AlertTitle({ className, ...props }: ComponentProps<'div'>) {
 }
 
 export function AlertDescription({ className, ...props }: ComponentProps<'div'>) {
-  return <div data-slot="alert-description" className={cn('col-start-2 grid justify-items-start gap-1 text-sm text-(--theme-muted) [&_p]:leading-relaxed', className)} {...props} />
+  return <div data-slot="alert-description" className={cn('col-start-2 grid justify-items-start gap-1 text-(length:--type-tertiary) text-(--theme-muted) [&_p]:leading-relaxed', className)} {...props} />
 }

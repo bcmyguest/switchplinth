@@ -53,7 +53,7 @@ export function ArchitectureLogPage({ graph, scenario, evidenceRecords, evidence
           const needsDeltaReview = decision.extraction_review?.rejected_options.some((item) => item.option_id === option.id) ?? false
           const optionEvidence = option.evidence?.map((reference) => resolveEvidence(reference, evidenceRecords)).find((item): item is Evidence => Boolean(item))
           return <div className="log-alternative grid gap-[5px] border-t border-(--theme-line) pt-[8px]" key={option.id}>
-            <Button type="button" variant="ghost" aria-pressed="false" className="flex! items-center justify-between gap-[6px] rounded-[5px] border border-(--theme-line) bg-(--theme-panel)! px-[9px] py-[7px] text-left text-(length:--type-secondary)! font-[650]! text-(--theme-source)! hover:not-disabled:bg-(--theme-hover)! disabled:bg-(--theme-panel-raised)! disabled:text-(--theme-muted)! max-sm:min-h-[44px]! max-sm:w-full" disabled={scenarioResolutionPending || scanState === 'scanning'} onClick={() => { setActiveScenarioDecisionId(decision.id); void chooseOption(decision, option.id) }}>Preview {option.title}<ArrowRight size={12} /></Button>
+            <Button type="button" variant="choice" aria-pressed="false" className="justify-between text-(length:--type-secondary) font-[650] text-(--theme-source) disabled:bg-(--theme-panel-raised) disabled:text-(--theme-muted) max-sm:min-h-[44px] max-sm:w-full" disabled={scenarioResolutionPending || scanState === 'scanning'} onClick={() => { setActiveScenarioDecisionId(decision.id); void chooseOption(decision, option.id) }}>Preview {option.title}<ArrowRight size={12} /></Button>
             <Badge variant={needsDeltaReview ? 'warning' : option.id === savedOptionId ? 'secondary' : 'outline'} className={needsDeltaReview ? undefined : 'text-(--theme-muted)'}>{needsDeltaReview ? 'Delta review required' : option.id === savedOptionId ? 'Saved choice' : 'Alternative'}</Badge>
             {option.rationale && <p className={BODY_TEXT}>{option.rationale}</p>}
             {optionEvidence && <LogSourceLink onOpen={() => openEvidenceDetail(optionEvidence)}>Open cited passage · {evidencePath(optionEvidence)} · {evidenceHeading(optionEvidence)}</LogSourceLink>}
@@ -61,7 +61,7 @@ export function ArchitectureLogPage({ graph, scenario, evidenceRecords, evidence
           </div>
         })}{!decision.options.some((option) => option.id !== selectedOptionId) && <p className={BODY_TEXT}>No alternatives are recorded.</p>}</div>
         {decision.derived?.consequences.length ? <DecisionConsequences statements={decision.derived.consequences} previewing={previewing} {...passage} /> : null}
-        <Button variant="link" className="justify-self-start px-0!" onClick={() => exploreDecision(decision.id)}>Explore full scenario <ArrowRight size={13} /></Button>
+        <Button variant="link" className="justify-self-start px-0" onClick={() => exploreDecision(decision.id)}>Explore full scenario <ArrowRight size={13} /></Button>
       </div></article></Card>
     })}</div> : <div className="empty-state">No decisions are available yet. Discover decisions from repository Markdown.</div>}
   </PageCard>

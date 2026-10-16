@@ -22,8 +22,8 @@ import {
 const FILTERS = ['all', ...REVIEW_KINDS] as const
 const FILTER_LABELS: Record<ReviewFilter, string> = { all: 'All', claim: 'Claims', alias: 'Aliases', identity: 'Identity' }
 const KIND_LABELS: Record<ReviewKind, string> = { claim: 'Claim', alias: 'Alias', identity: 'Identity link' }
-// App CSS is unlayered and overrides Tailwind utilities on `ui-button-*`; `!` keeps these action buttons readable in both themes.
-const ACTION_BUTTON = 'inline-flex! items-center gap-1.5! rounded-md border border-(--theme-line) bg-(--theme-panel)! px-3! text-(length:--type-control)! font-semibold text-(--theme-ink) hover:bg-(--theme-hover)! disabled:cursor-not-allowed! disabled:opacity-60'
+/** Bordered review-log action (Refresh, Retry, Undo), readable in both themes. */
+const ACTION_BUTTON = 'inline-flex items-center gap-1.5 rounded-md border border-(--theme-line) bg-(--theme-panel) px-3 text-(length:--type-control) font-semibold text-(--theme-ink) hover:bg-(--theme-hover) disabled:cursor-not-allowed disabled:opacity-60'
 
 type ReviewFilter = typeof FILTERS[number]
 

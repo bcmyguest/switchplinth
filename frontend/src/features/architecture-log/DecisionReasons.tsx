@@ -17,7 +17,7 @@ type PassageProps = {
 
 /** Full-width source-passage link used across a log entry. Keeps the `.log-source-link` hook class that gates select. */
 export function LogSourceLink({ onOpen, children }: { onOpen: (opener: HTMLElement) => void; children: ReactNode }) {
-  return <Button type="button" variant="ghost" size="sm" className="log-source-link flex! w-full items-start gap-[6px]! px-0! py-[4px]! text-left text-(length:--type-secondary)! leading-[1.4]! text-(--theme-source)! [overflow-wrap:anywhere] [&>svg]:mt-px [&>svg]:flex-none" onClick={(event) => onOpen(event.currentTarget)}>
+  return <Button type="button" variant="ghost" size="sm" className="log-source-link flex w-full items-start gap-[6px] px-0 py-[4px] text-left text-(length:--type-secondary) leading-[1.4] text-(--theme-source) [overflow-wrap:anywhere] [&>svg]:mt-px [&>svg]:flex-none" onClick={(event) => onOpen(event.currentTarget)}>
     <FileText size={13} />{children}<ArrowUpRight size={13} />
   </Button>
 }

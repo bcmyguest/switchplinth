@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Background, Controls, MiniMap, ReactFlow, ReactFlowProvider, type Edge, type ReactFlowInstance } from '@xyflow/react'
 import { ArrowRight, GitCommitHorizontal, Maximize2, Minimize2 } from 'lucide-react'
+import { Button } from '../../components/ui/button'
 import { Select } from '../../components/ui/select'
 import { EDGE_TYPES, NODE_TYPES } from '../../map/flowTypes'
 import { entityEdges, entityNodes } from '../../map/projection'
@@ -95,7 +96,7 @@ export function ArchitectureMapCanvas({ graph, mapGraph, live, theme, selectedEn
     <div className="graph-breadcrumb"><span>Architecture</span><ArrowRight size={12} /><span>Services & infrastructure</span><div className="graph-filter"><span className="source-dot green" /><Select aria-label="All evidence source documents" value="" onChange={(event) => {
       const source = sourceDocumentChoices.find((item) => evidencePath(item) === event.target.value)
       if (source) onOpenEvidence(source)
-    }}><option value="">All evidence</option>{sourceDocumentChoices.map((item) => <option key={item.id} value={evidencePath(item)}>{evidencePath(item)} · {evidenceHeading(item)}</option>)}</Select></div><button type="button" ref={mapFullscreen.toggleRef} className="map-fullscreen-toggle" aria-pressed={mapFullscreen.fullscreen} aria-label={mapFullscreen.fullscreen ? 'Exit full-screen map' : 'Open map full screen'} title={mapFullscreen.fullscreen ? 'Exit full screen (Esc)' : 'Full screen'} onClick={mapFullscreen.toggle}>{mapFullscreen.fullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}</button></div>
+    }}><option value="">All evidence</option>{sourceDocumentChoices.map((item) => <option key={item.id} value={evidencePath(item)}>{evidencePath(item)} · {evidenceHeading(item)}</option>)}</Select></div><Button type="button" variant="icon" size="icon" ref={mapFullscreen.toggleRef} className="map-fullscreen-toggle ml-[8px] size-[32px] flex-none border border-(--theme-line) bg-(--theme-panel-raised) p-0 text-(--theme-ink) hover:bg-(--theme-hover) aria-pressed:border-(--theme-brand) aria-pressed:bg-(--theme-selected)" aria-pressed={mapFullscreen.fullscreen} aria-label={mapFullscreen.fullscreen ? 'Exit full-screen map' : 'Open map full screen'} title={mapFullscreen.fullscreen ? 'Exit full screen (Esc)' : 'Full screen'} onClick={mapFullscreen.toggle}>{mapFullscreen.fullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}</Button></div>
     <div className="graph-canvas" ref={graphCanvasRef} style={{ height: mapFullscreen.fullscreen ? undefined : architectureMap.canvasHeight }}>
       <ReactFlowProvider>
         <div className="graph-flow-viewport" data-testid="graph-flow-viewport">
@@ -108,6 +109,6 @@ export function ArchitectureMapCanvas({ graph, mapGraph, live, theme, selectedEn
       <div className="selection-hint"><span className="hint-ring" /> Drag a handle to connect; select an edge and press Delete to remove it</div>
     </div>
     {children}
-    <div className="graph-footer"><span><GitCommitHorizontal size={13} /> {live ? 'Compiled from repository files' : 'Sample graph · changes are not saved'}</span><span>Source: <strong>{live ? `${currentSourceCount(graph.evidence)} Markdown files` : 'synthetic sample'}</strong></span><button type="button" onClick={mapFullscreen.toggle} aria-pressed={mapFullscreen.fullscreen}>{mapFullscreen.fullscreen ? <>Exit full screen <Minimize2 size={13} /></> : <>Open full screen <Maximize2 size={13} /></>}</button></div>
+    <div className="graph-footer"><span><GitCommitHorizontal size={13} /> {live ? 'Compiled from repository files' : 'Sample graph · changes are not saved'}</span><span>Source: <strong>{live ? `${currentSourceCount(graph.evidence)} Markdown files` : 'synthetic sample'}</strong></span><Button type="button" variant="ghost" className="ml-auto flex items-center gap-[5px] p-0 text-(length:--type-tertiary) leading-[1.45] text-(--theme-brand) max-sm:ml-0" onClick={mapFullscreen.toggle} aria-pressed={mapFullscreen.fullscreen}>{mapFullscreen.fullscreen ? <>Exit full screen <Minimize2 size={13} /></> : <>Open full screen <Maximize2 size={13} /></>}</Button></div>
   </div>
 }

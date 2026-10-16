@@ -35,13 +35,13 @@ export function DecisionLinkList({ decisions, evidence, onOpenEvidence, onChoose
             const source = option.evidence?.map((reference) => resolveEvidence(reference, evidence)).find((item): item is Evidence => Boolean(item))
             return <div className={`linked-option-card ${isActive ? 'active' : 'alternative'}`} key={option.id}>
               <div className="linked-option-heading"><span className="linked-option">{option.title}</span><span className="linked-option-state">{isActive ? `Selected for ${decisionScope}` : `Alternative for ${decisionScope}`}{needsDeltaReview ? ' · review required' : ''}</span></div>
-              {!isActive && <Button type="button" variant="secondary" size="sm" className="linked-option-preview" disabled={disabled} onClick={() => onChooseOption(decision.id, option.id)}>Preview this option</Button>}
+              {!isActive && <Button type="button" variant="choice" size="sm" className="block justify-self-start bg-(--theme-panel-raised) py-[5px] text-center text-(length:--type-tertiary) font-[650] disabled:text-(--theme-muted) disabled:opacity-75 max-sm:w-full" disabled={disabled} onClick={() => onChooseOption(decision.id, option.id)}>Preview this option</Button>}
               {option.rationale && <p className="linked-option-rationale">{option.rationale}</p>}
-              {source && <button type="button" className="linked-evidence" title={`${evidencePath(source)} · ${evidenceHeading(source)}`} aria-label={`Open source passage ${evidencePath(source)}, ${evidenceHeading(source)}`} onClick={() => onOpenEvidence(source)}><FileText size={12} /><span>Open passage · {evidencePath(source)}</span><ArrowUpRight size={12} /></button>}
+              {source && <Button type="button" variant="ghost" className="flex min-h-[30px] w-full items-start gap-[5px] px-0 py-[4px] text-left text-[11px] leading-[1.3] text-(--theme-ink) max-sm:min-h-(--control-target) max-sm:text-(length:--type-tertiary) [&>span]:min-w-0 [&>span]:flex-1 [&>span]:text-(length:--type-tertiary) [&>span]:[overflow-wrap:anywhere] [&>svg]:mt-px [&>svg]:flex-none" title={`${evidencePath(source)} · ${evidenceHeading(source)}`} aria-label={`Open source passage ${evidencePath(source)}, ${evidenceHeading(source)}`} onClick={() => onOpenEvidence(source)}><FileText size={12} /><span>Open passage · {evidencePath(source)}</span><ArrowUpRight size={12} /></Button>}
             </div>
           })}
         </div>
-        <button type="button" className="linked-decision-explore" onClick={() => onExploreDecision(decision.id)}>Explore alternatives <ArrowRight size={13} /></button>
+        <Button type="button" variant="ghost" className="mt-[7px] inline-flex min-h-[36px] items-center gap-[5px] p-0 text-(length:--type-tertiary) whitespace-nowrap text-(--theme-ink) [&>svg]:flex-none" onClick={() => onExploreDecision(decision.id)}>Explore alternatives <ArrowRight size={13} /></Button>
       </article>
     })}
   </div>

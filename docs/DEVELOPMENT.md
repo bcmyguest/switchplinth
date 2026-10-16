@@ -177,6 +177,7 @@ First bootstrap the fixture into a new or empty directory (`cd backend && uv run
 - `features/architecture/`: Architecture page, map canvas, overlay panels (`useArchitecturePanels`), component detail, and map actions.
 - `features/scenarios/`, `features/graph-editor/`, `features/facts/`, `features/explore/`, `features/discovery/`, `features/evidence/`, `features/settings/`, `features/repository/`, `features/architecture-log/`, `features/progress/`, `features/review-log/`: one feature each.
 - `map/`: ReactFlow projection, layout, node and edge components, and the map and full-screen hooks.
+- `components/`: shared UI. `components/ui/` holds the primitives (Alert, Badge, Button, Card, Dialog, Input, Radio, Select, Textarea); Button variants (`choice`, `subtle`, `icon`, `link`, `outline`) carry the shared control styling; call sites add layout and local overrides. `components/InlineError.tsx` is the request-error line with an optional recovery action.
 
 A repository switch (`features/repository/useRepositorySwitch.ts`) calls each feature controller's `reset()` after the project opens; a failed open resets nothing.
 

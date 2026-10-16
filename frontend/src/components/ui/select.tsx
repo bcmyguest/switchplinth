@@ -15,7 +15,7 @@ export function Select({ value, onChange, className, children, ...props }: Selec
   const visibleOptions = options.filter((option) => option.props.value !== '')
 
   return <SelectPrimitive.Root value={String(value ?? '')} onValueChange={(next) => onChange?.({ target: { value: next } } as ChangeEvent<HTMLSelectElement>)}>
-    <SelectPrimitive.Trigger className={cn('ui-select-trigger', className)} aria-label={props['aria-label']} disabled={props.disabled}>
+    <SelectPrimitive.Trigger className={cn('ui-select-trigger inline-flex min-h-(--control-target) cursor-pointer items-center justify-between gap-[7px] text-left text-(length:--type-control) aria-expanded:border-(--theme-brand)', className)} aria-label={props['aria-label']} disabled={props.disabled}>
       <SelectPrimitive.Value placeholder={placeholder ?? 'Select an option'} />
       <SelectPrimitive.Icon><ChevronDown size={13} /></SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>

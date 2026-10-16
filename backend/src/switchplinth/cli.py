@@ -10,15 +10,17 @@ import hashlib
 import os
 import sys
 from pathlib import Path
+from typing import Mapping
 
 from switchplinth import DEFAULT_CACHE_ROOT, PRODUCT_NAME
 
 
-def _cache_for(root: Path, cache: Path | None) -> Path:
+def cache_for(root: Path, cache: Path | None = None, env: Mapping[str, str] | None = None) -> Path:
+    """Return the per-repository SQLite cache directory the stdio MCP server uses."""
     if cache is not None:
         return cache
     namespace = hashlib.sha256(root.as_posix().encode()).hexdigest()[:16]
-    return Path(os.environ.get("DECISION_CACHE", DEFAULT_CACHE_ROOT)) / namespace
+    return Path((os.environ if env is None else env).get("DECISION_CACHE", DEFAULT_CACHE_ROOT)) / namespace
 
 
 def open_stdio_service(repo: Path, cache: Path | None = None, scan: bool = False):
@@ -34,7 +36,7 @@ def open_stdio_service(repo: Path, cache: Path | None = None, scan: bool = False
     root = repo.resolve()
     if not root.is_dir():
         raise SystemExit(f"Repository directory not found: {root}")
-    service = DecisionService(root, _cache_for(root, cache), LocalVectorIndex())
+    service = DecisionService(root, cache_for(root, cache), LocalVectorIndex())
     if scan:
         service.scan()
     else:
@@ -57,7 +59,16 @@ def main(argv: list[str] | None = None) -> None:
     mcp.add_argument("--repo", type=Path, default=Path("."), help="repository directory with Markdown and .decision/ (default: current directory)")
     mcp.add_argument("--cache", type=Path, help=f"disposable SQLite cache directory (default: $DECISION_CACHE or {DEFAULT_CACHE_ROOT}, namespaced by repository)")
     mcp.add_argument("--scan", action="store_true", help="run deterministic mock extraction first; writes inferred records under .decision/")
+    from switchplinth.setup.plan import add_arguments as add_setup_arguments
+
+    setup = commands.add_parser("setup", help="interactive setup: repository, Docker or local mode, model connection, MCP client registration, and verification")
+    add_setup_arguments(setup)
     args = parser.parse_args(argv)
+    if args.command == "setup":
+        from switchplinth.setup.wizard import main as setup_main
+
+        setup_main(args)
+        return
     if args.command == "mcp":
         serve_mcp_stdio(args.repo, args.cache, args.scan)
         return

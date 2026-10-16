@@ -33,6 +33,8 @@ You need Docker with Compose v2 and curl.
 
 Then open <http://localhost:3000>. To extract with a local model, see [model providers](https://bcmyguest.github.io/switchplinth/docs/providers/).
 
+To point Switchplinth at your own repository and register its MCP server with your client, run `cd backend && uv run switchplinth setup` ([setup wizard](docs/DEVELOPMENT.md#setup-wizard)).
+
 ## How it works
 
 ![Pipeline from Markdown files through extraction, review, and the compiler to the map, search, and MCP](docs/assets/architecture-pipeline.svg)

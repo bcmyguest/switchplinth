@@ -117,6 +117,39 @@ Stdio keeps passage vectors in an in-process index, rebuilt at startup, instead 
 
 To register it with an MCP client, use the command above with an absolute `--repo` path, or install the backend wheel and run `switchplinth mcp --repo PATH`. The server reports the MCP name `io.github.bcmyguest/switchplinth` and the package version from `backend/pyproject.toml`. To run it from Docker over the bundled food-delivery fixture, with no network, run `docker build -f Dockerfile.mcp -t switchplinth-mcp .` from the repository root and then `docker run -i --rm --network none switchplinth-mcp`.
 
+## Setup wizard
+
+`switchplinth setup` picks a repository, starts it locally or in Docker, saves an optional model connection, runs the first scan, registers the stdio MCP server with one client, and checks that the server answers. Run it from `backend/`:
+
+```sh
+uv run --locked --python 3.12 switchplinth setup                 # asks each question
+uv run --locked --python 3.12 switchplinth setup --sample --yes  # food-delivery sample, local mode, print snippets
+```
+
+Each flag answers one question; `--yes` takes the defaults for the rest and accepts every confirmation except remounting a running Compose project (see below).
+
+- Repository: `--repo PATH`, or `--sample` for the food-delivery sample. The sample is bootstrapped once at `$DECISION_DEMO_WORKSPACE/food-delivery`, default `${XDG_CACHE_HOME:-~/.cache}/switchplinth-demo/food-delivery`, the same place `scripts/demo.sh` uses, and reused on later runs.
+- Mode: `--mode local` (default) opens the repository in-process with the stdio server's SQLite cache and needs no Docker. `--mode docker` builds and starts the Compose stack with the repository mounted, then saves the connection and scans through the HTTP API. `--project` names the Compose project (default `switchplinth-setup`, so it never collides with a plain `docker compose up` in the checkout, which is project `switchplinth`). `--frontend-port`, `--backend-port`, and `--qdrant-port` default to 3000, 8000, and 6333; a new project stops if any port is taken. Docker mode needs the source checkout.
+- Model: `--provider none|openai-compatible|openai|anthropic` (default `none`), `--endpoint`, `--model`, `--credential-env NAME`, `--reasoning-off`. The wizard lists the provider's models when it can reach them. It stores the key only as `credential_ref: env:NAME` and rejects anything that is not a variable name. For an OpenAI-compatible server it asks for the variable name, or `none` for a keyless local server. In Docker mode a loopback endpoint is rewritten to `host.docker.internal`, and the provider diagnostics run from inside the backend container.
+- Client: `--client claude-code|claude-desktop|cursor|vscode|print`. The default is `claude-code` when the `claude` CLI is on PATH, otherwise `print`, which prints every snippet and writes nothing. `--claude-scope user|local|project` (default `user`) sets the Claude Code scope.
+- `--no-scan` and `--no-verify` skip the first scan and the MCP `initialize`/`tools/list` check.
+
+Clients always get the local stdio command (`switchplinth mcp --repo PATH`, or `python -m switchplinth.cli` when the script is not on PATH), in Docker mode too. The container's HTTP `/mcp` is checked separately and is there for clients that speak HTTP.
+
+What it writes:
+
+- `<repo>/.decision/`: the portable files every repository gets on first open, the scan's inferred records, and `connections/` when a model is chosen.
+- Local mode: the SQLite cache under `$DECISION_CACHE` (default `/tmp/switchplinth-cache`), namespaced by repository.
+- Docker mode: `${XDG_CONFIG_HOME:-~/.config}/switchplinth/compose-<project>.env` with the project name, workspace, and ports, and, when a credential is set, `compose-<project>.override.yml`, which passes that variable from your shell into the backend. Neither file holds a key. The wizard never runs `down` or `prune`; the closing summary prints the stop command.
+- Claude Desktop, Cursor, and VS Code: the user-level JSON config (`~/.cursor/mcp.json`; `claude_desktop_config.json` and `Code/User/mcp.json` under `${XDG_CONFIG_HOME:-~/.config}` on Linux or `~/Library/Application Support` on macOS). The wizard shows a diff and asks first, copies the old file to `<file>.<UTC timestamp>.bak`, replaces only the `switchplinth` entry, and writes atomically. A file that is not valid JSON stops setup with nothing written.
+- Claude Code: the wizard runs `claude mcp get`, then `claude mcp add --scope <scope>`, after `claude mcp remove` from the scope the existing entry uses when that entry differs. Claude Code's own CLI writes its config, so the wizard takes no backup.
+
+A rerun with the same answers changes nothing: the sample is reused, an identical client entry is left alone, and a running project on the same workspace goes through `docker compose up` again with the same settings. If the target Compose project is already running with a different workspace, an interactive run asks before restarting it; with `--yes` it stops unless you pass `--replace-workspace`.
+
+On Windows the wizard writes no client config and runs no client CLI, `claude` included: every client prints its snippet or command for you to add. Docker mode is refused there; start the stack by hand with `docker compose up --build` and `DECISION_WORKSPACE_HOST`, or use `--mode local`.
+
+Exit codes: 0 when every step passed, 1 when a check failed or you declined the plan, 2 when setup stopped with a message, and 130 on Ctrl-C.
+
 ## Portable data and generated state
 
 Markdown and `.decision/` YAML are portable project data. Provider credentials are referenced through environment variable names such as `env:MODEL_API_KEY`; secret values are not written to YAML. Local `openai_compatible` endpoints may omit `credential_ref`; an explicit `env:` reference is preserved and used when configured. Blank optional connection fields are omitted from saved `model_connection` records. Inferred records retain evidence anchors and confidence, and human reviews are appended as superseding records.

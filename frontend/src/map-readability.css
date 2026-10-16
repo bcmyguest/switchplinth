@@ -15,8 +15,8 @@
 .graph-selection-summary.is-open,.architecture-scenario-open .scenario-panel{padding:18px}
 .graph-selection-summary .panel-kicker,.scenario-head .panel-kicker{font-size:11px;line-height:1.4;letter-spacing:.08em}
 .selection-summary-heading h3,.scenario-head h3{font-size:17px;line-height:1.3}
-.selection-summary-rationale>strong,.rationale-label{font-size:12px;line-height:1.4}
-.selection-summary-rationale p,.rationale-block p,.scenario-copy{font-size:14px;line-height:1.55}
+.selection-summary-rationale>strong{font-size:12px;line-height:1.4}
+.selection-summary-rationale p,.scenario-copy{font-size:14px;line-height:1.55}
 .decision-name{font-size:13px;line-height:1.45}
 .option-choice>button:first-child{font-size:13px;line-height:1.4;padding:8px 10px}
 .option-choice>button:first-child small{font-size:11px;line-height:1.35}
@@ -62,15 +62,7 @@
 .option-choice>button:first-child small{font-size:12px}
 
 /* Keep secondary map and overlay text subdued while meeting normal-text contrast. */
-.map-overview-line,.map-overview-line strong,.section-kicker,.graph-tools .legend,
-.graph-breadcrumb,.graph-filter .ui-select-trigger,
-.arch-node .node-copy span,.graph-footer,.graph-footer strong,
-.selection-hint,.graph-selection-summary .panel-kicker,
-.scenario-head .panel-kicker,.option-choice>button:first-child,
-.option-choice>button:first-child small,.option-source,.scenario-outcome-heading span,.scenario-outcome-grid p,
-.scenario-outcome-grid li,.scenario-outcome-grid li span,.scenario-note,
-.linked-decisions.empty,.linked-decisions-title,.entity-tags>span,
-.selection-summary-heading .state-tag,.graph-filter .ui-select-trigger{
+.map-overview-line,.map-overview-line strong,.section-kicker,.graph-tools .legend,.graph-breadcrumb,.graph-filter .ui-select-trigger,.arch-node .node-copy span,.graph-footer,.graph-footer strong,.selection-hint,.graph-selection-summary .panel-kicker,.scenario-head .panel-kicker,.option-choice>button:first-child,.option-choice>button:first-child small,.option-source,.scenario-outcome-heading span,.scenario-outcome-grid p,.scenario-outcome-grid li,.scenario-outcome-grid li span,.scenario-note,.linked-decisions.empty,.linked-decisions-title,.selection-summary-heading .state-tag,.graph-filter .ui-select-trigger{
   color:var(--dk-muted,#59665c);
 }
 .arch-node.service .node-mark{color:var(--dk-source,#42634b)}
@@ -99,7 +91,7 @@
   .graph-footer{font-size:12px}
   .graph-selection-summary.is-open,.architecture-scenario-open .scenario-panel{padding:15px}
   .selection-summary-heading h3,.scenario-head h3{font-size:17px}
-  .selection-summary-rationale p,.rationale-block p,.scenario-copy{font-size:14px;line-height:1.5}
+  .selection-summary-rationale p,.scenario-copy{font-size:14px;line-height:1.5}
   .option-choice>button:first-child{font-size:13px}
   .scenario-outcome-grid p,.scenario-outcome-grid li{font-size:12px}
   .scenario-history{gap:5px;margin:6px 0}
@@ -151,9 +143,7 @@
 
 /* Bring the first scenario choices above history and comparison details on mobile. */
 .scenario-panel,.architecture-scenario-open .scenario-panel{display:flex;flex-direction:column}
-.scenarios-page .below-grid{display:block}
-.scenarios-page .rationale-panel{display:none}
-.scenario-head{order:0}
+.scenarios-page .below-grid{display:block}.scenario-head{order:0}
 .scenario-copy{order:1}
 .scenario-working-state{order:2}
 .scenario-decision-picker{order:3}
@@ -184,13 +174,11 @@ body{background:var(--theme-canvas);color:var(--theme-ink)}
 .app-shell{background:var(--theme-canvas);color:var(--theme-ink)}
 .sidebar,.topbar{background:var(--theme-panel);border-color:var(--theme-line)}
 .main-column,.content-scroll{background:var(--theme-canvas)}
-.repo-card,.profile,.mcp-callout,.panel,.graph-frame,.graph-selection-summary.is-open,.architecture-scenario-open .scenario-panel,.delta-editor[role=dialog]{background:var(--theme-panel);border-color:var(--theme-line);color:var(--theme-ink)}
+.profile,.mcp-callout,.panel,.graph-frame,.graph-selection-summary.is-open,.architecture-scenario-open .scenario-panel,.delta-editor[role=dialog]{background:var(--theme-panel);border-color:var(--theme-line);color:var(--theme-ink)}
 .page-heading h1,.page-heading h2,.panel h3,.section-heading h2{color:var(--theme-ink)}
-.page-heading p,.panel p,.entity-description,.scenario-copy,.scenario-list-status{color:var(--theme-muted)}
-.nav-item,.breadcrumbs,.repo-card strong,.profile strong,.linked-decision-heading strong{color:var(--theme-ink)}
-.nav-item:hover,.repo-card:hover,.profile:hover{background:var(--theme-hover)}
-.nav-item.active{background:var(--theme-brand-soft);color:var(--theme-brand)}
-.topbar,.panel,.linked-decisions,.scenario-library,.scenario-decision-picker{border-color:var(--theme-line)}
+.page-heading p,.panel p,.scenario-copy,.scenario-list-status{color:var(--theme-muted)}
+.breadcrumbs,.profile strong,.linked-decision-heading strong{color:var(--theme-ink)}
+.profile:hover{background:var(--theme-hover)}.topbar,.panel,.linked-decisions,.scenario-library,.scenario-decision-picker{border-color:var(--theme-line)}
 .graph-canvas{background-color:var(--theme-map-canvas)!important;background-image:radial-gradient(var(--theme-map-dot) .8px,transparent .8px)!important}
 .map-start-guide,.graph-minimap-rail{background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
 .map-start-guide strong,.map-start-guide p,.selection-hint,.graph-minimap-rail>span{color:var(--theme-muted)}
@@ -273,17 +261,10 @@ body{background:var(--theme-canvas);color:var(--theme-ink)}
 :root[data-theme='light'] .ui-button-default:focus-visible{outline:3px solid #243d2a;outline-offset:2px}
 
 /* Shared readable scale for controls, evidence, and decision states. */
-.main-nav .nav-item{min-height:var(--control-target);font-size:var(--type-secondary)}
 .nav-label,.mcp-callout strong,.mcp-callout span,.profile strong,.profile span,.sync-pill{font-size:var(--type-tertiary)}
 .breadcrumbs{font-size:var(--type-tertiary)}
 .breadcrumbs strong{font-size:var(--type-secondary)}
-.branch-pill{min-height:var(--control-target);font-size:var(--type-tertiary)}
-.repo-card{min-height:48px}
-.repo-card strong{font-size:var(--type-secondary)}
-.repo-card span,.repo-open-label{font-size:var(--type-tertiary)}
-.repo-open-label{display:inline-flex;align-items:center;min-height:36px;padding-inline:8px}
-.provider-chip{height:auto;min-height:var(--control-target);font-size:var(--type-tertiary)}
-.theme-toggle{min-height:var(--control-target);font-size:var(--type-control)}
+.branch-pill{min-height:var(--control-target);font-size:var(--type-tertiary)}.theme-toggle{min-height:var(--control-target);font-size:var(--type-control)}
 .page-heading p,.panel p{font-size:var(--type-secondary)}
 .page-context-links{min-height:var(--control-target)}
 .page-links button{min-height:var(--control-target);font-size:var(--type-tertiary)}
@@ -295,8 +276,8 @@ body{background:var(--theme-canvas);color:var(--theme-ink)}
 .graph-filter .ui-select-trigger{height:auto;min-height:var(--control-target);font-size:var(--type-tertiary)}
 .graph-selection-summary .panel-kicker,.scenario-head .panel-kicker{font-size:var(--type-tertiary)}
 .selection-summary-heading h3,.scenario-head h3{font-size:19px}
-.selection-summary-rationale>strong,.rationale-label{font-size:var(--type-tertiary)}
-.selection-summary-rationale p,.rationale-block p,.scenario-copy{font-size:var(--type-secondary)}
+.selection-summary-rationale>strong{font-size:var(--type-tertiary)}
+.selection-summary-rationale p,.scenario-copy{font-size:var(--type-secondary)}
 .linked-decision-heading strong{font-size:var(--type-secondary)}
 .linked-decision-heading .linked-option-state,.linked-option-state{font-size:var(--type-tertiary)}
 .linked-option-heading .linked-option{font-size:var(--type-secondary)}
@@ -314,21 +295,14 @@ body{background:var(--theme-canvas);color:var(--theme-ink)}
 .facts-group-label{font-size:var(--type-secondary)}
 .identity-review-heading strong,.identity-conflict>strong{font-size:var(--type-tertiary)}
 .identity-meta,.identity-provenance,.identity-empty,.identity-group>span,.identity-conflict>p,.identity-conflict-claim{font-size:var(--type-tertiary)}
-.identity-endpoint-ids code,.identity-endpoint code,.evidence-identity code{font-size:var(--type-tertiary)}
-.repo-open-label{min-height:var(--control-target)}
-.correction-form>strong{font-size:var(--type-tertiary)}
+.identity-endpoint-ids code,.identity-endpoint code,.evidence-identity code{font-size:var(--type-tertiary)}.correction-form>strong{font-size:var(--type-tertiary)}
 .correction-form>p,.correction-form label,.correction-evidence blockquote{font-size:var(--type-tertiary)}
 .correction-evidence blockquote span{font-size:var(--type-tertiary)}
 .source-document-heading span,.source-document-content,.source-line{font-size:var(--type-tertiary)}
-.connection-form label,.connection-form label small,.connection-card{font-size:var(--type-tertiary)}
-.review-actions button{min-width:var(--control-target);min-height:var(--control-target)}
-.arch-node .node-copy span{font-size:var(--type-tertiary);line-height:1.35}
+.connection-form label,.connection-form label small,.connection-card{font-size:var(--type-tertiary)}.arch-node .node-copy span{font-size:var(--type-tertiary);line-height:1.35}
 .graph-selection-summary.is-open .linked-option-rationale{display:block;overflow:visible;-webkit-line-clamp:unset}
 .scenario-panel .option-rationale{display:block;overflow:visible;-webkit-line-clamp:unset}
-@media(max-width:640px){
-  .main-nav .nav-item{font-size:var(--type-tertiary)}
-  .repo-card span{font-size:var(--type-tertiary)}
-  .app-scenarios .page-heading{gap:5px;margin-bottom:8px}
+@media(max-width:640px){  .app-scenarios .page-heading{gap:5px;margin-bottom:8px}
   .app-scenarios .scenario-panel .scenario-copy{font-size:var(--type-tertiary)}
   .graph-selection-summary.is-open .linked-option-heading .linked-option{font-size:var(--type-tertiary)}
   .graph-selection-summary.is-open .linked-option-rationale{font-size:var(--type-tertiary)}
@@ -379,30 +353,20 @@ html.map-fullscreen .architecture-layout .map-actions{right:12px;left:auto;max-w
 /* Readability floor (loaded last): controls and body text >=12px, mono captions >=11px,
    theme-token colours that pass WCAG AA in both themes, non-selectable chrome, visible focus. */
 :root{--type-caption:11px;--focus-ring:var(--theme-source)}
-:root :is(.page-footer,.page-footer i,.selection-hint,.chat-mode-switch button,.suggestions>span,.suggestions>button,.legend,.graph-breadcrumb,.sync-pill,.branch-pill,.repo-open-label,.repo-card span,.profile span,.mcp-callout span,.chat-intro p,.chat-intro small,.scenario-note,.linked-option-state,.linked-decisions-title span,.facts-intro,.scenario-outcome-grid li span,.scenario-outcome-heading span,.scenario-history-heading,.scenario-history-heading>span,.scenario-history-heading strong,.scenario-summary-counts span,.evidence-identity,.evidence-identity span,.page-context-links button,.page-context-links span,.identity-review-heading>span,.source-document-heading span,.review-heading span){font-size:12px}
-:root :is(.eyebrow,.section-kicker,.panel-kicker,.nav-label,.linked-decisions-title,.nav-badge,.review-status,.review-confidence,.chat-input kbd,.graph-minimap-rail>span,.scenario-history-kind){font-size:var(--type-caption)}
+:root :is(.page-footer,.page-footer i,.selection-hint,.suggestions>span,.suggestions>button,.legend,.graph-breadcrumb,.sync-pill,.branch-pill,.profile span,.mcp-callout span,.chat-intro p,.chat-intro small,.scenario-note,.linked-option-state,.linked-decisions-title span,.facts-intro,.scenario-outcome-grid li span,.scenario-outcome-heading span,.scenario-history-heading,.scenario-history-heading>span,.scenario-history-heading strong,.scenario-summary-counts span,.evidence-identity,.evidence-identity span,.page-context-links button,.page-context-links span,.identity-review-heading>span,.source-document-heading span,.review-heading span){font-size:12px}
+:root :is(.eyebrow,.section-kicker,.panel-kicker,.nav-label,.linked-decisions-title,.review-status,.review-confidence,.chat-input kbd,.graph-minimap-rail>span,.scenario-history-kind){font-size:var(--type-caption)}
 
 /* Muted text and captions use the theme's AA muted token on panel and canvas surfaces. */
-:root :is(.nav-label,.eyebrow,.section-kicker,.panel-kicker,.sync-pill,.profile span,.repo-card span,.mcp-callout span,.branch-pill,.page-footer,.page-footer i,.legend span,.map-overview-line>span,.graph-breadcrumb span,.facts-intro,.facts-group-label,.identity-empty,.chat-intro p,.chat-intro small,.suggestions>span,.suggestions>button,.chat-mode-switch button,.evidence-identity span,.evidence-identity code,.modal-head p,.source-document-heading span,.scenario-history-heading>span,.scenario-outcome-grid li span,.page-context-links span,.chat-input kbd,.selection-hint,.scenario-note,.review-heading span){color:var(--theme-muted)}
-:root :is(.source-document-heading strong,.scenario-outcome-grid>div>strong,.map-overview-line strong,.chat-mode-switch button.active){color:var(--theme-ink)}
-:root :is(.page-context-links button,.nav-item.active,.nav-item.active .nav-label-full,.nav-item.active .nav-label-short,.scenario-history-kind,.scenario-summary-counts span,.repo-open-label){color:var(--theme-source)}
-:root .nav-badge{color:var(--theme-warning)}
-:root :is(.review-status.inferred,.review-confidence.inferred){color:var(--theme-warning)}
-:root .scenario-outcome-grid .has-warnings :is(strong,li,li span){color:var(--theme-warning)}
-:root .repo-open-label{background:var(--theme-panel-raised);border-color:var(--theme-line)}
-:root .review-heading span{background:var(--theme-panel-raised)}
-:root .chat-input kbd{background:var(--theme-panel);border-color:var(--theme-line)}
-:root[data-theme='dark'] .nav-badge{background:#3a2f1d}
-:root[data-theme='dark'] :is(.chat-mode-switch,.suggestions>button){background:var(--theme-panel-raised);border-color:var(--theme-line)}
-:root[data-theme='dark'] .chat-mode-switch button.active{background:var(--theme-panel)}
-/* Dark surfaces for controls whose base rules in styles.css hard-code white. */
-:root[data-theme='dark'] :is(.review-actions button,.provider-chip,.chat-input){background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
-:root[data-theme='dark'] :is(.review-actions button:first-child:hover){background:var(--theme-hover);color:var(--theme-brand);border-color:var(--theme-line)}
-:root[data-theme='dark'] .review-actions button:last-child:hover{background:#3a2422;color:var(--theme-danger);border-color:var(--theme-line)}
+:root :is(.nav-label,.eyebrow,.section-kicker,.panel-kicker,.sync-pill,.profile span,.mcp-callout span,.branch-pill,.page-footer,.page-footer i,.legend span,.map-overview-line>span,.graph-breadcrumb span,.facts-intro,.facts-group-label,.identity-empty,.chat-intro p,.chat-intro small,.suggestions>span,.suggestions>button,.evidence-identity span,.evidence-identity code,.modal-head p,.source-document-heading span,.scenario-history-heading>span,.scenario-outcome-grid li span,.page-context-links span,.chat-input kbd,.selection-hint,.scenario-note,.review-heading span){color:var(--theme-muted)}
+:root :is(.source-document-heading strong,.scenario-outcome-grid>div>strong,.map-overview-line strong){color:var(--theme-ink)}
+:root :is(.page-context-links button,.scenario-history-kind,.scenario-summary-counts span){color:var(--theme-source)}:root :is(.review-status.inferred,.review-confidence.inferred){color:var(--theme-warning)}
+:root .scenario-outcome-grid .has-warnings :is(strong,li,li span){color:var(--theme-warning)}:root .review-heading span{background:var(--theme-panel-raised)}
+:root .chat-input kbd{background:var(--theme-panel);border-color:var(--theme-line)}:root[data-theme='dark'] :is(.suggestions>button){background:var(--theme-panel-raised);border-color:var(--theme-line)}/* Dark surfaces for controls whose base rules in styles.css hard-code white. */
+:root[data-theme='dark'] :is(.chat-input){background:var(--theme-panel-raised);border-color:var(--theme-line);color:var(--theme-ink)}
 :root[data-theme='dark'] .review-copy strong{color:var(--theme-ink)}
 :root[data-theme='dark'] .review-copy span{color:var(--theme-muted)}
 :root[data-theme='dark'] :is(.review-status.inferred,.review-confidence.inferred){background:#3a2f1d}
-:root[data-theme='dark'] :is(.provider-orb,.chat-spark){background:var(--theme-brand-soft);color:var(--theme-brand)}
+:root[data-theme='dark'] :is(.chat-spark){background:var(--theme-brand-soft);color:var(--theme-brand)}
 :root[data-theme='dark'] .node-state.confirmed{background:var(--theme-selected);color:var(--theme-ink)}
 :root[data-theme='dark'] .linked-decisions-title span{background:var(--theme-brand-soft);color:var(--theme-brand)}
 
@@ -417,11 +381,9 @@ html.map-fullscreen .architecture-layout .map-actions{right:12px;left:auto;max-w
 :root[data-theme='dark'] :is(.connection-mark,.brand-icon){background:var(--theme-brand-soft);color:var(--theme-brand)}
 
 /* Non-text icons keep >=3:1 against their surface in both themes. */
-:root :is(.tiny-icon,.mcp-callout,.breadcrumbs,.provider-chip,.graph-breadcrumb,.chat-input,.agent-separation)>svg,:root button>svg.lucide-x{color:var(--theme-muted)}
-:root .nav-item.active>svg{color:var(--theme-source)}
-
+:root :is(.tiny-icon,.mcp-callout,.breadcrumbs,.graph-breadcrumb,.chat-input,.agent-separation)>svg,:root button>svg.lucide-x{color:var(--theme-muted)}
 /* Chrome is not text to copy; passages, rationale, IDs and source lines stay selectable. */
-:root :is(.sidebar,.main-nav,.page-links,.graph-tools,.facts-filters,.map-actions,.breadcrumbs,button,[role=button],.nav-label,.eyebrow,.section-kicker,.panel-kicker,.sync-pill,.branch-pill,.nav-badge,.repo-open-label){-webkit-user-select:none;user-select:none}
+:root :is(.sidebar,.page-links,.graph-tools,.facts-filters,.map-actions,.breadcrumbs,button,[role=button],.nav-label,.eyebrow,.section-kicker,.panel-kicker,.sync-pill,.branch-pill){-webkit-user-select:none;user-select:none}
 
 /* One visible focus ring for keyboard focus in both themes; programmatic focus targets stay unmarked. */
 :root :focus-visible:not([tabindex='-1']){outline:2px solid var(--focus-ring)!important;outline-offset:2px}

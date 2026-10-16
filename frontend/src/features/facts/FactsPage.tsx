@@ -3,6 +3,7 @@
 import { ArrowRight, Check, Code2, FileText, LoaderCircle, X } from 'lucide-react'
 import type { Page } from '../../app/navigation'
 import { Button } from '../../components/ui/button'
+import { cn } from '../../lib/utils'
 import { Card } from '../../components/ui/card'
 import { Input } from '../../components/ui/input'
 import type { Evidence, GraphData } from '../../types'
@@ -30,8 +31,10 @@ type FactsPageProps = {
   navigateTo: (page: Page) => void
 }
 
-/** Review row actions keep their `.review-actions button` styling; the Button supplies the element. */
-const REVIEW_ACTION = 'min-h-0 p-0'
+/** Square icon button in a review row; confirm, reject, and correct share it and differ only in hover color. */
+const REVIEW_ACTION = 'grid size-(--control-target) min-h-0 min-w-0 place-items-center rounded-[5px] border border-(--theme-line) bg-(--theme-panel) p-0 text-[#849087] dark:bg-(--theme-panel-raised) dark:text-(--theme-ink)'
+const REVIEW_CONFIRM = 'hover:bg-(--theme-hover) hover:text-(--theme-source) dark:hover:text-(--theme-brand)'
+const REVIEW_REJECT = 'hover:bg-[#f9efed] hover:text-(--theme-danger) dark:hover:bg-[#3a2422]'
 const CORRECTION_SELECT = 'w-full rounded-[4px] border border-(--theme-line) bg-(--theme-panel) px-[7px] font-[\'DM_Mono\',monospace] text-(length:--type-tertiary) text-(--theme-ink)'
 
 export function FactsPage({ active, graph, live, facts, evidenceRecords, onOpenEvidence, onReviewLogChanged, navigateTo }: FactsPageProps) {
@@ -73,7 +76,7 @@ export function FactsPage({ active, graph, live, facts, evidenceRecords, onOpenE
         <div className={`review-confidence ${item.status}`}><span>{Math.round(item.confidence * 100)}%</span></div>
         <div className="review-copy"><strong>{item.name}</strong><span>{item.detail}</span>{evidenceItems[0] ? <Button variant="ghost" className="flex max-w-full items-start gap-[5px] px-0 py-[2px] text-left text-(length:--type-tertiary) leading-[1.4] text-(--theme-source) [overflow-wrap:anywhere] [&>svg]:mt-px [&>svg]:flex-none" onClick={() => onOpenEvidence(evidenceItems[0])}><FileText size={12} />Open passage · {evidencePath(evidenceItems[0])} · {evidenceHeading(evidenceItems[0])}</Button> : <small>No source passage linked</small>}</div>
         <span className={`review-status ${item.status}`}>{item.status}</span>
-        <div className="review-actions"><Button variant="ghost" className={REVIEW_ACTION} disabled={!live} aria-label={`${item.status === 'confirmed' ? 'Reaffirm' : 'Confirm'} ${item.type}`} title={`${item.status === 'confirmed' ? 'Reaffirm' : 'Confirm'} ${item.type}`} onClick={() => facts.mark(item.id, 'confirmed')}><Check size={14} /></Button><Button variant="ghost" className={REVIEW_ACTION} disabled={!live} aria-label={`${item.status === 'rejected' ? 'Reaffirm rejection of' : 'Reject'} ${item.type}`} title={`${item.status === 'rejected' ? 'Reaffirm rejection of' : 'Reject'} ${item.type}`} onClick={() => facts.mark(item.id, 'rejected')}><X size={14} /></Button><Button variant="ghost" className={REVIEW_ACTION} disabled={!live} aria-label={`Correct ${item.type}`} title={`Correct ${item.type}`} onClick={() => correctionId === item.id ? facts.correction.close() : facts.correction.open(item)}><Code2 size={13} /></Button></div>
+        <div className="ml-auto flex gap-[6px]"><Button variant="ghost" className={cn(REVIEW_ACTION, REVIEW_CONFIRM)} disabled={!live} aria-label={`${item.status === 'confirmed' ? 'Reaffirm' : 'Confirm'} ${item.type}`} title={`${item.status === 'confirmed' ? 'Reaffirm' : 'Confirm'} ${item.type}`} onClick={() => facts.mark(item.id, 'confirmed')}><Check size={14} /></Button><Button variant="ghost" className={cn(REVIEW_ACTION, REVIEW_REJECT)} disabled={!live} aria-label={`${item.status === 'rejected' ? 'Reaffirm rejection of' : 'Reject'} ${item.type}`} title={`${item.status === 'rejected' ? 'Reaffirm rejection of' : 'Reject'} ${item.type}`} onClick={() => facts.mark(item.id, 'rejected')}><X size={14} /></Button><Button variant="ghost" className={cn(REVIEW_ACTION, REVIEW_CONFIRM)} disabled={!live} aria-label={`Correct ${item.type}`} title={`Correct ${item.type}`} onClick={() => correctionId === item.id ? facts.correction.close() : facts.correction.open(item)}><Code2 size={13} /></Button></div>
         {correctionId === item.id && <div className="correction-form">
           <strong>Correct interpretation</strong><p>This saves a new asserted record linked to this record family; source evidence and earlier records are preserved.</p>
           {evidenceItems.length ? <div className="correction-evidence">{evidenceItems.map((evidence) => <blockquote key={evidence.id}><span>{evidencePath(evidence)} · {evidenceHeading(evidence)}</span>{evidenceText(evidence)}</blockquote>)}</div> : <div className="correction-evidence empty">No source passage is attached to this record.</div>}

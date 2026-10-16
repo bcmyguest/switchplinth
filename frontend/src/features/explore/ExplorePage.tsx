@@ -13,7 +13,6 @@ import type { EvidenceViewer } from '../evidence/useEvidenceViewer'
 import type { DeltaEditor } from '../graph-editor/useDeltaEditor'
 import type { Explore } from './useExplore'
 import { InlineError } from '../../components/InlineError'
-import { cn } from '../../lib/utils'
 
 const ANSWER_CARD = 'mb-[9px] block! rounded-[8px] text-[12px] border-(--theme-line) p-[11px] shadow-none'
 const CLAIM_STATE_VARIANT = { inferred: 'warning', rejected: 'destructive', confirmed: 'secondary', asserted: 'secondary' } as const
@@ -28,8 +27,8 @@ type ExplorePageProps = {
   onOpenSearchPassage: EvidenceViewer['openSearchPassage']
 }
 
-/** Ask/Propose toggle; `.chat-mode-switch button` keeps its styling and `active` marks the current mode. */
-const CHAT_MODE = 'min-h-0'
+/** Ask/Propose toggle segment; `aria-pressed` marks the current mode. */
+const CHAT_MODE = 'flex min-h-0 items-center gap-[4px] rounded-[4px] border-0 px-[10px] py-[7px] text-(length:--type-tertiary) text-(--theme-muted) disabled:cursor-not-allowed aria-pressed:bg-(--theme-panel) aria-pressed:font-semibold aria-pressed:text-(--theme-ink) aria-pressed:shadow-[0_1px_3px_#17271910]'
 
 export function ExplorePage({ explore, graph, live, displayedSelection, editor, onOpenSearchPassage: openSearchPassage }: ExplorePageProps) {
   const { query, setQuery, mode: chatMode, setMode: setChatMode, answer, proposal, proposalError, searching } = explore
@@ -47,7 +46,7 @@ export function ExplorePage({ explore, graph, live, displayedSelection, editor, 
 
   return <div className="chat-area" id="decision-assistant">
     <div className="chat-intro"><div className="chat-spark"><Sparkles size={16} /></div><div><h3>Decision assistant</h3><p>Ask a grounded question or propose a change to one option's delta.</p><small>Current scenario: {scenarioContext || 'no decisions selected'}</small></div></div>
-    <div className="chat-mode-toolbar"><div className="chat-mode-switch"><Button variant="ghost" className={cn(CHAT_MODE, chatMode === 'ask' && 'active')} onClick={() => setChatMode('ask')}><Search size={12} /> Ask</Button><Button variant="ghost" className={cn(CHAT_MODE, chatMode === 'propose' && 'active')} disabled={!live || graph.decisions.length === 0} onClick={explore.startPropose}><Sparkles size={12} /> Propose a delta</Button></div>{chatMode === 'propose' && <div className="proposal-target"><Select aria-label="Target decision" value={editingDecisionId} onChange={(event) => updateEditorDecision(event.target.value)}>{graph.decisions.map((decision) => <option key={decision.id} value={decision.id}>{decision.title}</option>)}</Select><Select aria-label="Target option" value={editingOptionId} onChange={(event) => updateEditorOption(event.target.value)}>{graph.decisions.find((decision) => decision.id === editingDecisionId)?.options.map((option) => <option key={option.id} value={option.id}>{option.title}</option>)}</Select></div>}</div>
+    <div className="chat-mode-toolbar"><div className="flex gap-[3px] rounded-[6px] border border-(--theme-line) bg-(--theme-panel-raised) p-[3px]"><Button variant="ghost" className={CHAT_MODE} aria-pressed={chatMode === 'ask'} onClick={() => setChatMode('ask')}><Search size={12} /> Ask</Button><Button variant="ghost" className={CHAT_MODE} aria-pressed={chatMode === 'propose'} disabled={!live || graph.decisions.length === 0} onClick={explore.startPropose}><Sparkles size={12} /> Propose a delta</Button></div>{chatMode === 'propose' && <div className="proposal-target"><Select aria-label="Target decision" value={editingDecisionId} onChange={(event) => updateEditorDecision(event.target.value)}>{graph.decisions.map((decision) => <option key={decision.id} value={decision.id}>{decision.title}</option>)}</Select><Select aria-label="Target option" value={editingOptionId} onChange={(event) => updateEditorOption(event.target.value)}>{graph.decisions.find((decision) => decision.id === editingDecisionId)?.options.map((option) => <option key={option.id} value={option.id}>{option.title}</option>)}</Select></div>}</div>
     {answer && <>
       <div className="answer-announcement" role="status" aria-live="polite" aria-atomic="true">{answer.text}</div>
       <Card className={`answer-card ${ANSWER_CARD}`}>

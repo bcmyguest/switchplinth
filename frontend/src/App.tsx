@@ -56,7 +56,7 @@ function App() {
   const connections = useConnections(workspace)
 
   const componentDetail = useComponentDetail(workspace, displayedSelection, deltaPreview)
-  const { select: setSelectedEntity, selected, entityDetail: currentEntityDetail, evidenceRecords, linkedDecisions, rationaleLabel, rationale: selectedRationale, evidence: selectedEvidence } = componentDetail
+  const { select: setSelectedEntity, evidenceRecords } = componentDetail
   const evidenceViewer = useEvidenceViewer(evidenceRecords, graph.evidence)
   const { open: openEvidenceDetail, openSearchPassage } = evidenceViewer
   const panels = useArchitecturePanels(panelHost, closeDeltaEditor, setSelectedEntity, jumpToScenarioDecision)
@@ -85,7 +85,7 @@ function App() {
 
         <ArchitecturePage active={activeNav === 'Architecture'} panels={panels} graph={graph} live={live} theme={theme} editor={editor} detail={componentDetail} scenario={scenario} facts={facts} evidence={evidenceViewer} pendingCount={pendingCount} scanState={scanState} onDiscover={beginDiscover} />
 
-        <ScenarioWorkspace mode={activeNav === 'Scenarios' ? 'page' : architecturePanel === 'scenario' && activeNav === 'Architecture' ? 'overlay' : 'hidden'} panelOpen={architecturePanel === 'scenario'} panelRef={architecturePanelRef} onClosePanel={() => setArchitecturePanel(null)} graph={graph} live={live} projectRoot={projectRoot} catalog={workspace.catalog} scenario={scenario} detail={{ selected, entityDetail: currentEntityDetail, rationaleLabel, rationale: selectedRationale, evidence: selectedEvidence, linkedDecisions }} evidenceRecords={evidenceRecords} onOpenEvidence={openEvidenceDetail} onExploreDecision={exploreDecision} repositoryBusy={repositoryBusy} scanState={scanState} />
+        <ScenarioWorkspace mode={activeNav === 'Scenarios' ? 'page' : architecturePanel === 'scenario' && activeNav === 'Architecture' ? 'overlay' : 'hidden'} panelOpen={architecturePanel === 'scenario'} panelRef={architecturePanelRef} onClosePanel={() => setArchitecturePanel(null)} graph={graph} live={live} projectRoot={projectRoot} catalog={workspace.catalog} scenario={scenario} evidenceRecords={evidenceRecords} onOpenEvidence={openEvidenceDetail} repositoryBusy={repositoryBusy} scanState={scanState} />
 
         <FactsPage active={activeNav === 'Facts'} graph={graph} live={live} facts={facts} evidenceRecords={evidenceRecords} onOpenEvidence={openEvidenceDetail} onReviewLogChanged={refreshGraph} navigateTo={navigateTo} />
 

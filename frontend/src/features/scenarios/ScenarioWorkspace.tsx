@@ -1,32 +1,20 @@
-// The selected-component rationale panel and the What-if scenario panel. It renders once: the Architecture overlay and the
+// The What-if scenario panel. It renders once: the Architecture overlay and the
 // Scenarios page show the same DOM instance, so the decision refs and the panel focus target stay valid in both places.
-import type { ComponentProps, RefObject } from 'react'
-import { AlertTriangle, ArrowRight, ArrowUpRight, Check, ChevronDown, CircleHelp, Database, FileText, GitFork, Minus, MoreHorizontal, Sparkles, X } from 'lucide-react'
-import type { getEntityDetail } from '../../api'
+import type { RefObject } from 'react'
+import { AlertTriangle, ArrowRight, ArrowUpRight, Check, ChevronDown, CircleHelp, FileText, GitFork, Minus, X } from 'lucide-react'
 import type { LabelCatalog } from '../../app/labelCatalog'
 import { InlineError } from '../../components/InlineError'
 import { Alert, AlertDescription } from '../../components/ui/alert'
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { cn } from '../../lib/utils'
-import type { Entity, Evidence, GraphData } from '../../types'
-import { DecisionLinkList } from '../architecture/DecisionLinkList'
+import type { Evidence, GraphData } from '../../types'
 import type { ScanState } from '../discovery/scanState'
 import { evidenceHeading, evidencePath, resolveEvidence } from '../evidence/evidence'
 import type { EvidenceViewer } from '../evidence/useEvidenceViewer'
 import { compactScenarioDecisionTitle, describeScenarioDifference, describeScenarioSelection, scenarioSelectionKey } from './scenarioSelection'
 import { PreviousChoiceDiffPanel } from './PreviousChoiceDiffPanel'
 import type { ScenarioSelection } from './useScenarioSelection'
-
-/** Derived component-detail values the rationale panel shows; App computes them until the component-detail module lands. */
-type ComponentDetailView = {
-  selected: Entity | undefined
-  entityDetail: Awaited<ReturnType<typeof getEntityDetail>> | null
-  rationaleLabel: string
-  rationale: string
-  evidence: Evidence | undefined
-  linkedDecisions: ComponentProps<typeof DecisionLinkList>['decisions']
-}
 
 type ScenarioWorkspaceProps = {
   /** `overlay`: the Architecture What-if overlay; `page`: the Scenarios page; `hidden`: mounted but not displayed. */
@@ -40,10 +28,8 @@ type ScenarioWorkspaceProps = {
   projectRoot: string
   catalog: LabelCatalog
   scenario: ScenarioSelection
-  detail: ComponentDetailView
   evidenceRecords: Evidence[]
   onOpenEvidence: EvidenceViewer['open']
-  onExploreDecision: (decisionId: string) => void
   repositoryBusy: boolean
   scanState: ScanState
 }
@@ -53,8 +39,7 @@ const HISTORY_ITEM = 'block w-full px-[8px] py-[6px] text-(length:--type-seconda
 /** Sticky decision-picker pill; the current decision widens on mobile so its title is not truncated. */
 const PICKER_ITEM = 'max-w-[190px] flex-none gap-[5px] rounded-[16px] px-[8px] py-[5px] text-(length:--type-secondary) leading-[1.2] whitespace-nowrap aria-[current=location]:border-(--theme-brand) aria-[current=location]:bg-(--theme-selected) aria-[current=location]:font-[650] max-sm:max-w-[155px] max-sm:aria-[current=location]:max-w-[240px] [&>span]:overflow-hidden [&>span]:text-ellipsis max-sm:aria-[current=location]:[&>span]:overflow-visible max-sm:aria-[current=location]:[&>span]:[text-overflow:clip]'
 
-export function ScenarioWorkspace({ mode, panelOpen, panelRef, onClosePanel, graph, live, projectRoot, catalog, scenario, detail, evidenceRecords, onOpenEvidence: openEvidenceDetail, onExploreDecision: exploreDecision, repositoryBusy, scanState }: ScenarioWorkspaceProps) {
-  const { selected, entityDetail: currentEntityDetail, rationaleLabel, rationale: selectedRationale, evidence: selectedEvidence, linkedDecisions } = detail
+export function ScenarioWorkspace({ mode, panelOpen, panelRef, onClosePanel, graph, live, projectRoot, catalog, scenario, evidenceRecords, onOpenEvidence: openEvidenceDetail, repositoryBusy, scanState }: ScenarioWorkspaceProps) {
   const { displayed: displayedSelection, resolved: resolvedSelection, baseline: repositorySelection, pending: scenarioResolutionPending, notice: scenarioNotice, setNotice: setScenarioNotice, changes: scenarioChanges, history: scenarioHistory, saved: savedScenarios, savedError: savedScenariosError, savedLoading: savedScenariosLoading, refreshSaved: refreshSavedScenarios, activeDecisionId: activeScenarioDecisionId, setActiveDecisionId: setActiveScenarioDecisionId, decisionRefs: scenarioDecisionRefs, pickerRef: scenarioDecisionPickerRef, pickerButtonRefs: scenarioDecisionPickerButtonRefs, apply: applySelections, choose: chooseOption, jumpTo: jumpToScenarioDecision } = scenario
   const { libraryOpen: scenarioLibraryOpen, setLibraryOpen: setScenarioLibraryOpen, open: showScenarioSave, setOpen: setShowScenarioSave, name: scenarioName, setName: setScenarioName, error: scenarioSaveError, setError: setScenarioSaveError } = scenario.saveForm
   const scenarioEvaluated = Boolean(graph.scenario) || Object.keys(scenarioChanges).length > 0
@@ -68,17 +53,6 @@ export function ScenarioWorkspace({ mode, panelOpen, panelRef, onClosePanel, gra
   const hasTemporaryChoices = graph.decisions.some((decision) => displayedSelection[decision.id] !== repositorySelection.current[decision.id])
 
   return <div className={`${mode === 'overlay' ? 'architecture-scenario-open' : ''}${mode === 'page' ? ' scenarios-page' : ''}`} style={{ display: mode === 'hidden' ? 'none' : undefined }}><div className="below-grid">
-    <section className="panel rationale-panel">
-      <div className="panel-top"><div className="panel-title-icon"><Database size={15} /></div><div><div className="panel-kicker">SELECTED COMPONENT</div><h3>{selected?.name ?? 'Select a component'}</h3></div><Button variant="icon" size="icon" className="-mr-[6px]"><MoreHorizontal size={17} /></Button></div>
-      {selected ? <>
-        <p className="entity-description">{selected.description ?? 'A component surfaced in source material. Add a description when the team has confirmed its role.'}</p>
-        <div className="entity-tags"><span>{selected.kind}</span><span className={`state-tag ${selected.epistemic_state ?? 'inferred'}`}><i />{selected.epistemic_state ?? 'inferred'}{selected.confidence ? ` · ${Math.round(selected.confidence * 100)}%` : ''}</span>{(currentEntityDetail?.aliases ?? graph.aliases?.filter((alias) => alias.entity_id === selected.id) ?? selected.aliases ?? []).map((alias) => <span key={alias.id} className="alias-tag">“{alias.name}” <span className={alias.epistemic_state}>{alias.epistemic_state} · {Math.round(alias.confidence * 100)}%</span></span>)}</div>
-        <div className="rationale-block"><div className="rationale-label"><Sparkles size={13} /> {rationaleLabel}</div><p>{selectedRationale}</p></div>
-        <Button variant="choice" className="mt-[9px] w-full justify-between rounded-[6px] bg-(--theme-panel-raised) px-[8px]" disabled={!selectedEvidence} onClick={() => openEvidenceDetail(selectedEvidence)}><div className="evidence-file"><FileText size={14} /><div><strong>{evidencePath(selectedEvidence)}</strong><span>{evidenceHeading(selectedEvidence)}</span></div></div><span className="evidence-open">Open passage <ArrowUpRight size={14} /></span></Button>
-        <DecisionLinkList decisions={linkedDecisions} evidence={evidenceRecords} onOpenEvidence={(item) => openEvidenceDetail(item)} onChooseOption={(decisionId, optionId) => { const decision = graph.decisions.find((item) => item.id === decisionId); if (decision) void chooseOption(decision, optionId) }} onExploreDecision={exploreDecision} disabled={scenarioResolutionPending || scanState === 'scanning'} />
-      </> : <div className="empty-state">Choose a component in the map to inspect it.</div>}
-    </section>
-
     <section className="panel scenario-panel" ref={(element) => { if (panelOpen) panelRef.current = element }}>
       <div className="scenario-head"><div><div className="panel-kicker">WHAT IF?</div><h3>Scenario playground</h3></div>{panelOpen && <Button variant="icon" size="icon" aria-label="Close What-if panel" onClick={onClosePanel}><X size={15} /></Button>}</div>
       <p className="scenario-copy">Switch options to compare a temporary preview. Repository choices stay unchanged.</p>

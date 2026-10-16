@@ -1,9 +1,6 @@
-.repo-open-label{margin-left:auto;border:1px solid #e2e8e1;border-radius:4px;background:var(--dk-raised,#f8faf7);color:var(--dk-source,#64806a);padding:4px 5px;font-size:7px;white-space:nowrap}
 .repository-modal{width:min(450px,95vw)}
 .current-repository{display:grid;gap:4px;margin-bottom:10px;padding:9px 10px;border:1px solid #e7ece6;border-radius:6px;background:var(--dk-raised,#f8faf7)}
 .current-repository>span{color:var(--dk-muted,#929b93);font:8px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
 .current-repository>strong{color:var(--dk-source,#526258);font-size:10px}
 .current-repository>code{overflow:hidden;color:var(--dk-muted,#89948b);font:8px 'DM Mono',monospace;text-overflow:ellipsis;white-space:nowrap}
 .repository-picker{display:grid;gap:5px;max-height:290px;overflow:auto}
-/* Desktop sidebar: put the open action on its own row so the repository name keeps the full card width. */
-@media(min-width:1025px){.sidebar .repo-card{flex-wrap:wrap}.sidebar .repo-card>div:nth-child(2){flex:1 1 calc(100% - 40px)}.sidebar .repo-card>div:nth-child(2) strong,.sidebar .repo-card>div:nth-child(2) span{max-width:none}}

@@ -5,7 +5,8 @@ description: What works today, and the next steps - hosted-provider tests, recal
 
 ## Works today
 
-- `./scripts/demo.sh` runs the food-delivery sample with one command.
+- `switchplinth setup` sets up a repository or the sample, runs the first scan, and registers the MCP server with Claude Code, Claude Desktop, Cursor, or VS Code.
+- `./scripts/demo.sh` runs the food-delivery sample in Docker with one command.
 - Markdown discovery with no template; canonical, portable `.decision/` YAML; SQLite and Qdrant indexes that rebuild from those files.
 - Deterministic mock extraction, and model extraction through local OpenAI-compatible servers. A local Qwen3.8 model with reasoning off found all 7 decisions in the sample.
 - Confirm, reject, and correct for claims, aliases, and identity links; the Facts page shows the review log with Undo on each entry.

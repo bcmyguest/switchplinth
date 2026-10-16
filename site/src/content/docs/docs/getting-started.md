@@ -1,21 +1,52 @@
 ---
 title: Getting started
-description: Run the one-command food-delivery demo, then start the Docker Compose stack on your own Markdown repository.
+description: Set up a repository and its MCP server with the setup wizard, or run the one-command food-delivery demo in Docker.
 ---
 
-The app runs locally with Docker Compose. It reads the Markdown already in a repository and writes its own portable records to a `.decision/` folder beside that Markdown. No account or cloud service is required.
+The app reads the Markdown already in a repository and writes its own portable records to a `.decision/` folder beside it. Everything runs on your machine; no account or cloud service is needed.
 
-## Requirements
+There are two ways in:
 
-- Docker with Compose v2.
-- curl, for the demo script.
-- Optional: a model server. Without one, extraction uses the deterministic mock path.
+- **The setup wizard** points it at your repository (or the sample), runs the first scan, and registers the MCP server with your coding agent.
+- **The demo script** starts the full web app in Docker on the food-delivery sample.
 
-The demo needs no model, credentials, Python, or Node on the host.
+## Set up with the wizard
+
+You need a clone of the repository, [uv](https://docs.astral.sh/uv/), and Python 3.12. Docker is only needed for Docker mode. From `backend/`:
+
+```sh
+uv run --locked --python 3.12 switchplinth setup
+```
+
+The wizard asks one question at a time:
+
+1. **Repository:** a path to your repository, or the food-delivery sample.
+2. **Mode:** local (the default) opens the repository in-process and needs no Docker. Docker builds and starts the Compose stack with the repository mounted, so you also get the web app.
+3. **Model:** none (the default, deterministic mock extraction), an OpenAI-compatible server, OpenAI, or Anthropic. A key is stored only as a reference to an environment variable, such as `credential_ref: env:MY_KEY`, never as the key itself.
+4. **First scan** of the repository.
+5. **MCP client:** Claude Code, Claude Desktop, Cursor, or VS Code. It can also just print the config snippets and write nothing.
+6. **Verify:** it starts the MCP server and checks that it answers.
+
+To skip the questions, answer them with flags. For example, the sample in local mode with defaults for everything else:
+
+```sh
+uv run --locked --python 3.12 switchplinth setup --sample --yes
+```
+
+| Flag | Answers |
+| --- | --- |
+| `--repo PATH` or `--sample` | which repository |
+| `--mode local` or `--mode docker` | where it runs |
+| `--provider none\|openai-compatible\|openai\|anthropic` | model connection, with `--endpoint`, `--model`, `--credential-env NAME`, `--reasoning-off` |
+| `--client claude-code\|claude-desktop\|cursor\|vscode\|print` | MCP client to register |
+| `--no-scan`, `--no-verify` | skip the first scan or the check |
+| `--yes` | take the defaults for every remaining question |
+
+Running it again with the same answers changes nothing. Before it edits a client's JSON config, the wizard shows a diff, asks, and keeps a timestamped backup. On Windows it prints the client snippets instead of writing them, and Docker mode is not available there.
 
 ## Try the food-delivery demo
 
-From a clone of the repository:
+This path needs Docker with Compose v2 and curl, but no model, credentials, Python, or Node. From a clone of the repository:
 
 ```sh
 ./scripts/demo.sh
@@ -50,7 +81,7 @@ Optional environment variables:
 
 The sidebar shows the repository name `repos` because the sample is mounted at `/workspace/repos`.
 
-## Run on your own repository
+## Run the web app on your own repository
 
 ```sh
 DECISION_WORKSPACE_HOST=/path/to/your/workspace docker compose up --build

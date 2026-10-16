@@ -67,4 +67,12 @@ Return one entity by `entity_id`: its relationships, aliases, claims, cited evid
 
 ## Connecting a client
 
-Configure your client for a streamable HTTP server at `http://localhost:8000/mcp`, or for a stdio server that runs the command above. Client configuration syntax varies; consult your client's documentation.
+The setup wizard registers the stdio server for you. From `backend/` in a clone of the repository:
+
+```sh
+uv run --locked --python 3.12 switchplinth setup --repo PATH --client claude-code
+```
+
+`--client` takes `claude-code`, `claude-desktop`, `cursor`, `vscode`, or `print`. Claude Code is registered through its own `claude mcp add` command (`--claude-scope user|local|project`, default `user`). For the other three, the wizard edits the client's user-level JSON config after showing a diff and asking, and keeps a timestamped backup. `print` writes nothing and prints every snippet. Clients always get the local stdio command, even when the stack runs in Docker. See [Getting started](../getting-started/) for the wizard's other questions.
+
+To configure a client by hand, point it at the stdio command above, or at the streamable HTTP endpoint `http://localhost:8000/mcp` while the Compose stack runs.

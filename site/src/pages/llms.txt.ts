@@ -20,7 +20,8 @@ ${links}
 
 ## Works today
 
-- One-command demo of the food-delivery sample (\`./scripts/demo.sh\`).
+- Setup wizard (\`switchplinth setup\`): repository or sample, first scan, MCP registration with Claude Code, Claude Desktop, Cursor, or VS Code.
+- One-command Docker demo of the food-delivery sample (\`./scripts/demo.sh\`).
 - Deterministic mock extraction and local OpenAI-compatible model extraction; a local Qwen3.8 model with reasoning off found all 7 sample decisions.
 - Review log with undo, layered architecture map, What-if previews, grounded "why" answers with cited passages.
 - Four read-only MCP tools over streamable HTTP (loopback, unauthenticated) and stdio.

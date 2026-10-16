@@ -32,6 +32,7 @@ const steps = [
 ];
 
 const works = [
+  'Setup wizard that registers the MCP server with your coding agent',
   'One-command demo of the food-delivery sample',
   'Markdown discovery with no template; portable .decision/ YAML; rebuildable indexes',
   'Mock extraction, plus local OpenAI-compatible models (Qwen3.8, reasoning off, found all 7 sample decisions)',
@@ -180,6 +181,7 @@ ${site.demo.command}`}</code></pre>
         <p class="mt-4 text-sm leading-relaxed text-muted">
           The script builds the images, copies the fictional food-delivery sample into a demo workspace, extracts it with deterministic mock extraction, starts the stack, rebuilds the search indexes, and prints <code>http://localhost:3000</code>. It needs Docker with Compose v2 and curl; no model, credentials, Python, or Node. Run it again with <code>--down</code> to stop, or <code>--purge</code> to remove the stack and the demo workspace.
         </p>
+        <p class="mt-3 text-sm leading-relaxed text-muted">To use your own repository and register the MCP server with Claude Code, Cursor, VS Code, or Claude Desktop, run <code>uv run switchplinth setup</code> from <code>backend/</code>.</p>
         <div class="mt-6 flex flex-wrap gap-3">
           <Button href={withBase('docs/getting-started/')}>Getting started</Button>
           <Button href={withBase('docs/providers/')} variant="outline">Connect a model</Button>

@@ -103,7 +103,7 @@ Gate at 1440×900 and 375×812: zero node bounding-box intersections; edge cross
 
 Backlog (Map/What-if): delivered. What-if now shows "Changes vs previous choice" beside the comparison with repository choices; see "Scenario diff and downstream impact" below.
 
-Backlog (scenario comparison): comparison follows relationships only. It does not know that a component requires a capability, such as event replay, that one store provides and its replacement lacks. Switching Kafka to SQS in the sample reports Order Service as rewired with no warning, although the source says SQS cannot replay. `test_replay_requirement_is_not_yet_surfaced` in `backend/tests/test_scenario_diff.py` pins the current behavior.
+Scenario comparison (capability requirements, done): `requires_capability`, `provides_capability`, and `lacks_capability` claims feed `scenario_analysis.capability_check`. Resolve, graph, diff, and MCP outputs report `unmet_requirements`; switching Kafka to SQS in the sample reports Order Service's unmet replay requirement and cites SQS as lacking it. `test_replay_requirement_surfaces_after_kafka_to_sqs` in `backend/tests/test_scenario_diff.py` replaced the gap test. The Architecture map What-if overlay lists appeared and disappeared unmet requirements under "Changes vs previous choice" and the current scenario requirements under "Compared with repository choices"; `frontend/e2e/capability.check.mjs` drives Kafka to SQS against the sample.
 
 ### Scenario diff and downstream impact
 

@@ -11,7 +11,8 @@
     "typecheck": "tsc -b",
     "lint": "eslint .",
     "check:navigation": "node e2e/navigation.check.mjs",
-    "check:scenario-diff": "node e2e/scenario-diff.check.mjs"
+    "check:scenario-diff": "node e2e/scenario-diff.check.mjs",
+    "check:capability": "node e2e/capability.check.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

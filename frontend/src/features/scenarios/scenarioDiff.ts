@@ -1,6 +1,6 @@
 // Pure presentation of a scenario diff (`POST /api/v1/scenarios/diff`): every ID becomes a display name, every status a
 // word, so the view renders strings only and never needs the graph that produced them.
-import type { Decision, ImpactDependent, ScenarioDiff } from '../../types'
+import type { Decision, ImpactDependent, ScenarioDiff, UnmetRequirement } from '../../types'
 
 const DECISION_REASONS: Record<string, string> = {
   selection_changed: 'choice switched',
@@ -9,6 +9,7 @@ const DECISION_REASONS: Record<string, string> = {
 
 type DiffLine = { change: 'Added' | 'Removed' | 'Changed'; text: string }
 type ProblemLine = { change: 'Appeared' | 'Disappeared'; kind: 'Conflict' | 'Invalid assumption'; text: string }
+type UnmetLine = { change: 'Appeared' | 'Disappeared'; text: string }
 type DownstreamDependent = { name: string; depth: number; path: string; status: 'Rewired' | 'Dangling' | 'Direct' | 'Indirect'; details: string[] }
 type ImpactParent = { type: 'entity' | 'relationship'; change: 'removed' | 'replaced' }
 type DownstreamItem = { label: string; change: 'Removed' | 'Replaced'; dependents: DownstreamDependent[]; truncated: boolean }
@@ -19,6 +20,7 @@ export type ScenarioDiffView = {
   components: DiffLine[]
   relationships: DiffLine[]
   problems: ProblemLine[]
+  unmet: UnmetLine[]
   decisions: Array<{ title: string; reasons: string }>
   downstream: DownstreamItem[]
   maxDepth: number
@@ -34,6 +36,16 @@ function humanKind(kind: string): string {
 function optionTitle(decision: Decision | undefined, optionId: string | null): string {
   if (!optionId) return 'no option'
   return decision?.options.find((option) => option.id === optionId)?.title ?? optionId
+}
+
+/** "Order Service needs Replay: Amazon SQS lacks it", plus any providers it cannot reach. */
+export function describeUnmetRequirement(item: UnmetRequirement): string {
+  const need = `${item.requirer_name} needs ${item.capability_name}`
+  const names = (entries: Array<{ name: string }>) => entries.map((entry) => entry.name).join(', ')
+  const parts: string[] = []
+  if (item.lacking.length) parts.push(`${names(item.lacking)} ${item.lacking.length > 1 ? 'lack' : 'lacks'} it`)
+  if (item.unreachable_providers.length) parts.push(`${names(item.unreachable_providers)} ${item.unreachable_providers.length > 1 ? 'provide' : 'provides'} it but ${item.unreachable_providers.length > 1 ? 'are' : 'is'} not reachable`)
+  return parts.length ? `${need}: ${parts.join('; ')}` : `${need}: no reachable provider`
 }
 
 export function presentScenarioDiff(diff: ScenarioDiff, naming: DiffNaming): ScenarioDiffView {
@@ -58,6 +70,10 @@ export function presentScenarioDiff(diff: ScenarioDiff, naming: DiffNaming): Sce
     ...set.appeared.map((text) => ({ change: 'Appeared' as const, kind, text })),
     ...set.disappeared.map((text) => ({ change: 'Disappeared' as const, kind, text })),
   ])
+  const unmet: UnmetLine[] = [
+    ...(diff.unmet_requirements?.appeared ?? []).map((item) => ({ change: 'Appeared' as const, text: describeUnmetRequirement(item) })),
+    ...(diff.unmet_requirements?.disappeared ?? []).map((item) => ({ change: 'Disappeared' as const, text: describeUnmetRequirement(item) })),
+  ]
   const switched = diff.selection_changes.map((change) => {
     const decision = naming.decisions.find((item) => item.id === change.decision_id)
     return `${decision?.title ?? change.decision_id}: ${optionTitle(decision, change.before_option)} → ${optionTitle(decision, change.after_option)}`
@@ -100,6 +116,7 @@ export function presentScenarioDiff(diff: ScenarioDiff, naming: DiffNaming): Sce
     components,
     relationships,
     problems,
+    unmet,
     decisions: diff.affected_decisions.map((decision) => ({ title: decision.title, reasons: decision.reasons.map((reason) => DECISION_REASONS[reason] ?? humanKind(reason)).join(' · ') })),
     downstream: diff.impact.items.map((item) => ({
       label: item.type === 'entity' ? name(item.id) : relationshipLabel(item.id, item.name),

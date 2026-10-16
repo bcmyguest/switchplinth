@@ -16,7 +16,7 @@ from typing import Any
 import yaml
 from jsonschema import Draft202012Validator
 
-from switchplinth.domain import DomainError, Evidence, evidence_anchor, load_yaml, validate_record
+from switchplinth.domain import CAPABILITY_PREDICATES, DomainError, Evidence, entity_kinds, evidence_anchor, load_yaml, validate_capability_endpoints, validate_record
 
 DEFAULT_IGNORES = {".git", ".venv", "venv", "node_modules", "dist", "build", "coverage", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".tox", ".cache", ".decision", ".decision-cache", ".tasks"}
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
@@ -275,6 +275,8 @@ class PortableRepository:
                     raise DomainError(f"Identity claim {row['id']} must reference existing entity records.")
                 if endpoints[subject].get("kind") != endpoints[object_id].get("kind"):
                     raise DomainError(f"Identity claim {row['id']} endpoints must have the same entity kind.")
+            if row.get("predicate") in CAPABILITY_PREDICATES:
+                validate_capability_endpoints(row, entity_kinds(records["entities"], records["decisions"]))
             if row.get("predicate") in {"uses", "publishes_to", "calls", "depends_on", "stores_in", "communicates_with", "implements"}:
                 if row.get("subject") not in known_entity_ids or row.get("object") not in known_entity_ids:
                     raise DomainError(f"Structural claim {row['id']} references an unknown entity.")
@@ -352,6 +354,8 @@ class PortableRepository:
             raise DomainError(errors[0].message)
         if kind == "claims":
             self.validate_identity_endpoints(record)
+            if record.get("predicate") in CAPABILITY_PREDICATES:
+                validate_capability_endpoints(record, entity_kinds(self.records_unchecked("entities"), self.records_unchecked("decisions")))
         directory = self.overlay / kind
         directory.mkdir(parents=True, exist_ok=True)
         path = directory / f"{record['id']}.yaml"

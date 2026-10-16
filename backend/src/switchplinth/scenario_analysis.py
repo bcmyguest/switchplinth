@@ -8,10 +8,10 @@ touches HTTP, SQLite, Qdrant, or model providers.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
-from switchplinth.domain import Decision, Entity, Graph, Relationship
+from switchplinth.domain import CAPABILITY_PREDICATES, Claim, Decision, Entity, Graph, Relationship, effective_claims
 
 IMPACT_MAX_DEPTH = 4
 IMPACT_LIMITS = (
@@ -27,6 +27,16 @@ IMPACT_LIMITS = (
     "several lost same-kind edges can share one replacement."
 )
 RELATIONSHIP_WRITE_OPS = frozenset({"add_relationship", "replace_relationship"})
+CAPABILITY_LIMITS = (
+    "A requirement is an effective requires_capability claim whose subject is active in the scenario. It is "
+    "met when the requirer itself, or an entity it reaches by following scenario relationships from source "
+    "to target within max_depth hops, has an effective provides_capability claim for the same capability. "
+    "Otherwise it is unmet. Reachable entities with an effective lacks_capability claim are cited as the "
+    "reason; a lacks claim never cancels a reachable provider. Active providers the requirer cannot reach "
+    "are listed but do not satisfy it. Identity groups (same_entity_as) are not traversed, rejected and "
+    "superseded claims are ignored, and a requirer absent from the scenario has no requirement there. "
+    "Claims record what the sources state; nothing verifies that a technology really has the capability."
+)
 
 
 @dataclass(frozen=True)
@@ -37,6 +47,7 @@ class ResolvedScenario:
     graph: Graph
     conflicts: list[str]
     invalid_assumptions: list[str]
+    unmet_requirements: list[dict[str, Any]] = field(default_factory=list)
 
 
 def _entity_json(entity: Entity) -> dict[str, Any]:
@@ -212,6 +223,84 @@ def downstream_impact(before: Graph, after: Graph, max_depth: int = IMPACT_MAX_D
     return {"basis": "before_scenario_relationships", "max_depth": max_depth, "limits": IMPACT_LIMITS, "items": items}
 
 
+def _reachable(start: str, graph: Graph, max_depth: int) -> dict[str, list[str]]:
+    """Entities ``start`` reaches over outgoing relationships within ``max_depth`` hops, with first-found paths.
+
+    Paths alternate entity and relationship IDs and begin at ``start``. Neighbours
+    are visited in relationship-ID order, so paths are deterministic.
+    """
+    outgoing: dict[str, list[Relationship]] = {}
+    for relationship in sorted(graph.relationships.values(), key=lambda item: item.id):
+        if relationship.source != relationship.target and relationship.target in graph.entities:
+            outgoing.setdefault(relationship.source, []).append(relationship)
+    paths = {start: [start]}
+    frontier = [start]
+    for _ in range(max_depth):
+        following = []
+        for entity_id in frontier:
+            for relationship in outgoing.get(entity_id, []):
+                if relationship.target not in paths:
+                    paths[relationship.target] = [*paths[entity_id], relationship.id, relationship.target]
+                    following.append(relationship.target)
+        frontier = following
+    return paths
+
+
+def capability_check(graph: Graph, claims: list[Claim], max_depth: int = IMPACT_MAX_DEPTH) -> list[dict[str, Any]]:
+    """Report capability requirements that no reachable entity of this resolved scenario provides.
+
+    ``graph`` is one compiled scenario; ``claims`` is the claim history, reduced
+    here to effective (unsuperseded, non-rejected) claims. See ``CAPABILITY_LIMITS``
+    for the rule. Items are sorted by requirer then capability; each merges every
+    requirement claim for that pair.
+    """
+    active = [claim for claim in effective_claims(claims) if claim.predicate in CAPABILITY_PREDICATES]
+    by_predicate: dict[str, dict[str, dict[str, list[Claim]]]] = {predicate: {} for predicate in CAPABILITY_PREDICATES}
+    for claim in active:
+        if claim.subject in graph.entities:
+            by_predicate[claim.predicate].setdefault(claim.object, {}).setdefault(claim.subject, []).append(claim)
+    unmet = []
+    for capability in sorted(by_predicate["requires_capability"]):
+        providers = by_predicate["provides_capability"].get(capability, {})
+        lackers = by_predicate["lacks_capability"].get(capability, {})
+        for requirer in sorted(by_predicate["requires_capability"][capability]):
+            reachable = _reachable(requirer, graph, max_depth)
+            if providers.keys() & reachable.keys():
+                continue
+            requirements = sorted(by_predicate["requires_capability"][capability][requirer], key=lambda item: item.id)
+            capability_entity = graph.entities.get(capability)
+            unmet.append({
+                "requirer": requirer,
+                "requirer_name": graph.entities[requirer].name,
+                "capability": capability,
+                "capability_name": capability_entity.name if capability_entity else capability,
+                "requirement_claim_ids": [claim.id for claim in requirements],
+                "evidence": sorted({evidence_id for claim in requirements for evidence_id in claim.evidence}),
+                "unreachable_providers": [{"entity_id": entity_id, "name": graph.entities[entity_id].name} for entity_id in sorted(providers)],
+                "lacking": [
+                    {
+                        "entity_id": entity_id,
+                        "name": graph.entities[entity_id].name,
+                        "path": reachable[entity_id],
+                        "claim_ids": sorted(claim.id for claim in lackers[entity_id]),
+                        "evidence": sorted({evidence_id for claim in lackers[entity_id] for evidence_id in claim.evidence}),
+                    }
+                    for entity_id in sorted(lackers.keys() & reachable.keys(), key=lambda item: (len(reachable[item]), item))
+                ],
+            })
+    return unmet
+
+
+def _requirement_changes(before: list[dict[str, Any]], after: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Split unmet requirements by (requirer, capability) into appeared and disappeared."""
+    before_keys = {(item["requirer"], item["capability"]) for item in before}
+    after_keys = {(item["requirer"], item["capability"]) for item in after}
+    return {
+        "appeared": [item for item in after if (item["requirer"], item["capability"]) not in before_keys],
+        "disappeared": [item for item in before if (item["requirer"], item["capability"]) not in after_keys],
+    }
+
+
 def diff_resolved_scenarios(before: ResolvedScenario, after: ResolvedScenario, decisions: list[Decision], max_depth: int = IMPACT_MAX_DEPTH) -> dict[str, Any]:
     """Describe how ``after`` differs from ``before``: records, problems, decisions, and impact."""
     entities: dict[str, list[dict[str, Any]]] = {"added": [], "removed": [], "changed": []}
@@ -255,6 +344,8 @@ def diff_resolved_scenarios(before: ResolvedScenario, after: ResolvedScenario, d
         "relationships": relationships,
         "conflicts": _appeared(before.conflicts, after.conflicts),
         "invalid_assumptions": _appeared(before.invalid_assumptions, after.invalid_assumptions),
+        "unmet_requirements": _requirement_changes(before.unmet_requirements, after.unmet_requirements),
+        "capability_limits": CAPABILITY_LIMITS,
         "affected_decisions": affected,
         "impact": downstream_impact(before.graph, after.graph, max_depth, option_replacements(decisions, before.selections, after.selections)),
     }

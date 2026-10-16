@@ -18,7 +18,7 @@ from switchplinth.domain import Claim, Decision, DomainError, Entity, Evidence, 
 from switchplinth.providers import diagnose, embed_with_litellm, extract_with_litellm, propose_delta_with_litellm
 from switchplinth.receipt import RECEIPT_FOLDERS, input_receipt
 from switchplinth.repository import PortableRepository, discover_markdown, passages, relocate_evidence, source_identity, source_is_included
-from switchplinth.scenario_analysis import ResolvedScenario, diff_resolved_scenarios, downstream_impact, option_replacements
+from switchplinth.scenario_analysis import CAPABILITY_LIMITS, ResolvedScenario, capability_check, diff_resolved_scenarios, downstream_impact, option_replacements
 from switchplinth.store import INDEX_VERSION, SearchIndex, VectorIndex, qdrant_rebuild, qdrant_search
 
 REVIEW_FOLDERS = (("claims", "reviewed_claim"), ("aliases", "reviewed_alias"))
@@ -30,6 +30,43 @@ ENTITY_REFERENCE_GUIDE = (
     "For an entity you return in entities, use its exact name, not an invented ID; the backend maps a name to an ID "
     "only when it matches exactly one entity."
 )
+
+# Mock extraction recognizes these capability terms in explicit statements only.
+MOCK_CAPABILITY_TERMS = ("replay", "ordering", "deduplication")
+CAPABILITY_STATEMENT_PATTERNS = (
+    ("lacks_capability", r"\b(?:does not|doesn't|cannot|can't|lacks?|has no)\s+(?:support\s+(?:for\s+)?)?{term}\b"),
+    ("requires_capability", r"\b(?:requires?|needs?(?:\s+to\s+support)?|must(?:\s+[\w-]+){{0,8}}?\s+support)\s+{term}\b"),
+    ("provides_capability", r"\b(?:supports?|provides?)\s+{term}\b"),
+)
+
+
+def capability_statements(text: str, catalog: tuple[Any, ...]) -> list[tuple[str, str, str]]:
+    """Return (catalog name, predicate, capability term) for each explicit capability statement in ``text``.
+
+    The subject is the catalog entry mentioned earliest in the same sentence;
+    a sentence without a catalog mention yields nothing. Per sentence and term,
+    the first matching pattern wins in the order lacks, requires, provides, so
+    "does not support replay" and "must support replay" never also count as
+    "supports replay".
+    """
+    statements = []
+    for sentence in re.split(r"(?<=[.!?])\s+", text):
+        lowered = sentence.casefold()
+        positions = [
+            (match.start(), name)
+            for name, _, mentions in catalog
+            for mention in (name.casefold(), *mentions)
+            for match in [re.search(rf"\b{re.escape(mention)}\b", lowered)]
+            if match
+        ]
+        if not positions:
+            continue
+        subject = min(positions)[1]
+        for term in MOCK_CAPABILITY_TERMS:
+            predicate = next((name for name, pattern in CAPABILITY_STATEMENT_PATTERNS if re.search(pattern.format(term=re.escape(term)), lowered)), None)
+            if predicate:
+                statements.append((subject, predicate, term))
+    return list(dict.fromkeys(statements))
 
 
 class ReviewConflictError(Exception):
@@ -255,6 +292,19 @@ class DecisionService:
                     if entity_id not in option_entity_ids:
                         matched_evidence = [item.id for item in evidence if any(mention in item.text.casefold() for mention in mentions)]
                         candidates[entity_id] = {"id": entity_id, "kind": kind, "name": name, "epistemic_state": "inferred", "confidence": 0.85, "evidence": matched_evidence}
+            # Capability statements: subjects must be base candidates or existing entity records.
+            known_entity_records = {record["id"] for record in self.repository.records_unchecked("entities")}
+            capability_claims: list[dict[str, Any]] = []
+            for passage in evidence:
+                for subject_name, predicate, term in capability_statements(passage.text, catalog):
+                    subject_id = stable_id("entity", subject_name.casefold())
+                    if subject_id not in candidates and subject_id not in known_entity_records:
+                        continue
+                    capability_id = stable_id("capability", term)
+                    capability = candidates.setdefault(capability_id, {"id": capability_id, "kind": "capability", "name": term.capitalize(), "epistemic_state": "inferred", "confidence": 0.8, "evidence": []})
+                    if passage.id not in capability["evidence"]:
+                        capability["evidence"].append(passage.id)
+                    capability_claims.append({"schema_version": "decision/v1", "record_type": "claim", "id": stable_id("claim", f"capability/{subject_id}/{predicate}/{capability_id}/{passage.id}"), "subject": subject_id, "predicate": predicate, "object": capability_id, "epistemic_state": "inferred", "confidence": 0.8, "source_path": passage.source_path, "evidence": [passage.id]})
             reporting_source = next((item for item in evidence if "separately provisioned PostgreSQL instance" in item.text), None)
             if reporting_source:
                 candidates["datastore-postgres-reporting"] = {
@@ -344,6 +394,9 @@ class DecisionService:
                         claim_id = stable_id("claim", f"mention/{entity_id}/{passage.id}")
                         if claim_id not in existing_claims:
                             self.repository.save("claims", {"schema_version": "decision/v1", "record_type": "claim", "id": claim_id, "subject": entity_id, "predicate": "mentioned_in", "object": passage.source_path, "epistemic_state": "inferred", "confidence": 0.99, "source_path": passage.source_path, "evidence": [passage.id]})
+            for claim in capability_claims:
+                if claim["id"] not in existing_claims:
+                    self.repository.save("claims", claim)
         decisions = self.repository.records_unchecked("decisions")
         # A lightweight format-agnostic classifier surfaces candidate sections for review.
         candidate_titles = []
@@ -872,7 +925,7 @@ class DecisionService:
         result, selected, active_claims, invalid_assumptions = projection or self._project_scenario(graph, decisions, claims, selections)
         extraction_reviews = {record["id"]: record.get("extraction_review") for record in decision_records if record.get("extraction_review")}
         derived = decision_log_reasons(decisions, [self._passage_from_record(record) for record in evidence])
-        rendered = {"entities": [vars(e) for e in result.graph.entities.values()], "relationships": [{"id": r.id, "from": r.source, "to": r.target, "kind": r.kind, "claim_id": r.claim_id} for r in result.graph.relationships.values()], "decisions": [{"id": d.id, "title": d.title, "status": d.status, "context": d.context, "selected_option": selected.get(d.id), "options": [{"id": o.id, "title": o.title, "rationale": o.rationale, "delta": o.delta, "evidence": o.evidence} for o in d.options], "evidence": d.evidence, **({"extraction_review": extraction_reviews[d.id]} if d.id in extraction_reviews else {}), "derived": asdict(derived[d.id])} for d in decisions], "aliases": aliases, "claims": [vars(c) for c in active_claims], "evidence": evidence, "scenario": {"selections": selected, "affected": {"added": result.added, "removed": result.removed, "changed": result.changed}, "conflicts": result.conflicts, "invalid_assumptions": sorted(set(invalid_assumptions)), "affected_decisions": result.affected_decisions}}
+        rendered = {"entities": [vars(e) for e in result.graph.entities.values()], "relationships": [{"id": r.id, "from": r.source, "to": r.target, "kind": r.kind, "claim_id": r.claim_id} for r in result.graph.relationships.values()], "decisions": [{"id": d.id, "title": d.title, "status": d.status, "context": d.context, "selected_option": selected.get(d.id), "options": [{"id": o.id, "title": o.title, "rationale": o.rationale, "delta": o.delta, "evidence": o.evidence} for o in d.options], "evidence": d.evidence, **({"extraction_review": extraction_reviews[d.id]} if d.id in extraction_reviews else {}), "derived": asdict(derived[d.id])} for d in decisions], "aliases": aliases, "claims": [vars(c) for c in active_claims], "evidence": evidence, "scenario": {"selections": selected, "affected": {"added": result.added, "removed": result.removed, "changed": result.changed}, "conflicts": result.conflicts, "invalid_assumptions": sorted(set(invalid_assumptions)), "unmet_requirements": capability_check(result.graph, claims), "capability_limits": CAPABILITY_LIMITS, "affected_decisions": result.affected_decisions}}
         rendered.update(self._identity_data(result.graph.entities, claims))
         return rendered
 
@@ -899,7 +952,7 @@ class DecisionService:
 
     def _resolve_scenario(self, graph: Graph, decisions: list[Decision], claims: list[Claim], selections: dict[str, str] | None) -> ResolvedScenario:
         result, selected, _, invalid_assumptions = self._project_scenario(graph, decisions, claims, selections)
-        return ResolvedScenario(selected, result.graph, list(result.conflicts), sorted(set(invalid_assumptions)))
+        return ResolvedScenario(selected, result.graph, list(result.conflicts), sorted(set(invalid_assumptions)), capability_check(result.graph, claims))
 
     def diff_scenarios(self, before_selections: dict[str, str] | None = None, after_selections: dict[str, str] | None = None) -> dict[str, Any]:
         """Compare two scenarios; an omitted map means the repository-selected options."""

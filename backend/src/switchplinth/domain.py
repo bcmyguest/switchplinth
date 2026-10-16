@@ -13,6 +13,8 @@ import yaml
 SCHEMA_VERSION = "decision/v1"
 EPISTEMIC_STATES = {"inferred", "confirmed", "rejected", "asserted"}
 SUPPORTED_OPERATIONS = {"add_entity", "remove_entity", "replace_entity", "add_relationship", "remove_relationship", "replace_relationship"}
+CAPABILITY_PREDICATES = frozenset({"requires_capability", "provides_capability", "lacks_capability"})
+CAPABILITY_KIND = "capability"
 ID_PATTERN = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
 
 
@@ -180,6 +182,35 @@ def without_undone_reviews(records: list[dict[str, Any]]) -> list[dict[str, Any]
     """
     undone = {record["undoes"] for record in records if record.get("undoes")}
     return [record for record in records if not record.get("undoes") and record["id"] not in undone]
+
+
+def entity_kinds(entity_records: list[dict[str, Any]], decision_records: list[dict[str, Any]]) -> dict[str, str]:
+    """Map every entity record and option-created entity ID to its kind."""
+    kinds = {
+        str(operation["entity"]["id"]): str(operation["entity"].get("kind", "component"))
+        for decision in decision_records
+        for option in decision.get("options", [])
+        for operation in option.get("delta", {}).get("operations", [])
+        if operation.get("op") in {"add_entity", "replace_entity"} and isinstance(operation.get("entity"), dict) and operation["entity"].get("id")
+    }
+    kinds.update({str(record["id"]): str(record.get("kind", "component")) for record in entity_records})
+    return kinds
+
+
+def validate_capability_endpoints(claim: dict[str, Any], kinds: dict[str, str]) -> None:
+    """A capability claim links a known non-capability entity to a known entity of kind ``capability``.
+
+    ``kinds`` comes from ``entity_kinds``, so either endpoint may be an entity
+    record or an option-created entity (a scenario-only resource can provide or
+    lack a capability).
+    """
+    subject, object_id = claim.get("subject"), claim.get("object")
+    if subject not in kinds:
+        raise DomainError(f"Capability claim {claim['id']} subject {subject} is not a known entity.")
+    if kinds[subject] == CAPABILITY_KIND:
+        raise DomainError(f"Capability claim {claim['id']} subject {subject} must not be a capability entity.")
+    if kinds.get(object_id) != CAPABILITY_KIND:
+        raise DomainError(f"Capability claim {claim['id']} object {object_id} must be a known entity of kind {CAPABILITY_KIND}.")
 
 
 def effective_claims(claims: list[Claim]) -> list[Claim]:

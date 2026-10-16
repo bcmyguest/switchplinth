@@ -26,6 +26,7 @@ ${links}
 - Review log with undo, layered architecture map, What-if previews, grounded "why" answers with cited passages.
 - Scenario diffs between any two selection maps, with relationship-based downstream impact (API and MCP \`diff_scenarios\`).
 - Input receipts on graph, scenario, search, and diff results; repeat a call and compare \`receipt.digest\` to detect stale results.
+- Capability checks from extracted requires/provides/lacks claims: What-if, API, and MCP report a component left without a required capability reachable within four relationship hops (claim-based, not code analysis).
 - Five read-only MCP tools over streamable HTTP (loopback, unauthenticated) and stdio: list_decisions, search_decisions, inspect_architecture, inspect_entity, diff_scenarios.
 
 ## Up next

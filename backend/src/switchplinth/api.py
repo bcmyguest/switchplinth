@@ -303,7 +303,7 @@ def create_app(service: DecisionService | None = None) -> FastAPI:
     @app.post("/api/v1/scenarios/resolve")
     def resolve(request: ScenarioRequest) -> dict[str, Any]:
         graph = app.state.service.graph_json(request.selections)
-        return {"graph": graph, "affected": graph["scenario"]["affected"], "conflicts": graph["scenario"]["conflicts"], "invalid_assumptions": graph["scenario"]["invalid_assumptions"], "impact": graph["scenario"]["impact"], "receipt": graph["receipt"]}
+        return {"graph": graph, "affected": graph["scenario"]["affected"], "conflicts": graph["scenario"]["conflicts"], "invalid_assumptions": graph["scenario"]["invalid_assumptions"], "unmet_requirements": graph["scenario"]["unmet_requirements"], "impact": graph["scenario"]["impact"], "receipt": graph["receipt"]}
 
     @app.post("/api/v1/scenarios/diff")
     def diff_scenarios(request: ScenarioDiffRequest) -> dict[str, Any]:

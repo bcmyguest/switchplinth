@@ -1,4 +1,4 @@
-import type { Capability, Claim, Connection, Entity, EntityDecisionDetail, GraphData, IdentityConflict, IdentityGroup, IdentitySuggestion, SavedScenario, ScenarioDiff } from './types'
+import type { Capability, Claim, Connection, Entity, EntityDecisionDetail, GraphData, IdentityConflict, IdentityGroup, IdentitySuggestion, SavedScenario, ScenarioDiff, UnmetRequirement } from './types'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
 
@@ -60,7 +60,7 @@ export async function saveConnection(connection: Omit<Connection, 'status' | 'di
 }
 
 export async function resolveScenario(selections: Record<string, string>) {
-  return request<{ graph: GraphData; affected?: { added?: string[]; removed?: string[]; changed?: string[] }; conflicts?: string[]; invalid_assumptions?: string[] }>('/scenarios/resolve', { method: 'POST', body: JSON.stringify({ selections }) })
+  return request<{ graph: GraphData; affected?: { added?: string[]; removed?: string[]; changed?: string[] }; conflicts?: string[]; invalid_assumptions?: string[]; unmet_requirements?: UnmetRequirement[] }>('/scenarios/resolve', { method: 'POST', body: JSON.stringify({ selections }) })
 }
 
 export async function diffScenarios(beforeSelections: Record<string, string>, afterSelections: Record<string, string>) {
@@ -68,7 +68,7 @@ export async function diffScenarios(beforeSelections: Record<string, string>, af
 }
 
 export async function previewOptionDelta(decisionId: string, optionId: string, delta: NonNullable<GraphData['decisions'][number]['options'][number]['delta']>, selections: Record<string, string>) {
-  return request<{ graph: GraphData; affected?: { added?: string[]; removed?: string[]; changed?: string[] }; conflicts?: string[]; invalid_assumptions?: string[] }>(
+  return request<{ graph: GraphData; affected?: { added?: string[]; removed?: string[]; changed?: string[] }; conflicts?: string[]; invalid_assumptions?: string[]; unmet_requirements?: UnmetRequirement[] }>(
     '/scenarios/preview-delta',
     { method: 'POST', body: JSON.stringify({ decision_id: decisionId, option_id: optionId, delta, selections }) },
   )

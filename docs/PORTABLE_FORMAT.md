@@ -73,6 +73,24 @@ Represent an identity link as an ordinary `decision/v1` claim whose predicate is
 
 The backend validates the portable schema on every save and validates identity endpoints on save, read, review, and correction. Full cross-record validation runs on reads, not on generic saves, so incremental scan and extraction writes can proceed safely.
 
+### Capability claims (backend/API implemented)
+
+Three predicates in the unchanged v1 claim shape record what a component needs and what other entities offer: `requires_capability`, `provides_capability`, and `lacks_capability`. The subject is a non-capability entity: an entity record or an entity that an option delta adds, so a scenario-only resource can provide or lack a capability. The object is an entity of kind `capability`. The backend checks both endpoints on save and again on every read. Like `same_entity_as`, this adds predicate semantics, not a schema change, so no migration is needed. These predicates create no graph edges.
+
+```yaml
+schema_version: decision/v1
+record_type: claim
+id: claim-orders-require-replay
+subject: entity-order-service
+predicate: requires_capability
+object: capability-replay
+epistemic_state: inferred
+confidence: 0.8
+evidence: [evidence-event-transport-context]
+```
+
+Scenario resolution reports `unmet_requirements`. A requirement is an effective `requires_capability` claim whose subject is active in the scenario. It is met when the requirer, or an entity it reaches by following scenario relationships from source to target within four hops, has an effective `provides_capability` claim for the same capability. Otherwise it is unmet. Reachable entities with an effective `lacks_capability` claim are cited as the reason. A lack claim never cancels a reachable provider. Active providers the requirer cannot reach are listed but do not satisfy it. Rejected and superseded claims are ignored, identity groups are not traversed, and a requirer absent from the scenario has no requirement there. The claims record what the sources say; nothing checks that a technology has the capability.
+
 ### Extraction delta review metadata
 
 An inferred decision may carry an optional top-level `extraction_review` object when its evidence-anchored options and selection are valid but generated option deltas fail validation. The active option deltas are saved empty; the rejected JSON and validator errors are kept in the audit metadata and are never compiled as operations. The bundled v1 schema declares and validates this optional object. A successful manual option-delta edit removes that option's audit item; the field remains `status: required` while other items remain, and is removed after all listed options are edited and validated.

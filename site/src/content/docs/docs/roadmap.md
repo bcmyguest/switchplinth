@@ -15,6 +15,7 @@ description: What works today, and the next steps - hosted-provider tests, recal
 - Grounded "why" answers with cited passages.
 - Scenario diffs between any two selection maps, with relationship-based downstream impact, over the API and MCP.
 - Input receipts on graph, scenario, search, and diff results, for checking whether the inputs changed.
+- Capability checks: a component can require a capability such as event replay, and What-if, the API, and MCP report when a switch leaves no provider reachable within four relationship hops. Switching event delivery from Kafka to SQS in the sample reports that the Order Service needs replay and SQS lacks it. The check uses extracted `requires_capability`, `provides_capability`, and `lacks_capability` claims; it does not analyze code or runtime behavior.
 - Five read-only MCP tools over streamable HTTP (loopback) and stdio.
 
 ## Up next

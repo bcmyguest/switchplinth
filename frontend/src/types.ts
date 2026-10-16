@@ -124,7 +124,19 @@ export type GraphData = {
   identity_groups?: IdentityGroup[]
   identity_suggestions?: IdentitySuggestion[]
   identity_conflicts?: IdentityConflict[]
-  scenario?: { selections?: Record<string, string>; affected?: { added?: string[]; removed?: string[]; changed?: string[] }; conflicts?: string[]; invalid_assumptions?: string[]; affected_decisions?: string[] }
+  scenario?: { selections?: Record<string, string>; affected?: { added?: string[]; removed?: string[]; changed?: string[] }; conflicts?: string[]; invalid_assumptions?: string[]; unmet_requirements?: UnmetRequirement[]; capability_limits?: string; affected_decisions?: string[] }
+}
+
+/** A requires_capability claim no reachable entity satisfies in one resolved scenario. */
+export type UnmetRequirement = {
+  requirer: string
+  requirer_name: string
+  capability: string
+  capability_name: string
+  requirement_claim_ids: string[]
+  evidence: string[]
+  unreachable_providers: Array<{ entity_id: string; name: string }>
+  lacking: Array<{ entity_id: string; name: string; path: string[]; claim_ids: string[]; evidence: string[] }>
 }
 
 export type SavedScenario = { id: string; name: string; selections: Record<string, string> }
@@ -144,6 +156,8 @@ export type ScenarioDiff = {
   relationships: ChangeSet<DiffRelationship>
   conflicts: { appeared: string[]; disappeared: string[] }
   invalid_assumptions: { appeared: string[]; disappeared: string[] }
+  unmet_requirements: { appeared: UnmetRequirement[]; disappeared: UnmetRequirement[] }
+  capability_limits?: string
   affected_decisions: Array<{ id: string; title: string; reasons: string[] }>
   impact: ImpactReport
 }

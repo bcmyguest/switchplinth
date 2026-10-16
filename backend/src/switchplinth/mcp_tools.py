@@ -67,7 +67,8 @@ def register_tools(server: FastMCP, get_service: Callable[[], DecisionService]) 
     @server.tool(annotations=READ_ONLY, description=(
         "Return the full compiled architecture graph: entities, relationships, decisions with "
         "option deltas, aliases, claims, evidence, identity groups, and a `scenario` block with "
-        "added/removed/changed records, conflicts, invalid assumptions, affected decisions, and "
+        "added/removed/changed records, conflicts, invalid assumptions, `unmet_requirements` (capability "
+        "requirements no reachable entity provides; rule in `capability_limits`), affected decisions, and "
         "`impact` (downstream dependents of what the selections remove or replace versus the "
         "repository-selected options). Large; prefer list_decisions or inspect_entity for targeted questions. "
         + SELECTIONS_HELP
@@ -79,7 +80,8 @@ def register_tools(server: FastMCP, get_service: Callable[[], DecisionService]) 
         "Compare two scenarios given as `before_selections` and `after_selections` maps "
         "({decision_id: option_id}; an omitted or empty map means the repository-selected options). "
         "Returns `selection_changes`; `entities` and `relationships` each split into added, removed, "
-        "and changed; `conflicts` and `invalid_assumptions` split into appeared and disappeared; "
+        "and changed; `conflicts`, `invalid_assumptions`, and `unmet_requirements` (capability requirements "
+        "no reachable entity provides, rule in `capability_limits`) split into appeared and disappeared; "
         "`affected_decisions` with reasons; and `impact`: for each removed or replaced element, the "
         "entities that depend on it over relationships in the before scenario (transitive, with path "
         "and depth, capped at `impact.max_depth`); each dependent's outgoing edges to now-missing "

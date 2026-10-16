@@ -15,11 +15,11 @@ import yaml
 from fastapi.testclient import TestClient
 
 from switchplinth.api import create_app
-from switchplinth.domain import Decision, Entity, Graph, Option, Relationship, passage_hash
+from switchplinth.domain import Claim, Decision, DomainError, Entity, Graph, Option, Relationship, passage_hash
 from switchplinth.local_vectors import LocalVectorIndex
 from switchplinth.mcp_tools import create_mcp_server
-from switchplinth.scenario_analysis import ResolvedScenario, diff_resolved_scenarios, downstream_impact
-from switchplinth.service import DecisionService
+from switchplinth.scenario_analysis import ResolvedScenario, capability_check, diff_resolved_scenarios, downstream_impact
+from switchplinth.service import DecisionService, capability_statements
 
 FIXTURE_BOOTSTRAP = Path(__file__).resolve().parents[2] / "fixtures" / "food-delivery" / "bootstrap.py"
 EVENT_TRANSPORT = "decision-9069314c598bbe6a"
@@ -311,36 +311,129 @@ def test_depth_one_dependents_of_removed_relationships_and_replaced_entities_los
     assert direct["missing_endpoints"] == [] and direct["present_after"]
 
 
-def test_replay_requirement_is_not_yet_surfaced(repo: Path, tmp_path: Path) -> None:
-    """Pins a known gap tracked in README "Up next": scenario comparison ignores capability requirements.
 
-    The event-transport source says the stream must support replay and that SQS needs extra work to replay. Human claims
-    can record that as requires/provides/lacks_capability, but no output reports the unmet requirement after Kafka -> SQS.
-    Replace this test when capability checking lands.
-    """
-    fulfillment = "entity-779ab6fab932e39b"
+AMAZON_SQS = "entity-0ad8c3795bf9c830"
+APACHE_KAFKA = "entity-8bcf11933046c744"
+
+
+def test_replay_requirement_surfaces_after_kafka_to_sqs(repo: Path, tmp_path: Path) -> None:
+    """Mock extraction reads the replay statements in event-transport.md; Kafka -> SQS leaves the requirement unmet."""
     service = service_for(repo, tmp_path / "cache")
-    baseline = service.diff_scenarios(None, {EVENT_TRANSPORT: SQS_OPTION})
+    claims = {record["id"]: record for record in service.repository.records("claims") if record["predicate"].endswith("_capability")}
+    evidence = {record["id"]: record["text"] for record in service.repository.records("evidence")}
+    statements = {(record["subject"], record["predicate"]) for record in claims.values()}
+    assert statements == {(ORDER_SERVICE, "requires_capability"), (APACHE_KAFKA, "provides_capability"), (AMAZON_SQS, "lacks_capability")}
+    by_predicate = {record["predicate"]: evidence[record["evidence"][0]] for record in claims.values()}
+    assert "The Order Service requires replay" in by_predicate["requires_capability"]
+    assert "Kafka supports replay" in by_predicate["provides_capability"]
+    assert "SQS does not support replay" in by_predicate["lacks_capability"]
 
-    human = {"epistemic_state": "asserted", "confidence": 1.0, "evidence": [], "reviewer": "human", "reviewed_at": "2026-10-16T00:00:00+00:00"}
-    service.repository.save("entities", {"schema_version": "decision/v1", "record_type": "entity", "id": "capability-event-replay", "kind": "capability", "name": "Event replay", **human})
-    claims = [
-        ("claim-fulfillment-requires-replay", fulfillment, "requires_capability"),
-        ("claim-kafka-provides-replay", KAFKA_STREAM, "provides_capability"),
-        ("claim-sqs-lacks-replay", SQS_STREAM, "lacks_capability"),
-    ]
-    for claim_id, subject, predicate in claims:
-        service.repository.save("claims", {"schema_version": "decision/v1", "record_type": "claim", "id": claim_id, "subject": subject, "predicate": predicate, "object": "capability-event-replay", **human})
-
-    stored = {record["id"]: record for record in service_for(repo, tmp_path / "cache-2").repository.records("claims")}
-    assert {(stored[claim_id]["subject"], stored[claim_id]["predicate"]) for claim_id, _, _ in claims} == {(subject, predicate) for _, subject, predicate in claims}
-    assert "capability-event-replay" in {entity["id"] for entity in service.graph_json()["entities"]}, "records pass read-time validation"
-
+    assert service.graph_json()["scenario"]["unmet_requirements"] == []
     diff = service.diff_scenarios(None, {EVENT_TRANSPORT: SQS_OPTION})
-    assert diff["invalid_assumptions"] == baseline["invalid_assumptions"] == {"appeared": [], "disappeared": []}
-    assert diff["conflicts"] == baseline["conflicts"]
-    assert diff["impact"] == baseline["impact"]
-    [dependent] = diff["impact"]["items"][0]["dependents"]
-    assert dependent["entity_id"] == ORDER_SERVICE and dependent["rewired"] is True, "still reported rewired, with no replay warning"
-    assert all(fulfillment not in (dep["entity_id"] for dep in item["dependents"]) for item in diff["impact"]["items"])
-    assert diff["receipt"]["digest"] != baseline["receipt"]["digest"], "the claims are inputs, yet nothing in the output reflects them"
+    assert diff["unmet_requirements"]["disappeared"] == []
+    [unmet] = diff["unmet_requirements"]["appeared"]
+    assert (unmet["requirer"], unmet["requirer_name"], unmet["capability_name"]) == (ORDER_SERVICE, "Order Service", "Replay")
+    assert unmet["unreachable_providers"] == [{"entity_id": APACHE_KAFKA, "name": "Apache Kafka"}]
+    [lacking] = unmet["lacking"]
+    assert lacking["entity_id"] == AMAZON_SQS and lacking["path"][:3] == [ORDER_SERVICE, SQS_PUBLISH, SQS_STREAM] and lacking["path"][-1] == AMAZON_SQS
+    assert diff["invalid_assumptions"] == {"appeared": [], "disappeared": []}, "a capability gap is not an invalid assumption"
+
+    back = service.diff_scenarios({EVENT_TRANSPORT: SQS_OPTION}, None)
+    assert back["unmet_requirements"] == {"appeared": [], "disappeared": [unmet]}
+    client = TestClient(create_app(service))
+    resolved = client.post("/api/v1/scenarios/resolve", json={"selections": {EVENT_TRANSPORT: SQS_OPTION}}).json()
+    assert resolved["unmet_requirements"] == resolved["graph"]["scenario"]["unmet_requirements"] == [unmet]
+    assert client.post("/api/v1/scenarios/diff", json={"after_selections": {EVENT_TRANSPORT: SQS_OPTION}}).json()["unmet_requirements"] == diff["unmet_requirements"]
+
+    # A human rejection of the lack claim removes the cited reason but not the unmet requirement.
+    [lack_id] = [claim_id for claim_id, record in claims.items() if record["predicate"] == "lacks_capability"]
+    service.review_claim(lack_id, "rejected")
+    [after_review] = service.diff_scenarios(None, {EVENT_TRANSPORT: SQS_OPTION})["unmet_requirements"]["appeared"]
+    assert after_review["lacking"] == [] and after_review["requirer"] == ORDER_SERVICE
+
+
+def capability_claim(claim_id: str, subject: str, predicate: str, capability: str = "cap", state: str = "asserted", supersedes: list[str] | None = None) -> Claim:
+    return Claim(claim_id, subject, predicate, capability, state, 1.0, [f"ev-{claim_id}"], None, supersedes or [])
+
+
+def test_capability_check_requires_a_reachable_provider_and_cites_reachable_lacks() -> None:
+    entities = {name: Entity(name, "service", name.upper()) for name in ("app", "stream", "tech", "other", "far1", "far2", "far3", "far4")}
+    entities["cap"] = Entity("cap", "capability", "Replay")
+    relationships = {
+        "r1": Relationship("r1", "app", "stream", "publishes_to"),
+        "r2": Relationship("r2", "stream", "tech", "implemented_by"),
+        "r3": Relationship("r3", "other", "app", "calls"),
+    }
+    graph = Graph(entities, relationships)
+    requires = capability_claim("c-req", "app", "requires_capability")
+
+    assert capability_check(graph, [requires, capability_claim("c-prov", "tech", "provides_capability")]) == [], "provider two hops away"
+    assert capability_check(graph, [requires, capability_claim("c-self", "app", "provides_capability")]) == [], "requirer provides it itself"
+    assert capability_check(graph, [requires, capability_claim("c-prov", "tech", "provides_capability"), capability_claim("c-lack", "tech", "lacks_capability")]) == [], "a lack never cancels a provider"
+
+    [unmet] = capability_check(graph, [requires, capability_claim("c-up", "other", "provides_capability"), capability_claim("c-lack", "tech", "lacks_capability")])
+    assert unmet["unreachable_providers"] == [{"entity_id": "other", "name": "OTHER"}], "edges are followed from source to target only"
+    assert unmet["requirement_claim_ids"] == ["c-req"] and unmet["evidence"] == ["ev-c-req"] and unmet["capability_name"] == "Replay"
+    assert unmet["lacking"] == [{"entity_id": "tech", "name": "TECH", "path": ["app", "r1", "stream", "r2", "tech"], "claim_ids": ["c-lack"], "evidence": ["ev-c-lack"]}]
+
+    # Providers absent from the scenario, rejected or superseded claims, and absent requirers do not count.
+    assert capability_check(graph, [requires, capability_claim("c-gone", "missing", "provides_capability")])[0]["unreachable_providers"] == []
+    rejected = [requires, capability_claim("c-prov", "tech", "provides_capability", state="inferred"), capability_claim("c-rej", "tech", "provides_capability", state="rejected")]
+    assert len(capability_check(graph, rejected)) == 1
+    superseded = [capability_claim("c-old", "app", "requires_capability"), capability_claim("c-new", "app", "lacks_capability", supersedes=["c-old"])]
+    assert capability_check(graph, superseded) == []
+    assert capability_check(graph, [capability_claim("c-req", "missing", "requires_capability")]) == []
+
+    chain = Graph({**entities, **{f"n{index}": Entity(f"n{index}", "service", f"N{index}") for index in range(6)}}, {f"q{index}": Relationship(f"q{index}", f"n{index}", f"n{index + 1}", "calls") for index in range(5)})
+    far = [capability_claim("c-req", "n0", "requires_capability"), capability_claim("c-prov", "n5", "provides_capability")]
+    assert len(capability_check(chain, far)) == 1, "five hops exceed the default depth cap"
+    assert capability_check(chain, far, max_depth=5) == []
+
+
+def test_diff_splits_unmet_requirements_by_requirer_and_capability() -> None:
+    graph = Graph({"a": Entity("a", "service", "A")}, {})
+    item = {"requirer": "a", "capability": "cap"}
+    before = ResolvedScenario({}, graph, [], [], [item])
+    after = ResolvedScenario({}, graph, [], [], [{**item, "capability": "other"}])
+    diff = diff_resolved_scenarios(before, after, [])
+    assert diff["unmet_requirements"] == {"appeared": [{"requirer": "a", "capability": "other"}], "disappeared": [item]}
+    assert diff_resolved_scenarios(before, before, [])["unmet_requirements"] == {"appeared": [], "disappeared": []}
+
+
+def test_capability_claims_validate_endpoints_on_save_and_read(repo: Path, tmp_path: Path) -> None:
+    service = service_for(repo, tmp_path / "cache")
+    [capability] = [record["id"] for record in service.repository.records("entities") if record.get("kind") == "capability"]
+    human = {"schema_version": "decision/v1", "record_type": "claim", "epistemic_state": "asserted", "confidence": 1.0, "evidence": [], "reviewer": "human", "reviewed_at": "2026-10-16T00:00:00+00:00"}
+    for claim_id, subject, object_id, message in (
+        ("claim-bad-object", ORDER_SERVICE, AMAZON_SQS, "must be a known entity of kind capability"),
+        ("claim-bad-subject", capability, capability, "must not be a capability entity"),
+        ("claim-unknown-subject", "entity-nowhere", capability, "is not a known entity"),
+    ):
+        with pytest.raises(DomainError, match=message):
+            service.repository.save("claims", {**human, "id": claim_id, "subject": subject, "predicate": "requires_capability", "object": object_id})
+    # An option-created resource may provide or lack a capability.
+    service.repository.save("claims", {**human, "id": "claim-stream-lacks", "subject": SQS_STREAM, "predicate": "lacks_capability", "object": capability})
+    assert any(record["id"] == "claim-stream-lacks" for record in service.repository.records("claims"))
+
+    (repo / ".decision" / "claims" / "claim-hand-written.yaml").write_text(yaml.safe_dump({**human, "id": "claim-hand-written", "subject": ORDER_SERVICE, "predicate": "provides_capability", "object": KAFKA_STREAM}, sort_keys=False))
+    with pytest.raises(DomainError, match="must be a known entity of kind capability"):
+        service.repository.records("claims")
+
+
+def test_mock_capability_statements_follow_explicit_wording() -> None:
+    catalog = (("Apache Kafka", "technology", ("kafka",)), ("Amazon SQS", "technology", ("sqs",)), ("Order Service", "service", ("order service",)))
+    text = (
+        "The Order Service requires replay and needs to support deduplication. Kafka supports replay. "
+        "SQS cannot replay a deleted message. Amazon SQS does not support ordering. "
+        "The stream must support replay. Kafka provides ordering, but replaying needs more code in the Order Service."
+    )
+    assert capability_statements(text, catalog) == [
+        ("Order Service", "requires_capability", "replay"),
+        ("Order Service", "requires_capability", "deduplication"),
+        ("Apache Kafka", "provides_capability", "replay"),
+        ("Amazon SQS", "lacks_capability", "replay"),
+        ("Amazon SQS", "lacks_capability", "ordering"),
+        ("Apache Kafka", "provides_capability", "ordering"),
+    ]
+    assert capability_statements("The Order Service must retain ordering per order and support replay after an outage.", catalog) == [("Order Service", "requires_capability", "replay")]
+    assert capability_statements("We chose Kafka because replay matters.", catalog) == []

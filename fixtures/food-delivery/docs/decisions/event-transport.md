@@ -2,7 +2,7 @@
 
 ## Context
 
-The Order Service sends accepted orders, cancellations, and courier handoff updates to the Fulfillment Service. The stream must retain ordering per order and support replay after a downstream outage.
+The Order Service sends accepted orders, cancellations, and courier handoff updates to the Fulfillment Service. The Order Service requires replay of these events after a downstream outage, and the stream must retain ordering per order. Kafka supports replay by resetting a consumer group's offset.
 
 ## Decision
 
@@ -10,7 +10,7 @@ We chose Apache Kafka because replay and per-order ordering matter more than red
 
 ## Alternative: managed queue
 
-Amazon SQS would reduce infrastructure work. A dead-letter queue would isolate repeatedly failing messages, but replaying a selected range of historical order events would require additional application support.
+Amazon SQS would reduce infrastructure work. A dead-letter queue would isolate repeatedly failing messages, but replaying a selected range of historical order events would require additional application support. SQS does not support replay once a consumer deletes a message.
 
 ## Consequences
 

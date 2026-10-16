@@ -57,6 +57,7 @@ More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 - The Architecture log: reasons, rejected alternatives, and consequences
 - Saved scenarios: create, list, and load
 - Scenario diffs between any two selections, with relationship-based downstream impact (API and MCP); What-if shows the diff against the previous choice
+- Capability requirements in scenarios: a component can require a capability such as event replay, and the diff reports when a switch leaves no reachable provider. Switching Kafka to SQS in the sample flags Order Service's replay requirement and names SQS as lacking it (API, MCP, and the Architecture map What-if overlay, which lists appeared and disappeared requirements under "Changes vs previous choice" and the current ones under "Compared with repository choices")
 - Input receipts on graph, scenario, search, and diff results, for checking whether the inputs changed
 - Search that cites its sources, and an MCP server over HTTP and stdio
 - Indexes that rebuild from the files
@@ -69,7 +70,6 @@ More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 - Authentication for remote API and MCP access (both listen on localhost only today)
 - Source formats beyond Markdown
 - Conflict detection beyond two options writing the same ID
-- Capability requirements in scenario comparison. Comparison follows relationships only, so it does not know that a component requires a capability, such as event replay, that one store provides and its replacement lacks. Switching Kafka to SQS in the sample reports Order Service as rewired with no warning, although the source says SQS cannot replay.
 - Renaming, updating, and deleting saved scenarios
 
 ## Links

@@ -2,7 +2,7 @@
 // width-change refit, the minimap rail on wide viewports, and the footer. `children` renders inside the frame after the
 // canvas (the option editor overlay). The frame stays mounted while other pages show, so ReactFlow never remounts.
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { Background, Controls, MiniMap, ReactFlow, ReactFlowProvider, type Edge, type ReactFlowInstance } from '@xyflow/react'
+import { Background, BackgroundVariant, Controls, MiniMap, ReactFlow, ReactFlowProvider, type Edge, type ReactFlowInstance } from '@xyflow/react'
 import { ArrowRight, GitCommitHorizontal, Maximize2, Minimize2 } from 'lucide-react'
 import { Button } from '../../components/ui/button'
 import { Select } from '../../components/ui/select'
@@ -101,7 +101,7 @@ export function ArchitectureMapCanvas({ graph, mapGraph, live, theme, selectedEn
       <ReactFlowProvider>
         <div className="graph-flow-viewport" data-testid="graph-flow-viewport">
           <ReactFlow nodes={architectureMap.nodes} edges={architectureMap.edges.length ? architectureMap.edges : INITIAL_EDGES} nodeTypes={NODE_TYPES} edgeTypes={EDGE_TYPES} fitView fitViewOptions={architectureMap.fitViewOptions} minZoom={0.2} maxZoom={1.6} deleteKeyCode="Delete" onInit={(flow) => { flowInstanceRef.current = flow }} onNodeClick={(_, node) => { if (!isMapGroupNode(node)) onSelectEntity(node.id) }} onNodeMouseEnter={architectureMap.onNodeMouseEnter} onNodeMouseLeave={architectureMap.onNodeMouseLeave} onConnect={(connection) => editor.connect(connection, selectedEntity)} onEdgesDelete={(edgesToDelete) => editor.deleteEdges(edgesToDelete, selectedEntity)} proOptions={{ hideAttribution: true }}>
-            <Background color={theme === 'dark' ? '#2a392d' : '#d5e0d7'} gap={22} size={1} /><Controls showInteractive={false} position="bottom-left" />
+            <Background id="map-minor" className="map-grid-minor" variant={BackgroundVariant.Lines} gap={20} lineWidth={0.5} color="var(--theme-map-dot)" /><Background id="map-major" className="map-grid-major" variant={BackgroundVariant.Lines} gap={100} lineWidth={1} color="var(--theme-map-dot)" /><Controls showInteractive={false} position="bottom-left" />
           </ReactFlow>
         </div>
         {viewportWidth > 1024 && <aside className="graph-minimap-rail" aria-label="Architecture map overview"><span>MAP OVERVIEW</span><MiniMap data-testid="graph-minimap" className="reserved-minimap" pannable zoomable nodeColor={(node) => isMapGroupNode(node) ? 'transparent' : theme === 'dark' ? node.id === selectedEntity ? '#a6d0ae' : '#405444' : node.id === selectedEntity ? '#557b66' : '#cbd9cf'} maskColor={theme === 'dark' ? 'rgba(17,23,19,.72)' : 'rgba(243,244,241,.72)'} /></aside>}

@@ -18,8 +18,8 @@ const CANVAS_VERTICAL_PADDING = 48
 const DIMMED_OPACITY = 0.25
 const TOP_ALIGN_MARGIN = 16
 export const MAP_FIT_VIEW_OPTIONS = { padding: 0.06, minZoom: MIN_READABLE_FIT_ZOOM }
-const EDGE_STROKE = 1.6
-const EDGE_HIGHLIGHT_STROKE = 3.2
+const EDGE_STROKE = 1.75
+const EDGE_HIGHLIGHT_STROKE = 2.5
 
 type UseArchitectureMapOptions = {
   graph: MapLayoutInput
@@ -121,7 +121,7 @@ export function useArchitectureMap({ graph, baseNodes, baseEdges, selectedId, vi
     const inferred = Boolean(edge.animated)
     const highlighted = Boolean(neighborhood?.edgeIds.has(edge.id))
     const dimmed = Boolean(neighborhood) && !highlighted
-    const color = inferred ? 'var(--theme-warning)' : 'var(--theme-muted)'
+    const color = inferred ? 'var(--theme-warning)' : highlighted ? 'var(--theme-brand)' : 'var(--theme-muted)'
     const sourceRect = current?.nodes.get(edge.source)
     const targetRect = current?.nodes.get(edge.target)
     const data: OrthogonalEdgeData = {
@@ -137,7 +137,7 @@ export function useArchitectureMap({ graph, baseNodes, baseEdges, selectedId, vi
       className: highlighted ? 'map-edge-highlighted' : dimmed ? 'map-edge-dimmed' : '',
       zIndex: highlighted ? 1 : 0,
       style: { stroke: color, strokeWidth: highlighted ? EDGE_HIGHLIGHT_STROKE : EDGE_STROKE, opacity: dimmed ? DIMMED_OPACITY : 1, strokeDasharray: inferred ? '6 4' : undefined },
-      markerEnd: { type: 'arrowclosed' as const, color, width: 16, height: 16 },
+      markerEnd: { type: 'arrowclosed' as const, color, width: 12, height: 12 },
       labelStyle: undefined,
       labelBgStyle: undefined,
     }

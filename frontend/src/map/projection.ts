@@ -73,9 +73,9 @@ export function entityEdges(graph: GraphData): Edge[] {
     type: 'readable',
     data: { labelOffset },
     animated: inferred,
-    style: { stroke: inferred ? '#c48a43' : '#91a89a', strokeWidth: 1.6 },
-    labelStyle: { fill: '#778078', fontSize: 10, fontWeight: 550 },
-    labelBgStyle: { fill: '#ffffff', fillOpacity: 0.92 },
-    markerEnd: { type: 'arrowclosed' as const, color: '#91a89a' },
+    style: { stroke: inferred ? 'var(--theme-warning)' : 'var(--theme-muted)', strokeWidth: 1.75 },
+    labelStyle: { fill: 'var(--theme-muted)', fontSize: 10, fontWeight: 550 },
+    labelBgStyle: { fill: 'var(--theme-map-canvas)', fillOpacity: 0.92 },
+    markerEnd: { type: 'arrowclosed' as const, color: 'var(--theme-muted)', width: 12, height: 12 },
   })})
 }

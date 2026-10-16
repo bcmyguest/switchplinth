@@ -1,7 +1,7 @@
 // Component detail derivation: the selected component, its linked decisions (directly or through identity links), and the
 // rationale, label, and source passage the detail panel shows. Pure: it reads only its arguments.
 import type { getEntityDetail } from '../../api'
-import type { Evidence, GraphData } from '../../types'
+import type { Evidence, GraphData, Option } from '../../types'
 import { evidenceText, resolveEvidence } from '../evidence/evidence'
 import { operationTouchesEntity } from '../graph-editor/deltaOperations'
 import type { DeltaEditor } from '../graph-editor/useDeltaEditor'
@@ -22,6 +22,15 @@ type ComponentDetailInput = {
 }
 
 export type ComponentDetail = ReturnType<typeof deriveComponentDetail>
+
+/**
+ * Puts decisions whose current choice involves the entity first; the rest keep their order (stable partition).
+ * `involvesEntity` tells whether an option's typed delta touches the selected entity or an identity-related one.
+ */
+export function orderLinkedDecisions<D extends { selected_option?: Option | null }>(decisions: D[], involvesEntity: (option: Option) => boolean): D[] {
+  const involved = decisions.filter((decision) => decision.selected_option && involvesEntity(decision.selected_option))
+  return [...involved, ...decisions.filter((decision) => !involved.includes(decision))]
+}
 
 export function deriveComponentDetail({ graph, visibleGraph, selectedId, entityDetail, displayed: displayedSelection, preview: deltaPreview }: ComponentDetailInput) {
   const selected = visibleGraph.entities.find((entity) => entity.id === selectedId) ?? visibleGraph.entities[0]
@@ -59,7 +68,8 @@ export function deriveComponentDetail({ graph, visibleGraph, selectedId, entityD
     }
   }
   const detailedDecisionIds = new Set(currentEntityDetail?.decisions.map((decision) => decision.id) ?? [])
-  const linkedDecisions = visibleGraph.decisions.filter((decision) => detailedDecisionIds.has(decision.id) || decision.context?.includes(visibleSelectedEntityId) || decision.options.some((option) => option.delta?.operations.some((operation) => [...relatedEntityIds].some((entityId) => operationTouchesEntity(operation, entityId))))).map((decision) => ({
+  const touchesRelatedEntity = (option: Option) => Boolean(option.delta?.operations.some((operation) => [...relatedEntityIds].some((entityId) => operationTouchesEntity(operation, entityId))))
+  const linkedDecisionsInGraphOrder = visibleGraph.decisions.filter((decision) => detailedDecisionIds.has(decision.id) || decision.context?.includes(visibleSelectedEntityId) || decision.options.some(touchesRelatedEntity)).map((decision) => ({
     id: decision.id,
     title: decision.title,
     selected_option: decision.options.find((option) => option.id === displayedSelection[decision.id]) ?? null,
@@ -67,9 +77,10 @@ export function deriveComponentDetail({ graph, visibleGraph, selectedId, entityD
     extraction_review: decision.extraction_review,
     relatedBy: [...relatedEntityIds].filter((id) => id !== visibleSelectedEntityId && relatedEntityReasons.has(id) && decision.options.some((option) => option.delta?.operations.some((operation) => operationTouchesEntity(operation, id)))).map((id) => `${relatedEntityReasons.get(id)} (${visibleGraph.entities.find((entity) => entity.id === id)?.name ?? id})`).join(' · '),
   }))
+  const linkedDecisions = orderLinkedDecisions(linkedDecisionsInGraphOrder, touchesRelatedEntity)
   const entityDecisionOptions = linkedDecisions.flatMap((decision) => {
     const selectedOptionId = deltaPreview?.decisionId === decision.id ? deltaPreview.optionId : displayedSelection[decision.id] ?? decision.selected_option?.id
-    return decision.options.filter((option) => option.delta?.operations.some((operation) => [...relatedEntityIds].some((entityId) => operationTouchesEntity(operation, entityId)))).map((option) => ({ decision, option, isSelected: option.id === selectedOptionId }))
+    return decision.options.filter(touchesRelatedEntity).map((option) => ({ decision, option, isSelected: option.id === selectedOptionId }))
   })
   const selectedEntityDecision = entityDecisionOptions.find((item) => item.isSelected)
   const alternativeEntityDecision = entityDecisionOptions[0]

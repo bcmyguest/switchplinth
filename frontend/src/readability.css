@@ -89,7 +89,7 @@ body{min-width:0;font-size:14px}
 }
 
 /* Map panels stay alongside the canvas without moving the document scroll. */
-:root{--theme-canvas:#f3f4f1;--theme-panel:#fff;--theme-panel-raised:#f8faf8;--theme-ink:#202522;--theme-muted:#59665c;--theme-line:#e6e9e4;--theme-brand:#557b66;--theme-brand-soft:#e8f0eb;--theme-selected:#dcebdd;--theme-hover:#f2f7f2;--theme-map-canvas:#edf2ed;--theme-map-dot:#d5e0d7;--theme-source:#355e42;--theme-code:#f6f6f2;--theme-warning:#704910;--theme-danger:#8d3834;--theme-interactive:var(--theme-brand-soft);--type-functional:15px;--type-control:14px;--type-secondary:13px;--type-tertiary:12px;--control-target:40px}
+:root{--theme-canvas:#f3f4f1;--theme-panel:#fff;--theme-panel-raised:#f8faf8;--theme-ink:#202522;--theme-muted:#59665c;--theme-line:#e6e9e4;--theme-brand:#557b66;--theme-brand-soft:#e8f0eb;--theme-selected:#dcebdd;--theme-hover:#f2f7f2;--theme-map-canvas:#edf2ed;--theme-map-dot:#d5e0d7;--theme-source:#355e42;--theme-code:#f6f6f2;--theme-warning:#704910;--theme-inferred-soft:#f6ead9;--theme-danger:#8d3834;--theme-interactive:var(--theme-brand-soft);--type-functional:15px;--type-control:14px;--type-secondary:13px;--type-tertiary:12px;--control-target:40px}
 .graph-selection-summary:not(.is-open){display:none}
 .graph-selection-summary.is-open,.delta-editor[role="dialog"],.architecture-scenario-open .scenario-panel{position:fixed;z-index:8;top:92px;right:24px;width:min(390px,calc(100vw - 48px));max-height:calc(100vh - 116px);overflow:auto;background:var(--dk-panel,#fff);border:1px solid #dfe6df;border-radius:10px;box-shadow:0 12px 36px #1d2a1e24;padding:16px}
 .graph-selection-summary.is-open{display:block}
@@ -163,7 +163,7 @@ body{min-width:0;font-size:14px}
 
 
 /* Interactive canvas surfaces use the same semantic colors as theme.yml. */
-.graph-canvas{background-color:var(--theme-map-canvas)!important;background-image:radial-gradient(#d5e0d7 .8px,transparent .8px)!important}
+.graph-canvas{background-color:var(--theme-map-canvas)!important;background-image:none!important}
 .arch-node{position:relative;cursor:pointer;border-color:#b8c9bb;background:var(--dk-raised,#f9fbf9);box-shadow:0 2px 8px #1d33221c}
 .arch-node.service{background:var(--dk-hover,#eef5ef)}
 .arch-node.technology{background:#f2eff6}
@@ -178,7 +178,7 @@ body{min-width:0;font-size:14px}
 .relationship-label{border-color:#cbd8cc;background:var(--dk-raised,#f9fbf9);color:var(--dk-source,#27372c);box-shadow:0 1px 4px #17271924}
 .graph-frame{border-color:#cfdacf;background:var(--dk-raised,#f8faf8)}
 .graph-selection-summary.is-open,.architecture-scenario-open .scenario-panel{border-color:#b9cbb9;background:var(--dk-panel,#fff);box-shadow:0 14px 40px #1d2a1e35}
-.arch-node .react-flow__handle{width:12px!important;height:12px!important;opacity:1}
+.arch-node .react-flow__handle{width:8px!important;height:8px!important;border:1.5px solid var(--theme-panel)!important;background:var(--theme-brand)!important;box-shadow:none!important;opacity:.35}.arch-node:hover .react-flow__handle,.arch-node:focus-within .react-flow__handle,.react-flow__node.selected .arch-node .react-flow__handle{opacity:1}
 .architecture-layout button:disabled{color:var(--dk-muted,#59665c)}
 button:focus-visible{outline-color:#38634c}
 

@@ -1,12 +1,12 @@
 import type { ELK as ElkEngine, ElkExtendedEdge, ElkNode, ElkPoint } from 'elkjs/lib/elk-api'
 
-export const MAP_NODE_WIDTH = 200
+export const MAP_NODE_WIDTH = 216
 export const MAP_NODE_HEIGHT = 96
 const MAP_GROUP_PADDING = { top: 44, side: 20, bottom: 20 }
-// Edge labels render at a constant 12.5px on screen. Reserve room for them down to MAP_LABEL_MIN_ZOOM.
+// Edge labels render at a constant 11px (DM Mono, uppercase) on screen. Reserve room for them down to MAP_LABEL_MIN_ZOOM.
 export const MAP_LABEL_MIN_ZOOM = 0.5
 const EDGE_LABEL_SCREEN_HEIGHT = 20
-const EDGE_LABEL_SCREEN_CHAR_WIDTH = 6.6
+const EDGE_LABEL_SCREEN_CHAR_WIDTH = 7.6
 const EDGE_LABEL_SCREEN_PADDING = 14
 
 // Kind lanes. Grouping uses the entity kind already present in the projection; it never merges records.

@@ -34,3 +34,30 @@ export function describeScenarioDifference(graph: GraphData, selections: Record<
   })
   return changes.length ? changes.join(' · ') : 'Same as original choices'
 }
+
+export type RepositoryComparison = {
+  /** `ready`: `changes` and `decisions` are final; `loading`: the baseline diff is in flight; `error`: it failed. */
+  status: 'ready' | 'loading' | 'error'
+  changes: Array<{ kind: string; label: string }>
+  decisions: string[]
+}
+
+type ComparisonInput = {
+  /** Displayed selections equal the repository baseline: nothing differs, whatever the resolved graph holds. */
+  atBaseline: boolean
+  /** The `repositoryDiff` state; absent offline (demo), which falls back to the resolved graph's own lists. */
+  diff?: { status: 'idle' | 'loading' | 'error' } | { status: 'ready'; view: { components: Array<{ change: string; text: string }>; relationships: Array<{ change: string; text: string }>; decisions: Array<{ title: string }> } }
+  fallbackChanges: Array<{ kind: string; label: string }>
+  fallbackDecisions: string[]
+}
+
+/** The "Compared with repository choices" lists: empty at baseline, a diff against the baseline once available. */
+export function repositoryComparison({ atBaseline, diff, fallbackChanges, fallbackDecisions }: ComparisonInput): RepositoryComparison {
+  if (atBaseline) return { status: 'ready', changes: [], decisions: [] }
+  if (!diff) return { status: 'ready', changes: fallbackChanges, decisions: fallbackDecisions }
+  if (diff.status === 'ready') return { status: 'ready', changes: [...diff.view.components, ...diff.view.relationships].map((line) => ({ kind: line.change, label: line.text })), decisions: diff.view.decisions.map((decision) => decision.title) }
+  if (diff.status === 'error') return { status: 'error', changes: [], decisions: [] }
+  // `idle` away from the baseline means no diff is pending: use the resolved graph's own lists rather than waiting.
+  if (diff.status === 'idle') return { status: 'ready', changes: fallbackChanges, decisions: fallbackDecisions }
+  return { status: 'loading', changes: [], decisions: [] }
+}

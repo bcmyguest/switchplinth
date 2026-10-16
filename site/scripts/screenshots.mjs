@@ -14,6 +14,8 @@ const shots = [
   { name: 'docs-concepts', path: 'docs/concepts/', w: 1440, h: 900 },
   { name: 'docs-concepts', path: 'docs/concepts/', w: 375, h: 812 },
   { name: 'docs-roadmap', path: 'docs/roadmap/', w: 1440, h: 900 },
+  { name: 'docs-architecture', path: 'docs/architecture/', w: 1440, h: 900, full: true },
+  { name: 'docs-architecture', path: 'docs/architecture/', w: 375, h: 812, full: true },
 ];
 
 // PLAYWRIGHT_CHROMIUM lets you reuse an already-installed Chromium binary.

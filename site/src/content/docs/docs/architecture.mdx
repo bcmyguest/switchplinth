@@ -1,0 +1,122 @@
+---
+title: How it works
+description: The path from repository Markdown to evidence anchors, extracted decisions, canonical YAML, compiled scenarios, and search indexes, with the code behind each stage.
+---
+
+import PipelineDiagram from '../../../components/docs/PipelineDiagram.astro';
+
+The app reads Markdown, cuts it into anchored passages, extracts decisions from those passages, and saves the results as YAML records beside your documents. Everything you see in the UI, in search answers, and in MCP results is computed from those files.
+
+Two kinds of data come out of the pipeline. Your Markdown and the `.decision/` YAML records are canonical: you commit them, and they are readable without the app. The SQLite full-text index, the vector index, and compiled scenarios are disposable: the backend rebuilds or recomputes them from the canonical files.
+
+<PipelineDiagram />
+
+## Stages at a glance
+
+File names refer to modules in the backend Python package under `backend/src/`.
+
+| # | Stage | Takes in | Produces | Code | Kept as |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Markdown files | Your repository | Source text | none | Canonical; never written |
+| 2 | Discovery | Repository root, `.decision/config.yaml` | Sorted list of `.md` files | `discover_markdown()` in `repository.py` | Not stored |
+| 3 | Passages and evidence anchors | Markdown files, earlier evidence records | One evidence record per passage | `passages()`, `relocate_evidence()` in `repository.py`; `evidence_anchor()` in `domain.py` | Canonical `evidence/` |
+| 4 | Extraction | Current passages | Inferred entities, aliases, claims, decisions with option deltas | `scan()`, `_mock_decisions()`, `extract_with_provider()` in `service.py`; `extract_with_litellm()` in `providers.py` | Saved only through stage 5 |
+| 5 | Validation | One candidate record | The record on disk, or an error | `PortableRepository.save()`, `validate_candidate()`, `validate_references()` in `repository.py`; `validate_record()` in `domain.py` | Not stored |
+| 6 | `.decision/` YAML | Validated records | One YAML file per record | `PortableRepository.save()` | Canonical |
+| 7 | Human review | A claim, alias, or identity pair | An appended review or undo record | `review_claim()`, `correct_claim()`, `review_alias()`, `correct_alias()`, `review_exact_identity_candidate()`, `undo_review()` in `service.py` | Canonical |
+| 8 | Compiler | Records and option selections | Scenario graph, changed IDs, conflicts, invalid assumptions, identity groups | `graph()`, `_project_scenario()` in `service.py`; `effective_claims()`, `compile_scenario()`, `identity_projection()` in `domain.py` | Computed per request |
+| 9 | Indexes | Current evidence, base graph | SQLite FTS5 table, passage vectors | `_rebuild_indexes()` in `service.py`; `SearchIndex` in `store.py`; `QdrantVectorIndex` in `service.py`; `LocalVectorIndex` in `local_vectors.py` | Disposable |
+| 10 | Consumers | API and MCP requests | Map data, What-if results, search answers, tool results | `api.py`, `search()` in `service.py`, `mcp_tools.py` | Not stored |
+
+## 1. Markdown files
+
+Any Markdown counts: ADRs, RFCs, design notes, READMEs. The app needs no template or special syntax, and it never writes to these files.
+
+## 2. Discovery
+
+`discover_markdown()` finds every `*.md` file under the repository root and returns them in sorted order. It skips `.git`, `.decision`, `.tasks`, virtual environments, `node_modules`, `dist`, `build`, coverage output, and tool caches. Any folder or file name listed under `extraction.ignore` in `.decision/config.yaml` is skipped too. `extraction.include: [.tasks]` opts the `.tasks` folder back in; the other default exclusions stay.
+
+## 3. Passages and evidence anchors
+
+`passages()` splits each file at headings and blank lines. A chunk of at least 20 characters becomes a passage with its heading path, a display line, and up to 160 characters of neighboring text on each side.
+
+`evidence_anchor()` derives the evidence ID from the source path, the heading path, and a SHA-256 hash of the normalized passage (lowercased, whitespace collapsed). The scan saves each passage as an `evidence` record together with the file's Git blob hash and content hash.
+
+On a rescan, `relocate_evidence()` keeps an earlier evidence ID when exactly one passage in the same file has the same hash. Failing that, it accepts the passage whose heading path and surrounding text still match, provided no other passage matches as well. Anything else marks the old anchor `unresolved` for review. Line numbers are display hints, never identity.
+
+## 4. Extraction
+
+Two extractors write the same record shapes. Every record they create has `epistemic_state: inferred` and cites evidence IDs.
+
+The mock extractor runs on `POST /api/v1/discovery/scan`. It matches a fixed catalog of technology and service names (Kafka, PostgreSQL, SQS, Redis, Kubernetes, and the sample's services) and sentences of the form "we chose X because". Sections in the same file headed "Alternative" or "Considered", or containing phrases such as "would reduce", supply the other options. `_mock_decisions()` writes a typed delta for each option. These rules are tuned to the bundled sample.
+
+Model extraction runs on `POST /api/v1/extraction/run`. `extract_with_provider()` refreshes the evidence records first, then sends every current passage with its ID, plus the known entity IDs, to `extract_with_litellm()`, which asks the model for JSON. When the reply contains malformed delta operations, more than one selected option, or entity references that do not resolve, the backend sends one retry that lists the problems and the valid entity IDs. The model must quote its source: an entity, decision, or option is kept only when its `evidence_quote` matches exactly one passage.
+
+## 5. Validation
+
+Every write goes through `PortableRepository.save()`. `validate_record()` checks the `decision/v1` schema version, record type, ID format, epistemic state, confidence range, unique option IDs, a declared `selected_option`, and supported delta operations. The record is then validated against `.decision/schema/record-v1.schema.json`. Inferred claims and aliases must cite evidence, and a `same_entity_as` claim must link two existing entities of the same kind.
+
+Cross-record checks in `validate_references()` run whenever records are read. Each evidence record must point to a file inside the repository and match its stored passage hash, and every reference to evidence, entities, and options must resolve. Model-proposed decisions also pass `validate_candidate()`, which runs the cross-record checks before the write. When only a decision's generated deltas fail, the decision is saved with empty deltas and an `extraction_review` block that records the rejected operations and the validator errors.
+
+## 6. Canonical `.decision/` YAML
+
+Each record is one YAML file under a folder for its type: `entities/`, `evidence/`, `aliases/`, `claims/`, `relationships/`, `decisions/`, `scenarios/`, and `connections/`. `save()` writes a temporary file in the same folder, flushes and fsyncs it, and atomically replaces the target, so an interrupted write leaves either the complete old record or the complete new one. A scan makes many such writes. If the scan raises an exception, `_run_scan()` restores `.decision/` from a snapshot taken at the start. The [portable format reference](../portable-format/) describes each record.
+
+## 7. Human review
+
+You confirm, reject, assert, or correct a claim or alias on the Facts page or through the API. Each judgment is a new record marked `reviewer: human`. It names the original record (`reviewed_claim` or `reviewed_alias`) and lists the earlier judgments it `supersedes`. The machine inference stays on disk unchanged. `undo_review()` appends a record whose `undoes` field cancels the current judgment at the head of a review chain, which brings back the previous judgment or the original inference. Exact-name identity candidates go through `review_exact_identity_candidate()`, which appends a `same_entity_as` claim. Re-extraction leaves human-reviewed records untouched.
+
+## 8. Compiler
+
+The compiler runs on every graph, scenario, entity, and search request; nothing it produces is written to disk. `graph()` loads the records, drops undone judgments, and keeps the effective claims: an active human judgment replaces the inference about the same subject, predicate, and object, and a rejection removes it. Entities, structural claims (`uses`, `publishes_to`, `calls`, `depends_on`, `stores_in`, `communicates_with`, `implements`), and relationship records form the base graph.
+
+`_project_scenario()` starts from each decision's `selected_option`, overlays any What-if selections, and calls `compile_scenario()`. That function applies each selected option's operations in decision-ID order and records which IDs were added, removed, or changed. It reports a conflict when two decisions write the same entity or relationship, when an `expect` precondition fails, or when an operation adds an element that exists or removes one that does not. It reports an invalid assumption when a relationship's endpoint is missing from the scenario, or when an unselected option refers to an element the scenario removed. `identity_projection()` groups entities only through active human-confirmed or asserted `same_entity_as` claims; exact-name matches and inferred links stay suggestions.
+
+## 9. Indexes
+
+After a scan or a model extraction, `_rebuild_indexes()` rebuilds both indexes from the current evidence and the base graph. `SearchIndex` keeps an SQLite FTS5 table of passages, each tagged with the IDs of entities whose names it contains, in the backend's cache folder. The vector index embeds every passage. With exactly one connection that sets `embedding_model` and `capabilities.embeddings: true`, it uses `embed_with_litellm()`. Otherwise it falls back to `hashed_embedding()`, a deterministic token hash that is not semantic retrieval; the API reports which mode is active.
+
+Under Docker Compose the vectors live in Qdrant, one collection per repository path (`QdrantVectorIndex`). The stdio MCP server keeps them in process (`LocalVectorIndex`) and calls `rebuild_indexes()` at startup, which rebuilds both indexes from the evidence records without rescanning Markdown.
+
+## 10. Consumers
+
+FastAPI (`api.py`) serves everything under `/api/v1`. The React UI loads the architecture map from `GET /api/v1/graph` and sends What-if selections to `POST /api/v1/scenarios/resolve`, which returns the compiled graph with its changed IDs, conflicts, and invalid assumptions.
+
+`search()` combines full-text hits, vector hits, entity and alias names, and the compiled scenario. For a question that starts with "why", it returns `grounded: true` only when effective claims cite the returned passages, or when the returned passages are the cited option's own evidence. Otherwise the answer states that it is not fully grounded.
+
+The MCP server (`mcp_tools.py`) exposes `list_decisions`, `search_decisions`, `inspect_architecture`, and `inspect_entity` over the same service. See [MCP tools](../mcp/).
+
+## One passage, end to end
+
+This trace follows the food-delivery sample's `fixtures/food-delivery/docs/decisions/event-transport.md` through a mock scan. The demo copies the sample's `docs/` folder to the root of a fresh repository, so the stored source path is `decisions/event-transport.md`. The IDs below come from running the sample's bootstrap script.
+
+Discovery returns the file, and `passages()` produces four passages, one per section: Context, Decision, Alternative: managed queue, and Consequences. The Decision section becomes evidence `evidence-8b8d19d6a067b605`, with heading path `Event delivery for food orders / Decision` and display line 9:
+
+> We chose Apache Kafka because replay and per-order ordering matter more than reducing broker operations. The Order Service publishes the event stream to Kafka, and the Fulfillment Service consumes it with a durable offset.
+
+The mock rule matches "We chose Apache Kafka because" and takes the rationale from the words after "because". The section headed "Alternative: managed queue" names Amazon SQS, which becomes the second option. The scan saves `.decision/decisions/decision-9069314c598bbe6a.yaml`, titled after the document's top heading, with Apache Kafka as the selected option. Each option is a delta. Here is the Kafka option, shortened:
+
+```yaml
+- id: option-0e42fd4e38cd9281
+  title: Apache Kafka
+  rationale: replay and per-order ordering matter more than reducing broker operations
+  evidence: [evidence-8b8d19d6a067b605, evidence-07e01f1152ce3632, evidence-a34142e15ea57f9a]
+  delta:
+    base: architecture
+    operations:
+      - op: add_entity
+        entity: {id: resource-bc094960cda1ecbb, kind: resource, name: Order event stream (Apache Kafka)}
+        expect: {exists: false}
+      - op: add_relationship
+        relationship: {id: relationship-dcc3e8c1188a2d38, from: entity-225ac6a9466f917c,
+                       to: resource-bc094960cda1ecbb, kind: publishes_to}
+        expect: {exists: false}
+      - op: add_relationship
+        relationship: {id: relationship-88195dc3f65129be, from: resource-bc094960cda1ecbb,
+                       to: entity-8bcf11933046c744, kind: implemented_by}
+        expect: {exists: false}
+```
+
+`entity-225ac6a9466f917c` is the Order Service and `entity-8bcf11933046c744` is Apache Kafka. The option also cites the Context and Consequences passages, because they name the Order Service that the `publishes_to` edge starts from.
+
+With the repository's selections, the compiled graph contains `Order event stream (Apache Kafka)`. A What-if request with `{"decision-9069314c598bbe6a": "option-2d494dede037e255"}` compiles the Amazon SQS option instead: the Kafka stream drops out, and `Order event stream (Amazon SQS)` takes its place, with the Order Service publishing to it and an `implemented_by` edge to Amazon SQS. Both scenarios have 18 entities and 13 relationships, with no conflicts and no invalid assumptions. Nothing in `.decision/` changes until you save a named scenario.

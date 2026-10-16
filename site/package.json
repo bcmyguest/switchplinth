@@ -9,7 +9,8 @@
     "check:privacy": "node scripts/check-privacy.mjs dist",
     "preview": "astro preview",
     "screenshots": "node scripts/screenshots.mjs",
-    "hero-loop": "node scripts/hero-loop.mjs"
+    "hero-loop": "node scripts/hero-loop.mjs",
+    "export-architecture": "node scripts/export-architecture.mjs"
   },
   "type": "module",
   "dependencies": {

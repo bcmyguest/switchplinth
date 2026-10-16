@@ -39,6 +39,7 @@ export default defineConfig({
         {
           label: 'Learn',
           items: [
+            { label: 'How it works', slug: 'docs/architecture' },
             { label: 'Concepts', slug: 'docs/concepts' },
             { label: 'Portable format', slug: 'docs/portable-format' },
           ],

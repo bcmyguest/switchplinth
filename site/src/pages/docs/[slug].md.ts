@@ -8,6 +8,6 @@ export const getStaticPaths: GetStaticPaths = async () =>
 
 export const GET: APIRoute = ({ props, site }) => {
   const { d } = props as { d: Awaited<ReturnType<typeof orderedDocs>>[number] };
-  const text = `# ${d.data.title}\n\n${d.data.description ?? ''}\n\n${plainMarkdown(d.body ?? '', (s) => absolute(`docs/${s}/`, site))}\n`;
+  const text = `# ${d.data.title}\n\n${d.data.description ?? ''}\n\n${plainMarkdown(d.body ?? '', (s) => absolute(`docs/${s}/`, site), (a) => absolute(a, site))}\n`;
   return new Response(text, { headers: { 'Content-Type': 'text/markdown; charset=utf-8' } });
 };

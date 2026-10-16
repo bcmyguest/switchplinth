@@ -1,0 +1,211 @@
+---
+// "How it works" pipeline: Markdown in, decision graph out. Drawn as the same
+// blueprint sheet as the landing hero. A wide sheet (left to right, wrapped
+// onto three rows) shows when the figure is at least 680px wide; a stacked
+// sheet shows below that.
+// scripts/export-architecture.mjs exports both sheets as standalone SVG/PNG.
+import '../../styles/pipeline.css';
+import { site } from '../../site.config';
+import { withBase } from '../../lib/url';
+
+type Tag = 'canonical' | 'disposable' | 'request';
+type Line = { t: string; code?: boolean };
+type Card = { n: number; x: number; y: number; w: number; h: number; title: string; tag?: Tag; lines?: Line[]; linesY?: number; chips?: string[]; chipsY?: number; chipsCol?: boolean };
+type Dir = 'right' | 'down' | 'up' | 'left';
+type Edge = { d: string; tip: [number, number, Dir]; rebuild?: boolean };
+type Label = { x: number; y: number; t: string; anchor?: 'start' | 'end' | 'middle' };
+
+const tip = ([x, y, dir]: [number, number, Dir]) =>
+  ({
+    right: `${x},${y} ${x - 8},${y - 4.5} ${x - 8},${y + 4.5}`,
+    left: `${x},${y} ${x + 8},${y - 4.5} ${x + 8},${y + 4.5}`,
+    down: `${x},${y} ${x - 4.5},${y - 8} ${x + 4.5},${y - 8}`,
+    up: `${x},${y} ${x - 4.5},${y + 8} ${x + 4.5},${y + 8}`,
+  })[dir];
+// Lay chips out left to right from x = 12; width estimates 11px DM Sans semibold.
+const chipRow = (chips: string[]) => {
+  let x = 12;
+  return chips.map((chip) => {
+    const w = Math.round(chip.length * 6.8 + 18);
+    const out = { t: chip, x, w };
+    x += w + 8;
+    return out;
+  });
+};
+const tagText: Record<Tag, string> = { canonical: 'CANONICAL', disposable: 'DISPOSABLE', request: 'PER REQUEST' };
+const t = (s: string): Line => ({ t: s });
+const c = (s: string): Line => ({ t: s, code: true });
+
+// Wide sheet: 840 x 476. Columns at x = 12, 224, 436, 648 (180 wide).
+const H = 92;
+const wide: Card[] = [
+  { n: 1, x: 12, y: 48, w: 180, h: H, title: 'Markdown files', tag: 'canonical', lines: [t('ADRs, RFCs, design docs,'), t('READMEs, any headings;'), t('read, never written')] },
+  { n: 2, x: 224, y: 48, w: 180, h: H, title: 'Discovery', lines: [c('discover_markdown()'), t('skips hidden, generated,'), t('and configured paths')] },
+  { n: 3, x: 436, y: 48, w: 180, h: H, title: 'Passages, anchors', lines: [c('passages()'), t('path, headings, hash,'), t('context; relocatable')] },
+  { n: 4, x: 648, y: 48, w: 180, h: H, title: 'Extraction', chips: ['mock rules', 'model'], chipsY: 38, lines: [t('LiteLLM, one fix-up retry')], linesY: 82 },
+  { n: 5, x: 12, y: 184, w: 180, h: H, title: 'Validation', lines: [t('record-v1 schema and'), t('record rules on save;'), t('references on read')] },
+  { n: 6, x: 224, y: 184, w: 180, h: H, title: '.decision/ YAML', tag: 'canonical', lines: [t('one YAML file per record,'), t('inferred and human,'), t('atomic replace per file')] },
+  { n: 7, x: 224, y: 328, w: 180, h: H, title: 'Human review', lines: [t('confirm, reject, correct;'), t('each judgment appends;'), t('undo appends too')] },
+  { n: 8, x: 436, y: 184, w: 180, h: H, title: 'Compiler', tag: 'request', lines: [c('compile_scenario()'), t('graph + option deltas'), t('conflicts, assumptions')] },
+  { n: 9, x: 436, y: 328, w: 180, h: H, title: 'Indexes', tag: 'disposable', lines: [t('SQLite FTS5 passages,'), t('Qdrant or local vectors;'), t('rebuilt after each scan')] },
+  { n: 10, x: 648, y: 184, w: 180, h: 236, title: 'Consumers', lines: [c('FastAPI /api/v1')], chips: ['Map and What-if', 'Why-search, grounded', 'MCP: 4 read-only tools'], chipsCol: true },
+];
+const wideEdges: Edge[] = [
+  { d: 'M192 94 H215', tip: [224, 94, 'right'] },
+  { d: 'M404 94 H427', tip: [436, 94, 'right'] },
+  { d: 'M616 94 H639', tip: [648, 94, 'right'] },
+  { d: 'M738 140 V152 Q738 160 730 160 H110 Q102 160 102 168 V175', tip: [102, 184, 'down'] },
+  { d: 'M192 230 H215', tip: [224, 230, 'right'] },
+  { d: 'M404 230 H427', tip: [436, 230, 'right'] },
+  { d: 'M616 230 H639', tip: [648, 230, 'right'] },
+  { d: 'M284 276 V319', tip: [284, 328, 'down'] },
+  { d: 'M344 328 V285', tip: [344, 276, 'up'] },
+  { d: 'M404 258 H412 Q420 258 420 266 V366 Q420 374 427 374', tip: [436, 374, 'right'], rebuild: true },
+  { d: 'M616 374 H639', tip: [648, 374, 'right'] },
+];
+const wideLabels: Label[] = [
+  { x: 420, y: 156, t: 'INFERRED RECORDS', anchor: 'middle' },
+  { x: 278, y: 306, t: 'READ', anchor: 'end' },
+  { x: 350, y: 306, t: 'APPEND' },
+  { x: 426, y: 300, t: 'REBUILD' },
+];
+
+// Stacked sheet: 360 x 1124. Full-width cards at x = 16 (328 wide);
+// paired rows split into x = 16 and x = 188 (156 wide).
+const rows = [40, 166, 292, 418, 544, 670, 796, 922];
+const tall: Card[] = [
+  { n: 1, x: 16, y: rows[0], w: 328, h: H, title: 'Markdown files', tag: 'canonical', lines: [t('ADRs, RFCs, design docs, READMEs;'), t('any headings, no template;'), t('read, never written')] },
+  { n: 2, x: 16, y: rows[1], w: 328, h: H, title: 'Discovery', lines: [c('discover_markdown()'), t('skips hidden and generated folders'), t('plus configured ignore paths')] },
+  { n: 3, x: 16, y: rows[2], w: 328, h: H, title: 'Passages and evidence anchors', lines: [c('passages(), evidence_anchor()'), t('path, heading path, passage hash,'), t('context; relocated on rescans')] },
+  { n: 4, x: 16, y: rows[3], w: 328, h: H, title: 'Extraction', chips: ['mock rules', 'LiteLLM model'], chipsY: 38, lines: [t('invalid deltas get one schema-feedback retry')], linesY: 82 },
+  { n: 5, x: 16, y: rows[4], w: 328, h: H, title: 'Validation', lines: [t('record-v1 schema and record rules'), t('on every save; cross-record'), t('references on every read')] },
+  { n: 6, x: 16, y: rows[5], w: 156, h: H, title: '.decision/ YAML', tag: 'canonical', lines: [t('file per record,'), t('inferred and human,'), t('atomic per file')] },
+  { n: 7, x: 188, y: rows[5], w: 156, h: H, title: 'Human review', lines: [t('confirm, reject,'), t('correct, undo;'), t('always appends')] },
+  { n: 8, x: 16, y: rows[6], w: 156, h: H, title: 'Compiler', tag: 'request', lines: [t('base graph + deltas;'), t('conflicts, invalid'), t('assumptions')] },
+  { n: 9, x: 188, y: rows[6], w: 156, h: H, title: 'Indexes', tag: 'disposable', lines: [t('SQLite FTS5,'), t('Qdrant or local'), t('vectors; rebuilt')] },
+  { n: 10, x: 16, y: rows[7], w: 328, h: H, title: 'Consumers', lines: [c('FastAPI /api/v1')], chips: ['Map, What-if', 'Why-search', 'MCP tools'], chipsY: 60 },
+];
+const down = (x: number, from: number, to: number): Edge => ({ d: `M${x} ${from} V${to - 9}`, tip: [x, to, 'down'] });
+const tallEdges: Edge[] = [
+  down(180, rows[0] + H, rows[1]),
+  down(180, rows[1] + H, rows[2]),
+  down(180, rows[2] + H, rows[3]),
+  down(180, rows[3] + H, rows[4]),
+  { d: `M180 ${rows[4] + H} V${rows[4] + H + 2} Q180 ${rows[4] + H + 10} 172 ${rows[4] + H + 10} H102 Q94 ${rows[4] + H + 10} 94 ${rows[4] + H + 18} V${rows[5] - 9}`, tip: [94, rows[5], 'down'] },
+  { d: `M172 ${rows[5] + 32} H179`, tip: [188, rows[5] + 32, 'right'] },
+  { d: `M188 ${rows[5] + 60} H181`, tip: [172, rows[5] + 60, 'left'] },
+  down(94, rows[5] + H, rows[6]),
+  { d: `M150 ${rows[5] + H} V${rows[5] + H + 2} Q150 ${rows[5] + H + 10} 158 ${rows[5] + H + 10} H258 Q266 ${rows[5] + H + 10} 266 ${rows[5] + H + 18} V${rows[6] - 9}`, tip: [266, rows[6], 'down'], rebuild: true },
+  down(94, rows[6] + H, rows[7]),
+  down(266, rows[6] + H, rows[7]),
+];
+const tallLabels: Label[] = [
+  { x: 190, y: rows[3] + H + 21, t: 'INFERRED RECORDS' },
+  { x: 196, y: rows[5] + H + 25, t: 'REBUILD' },
+];
+const tallHeight = rows[7] + H + 110;
+
+const sheet = site.name.toUpperCase();
+const title = 'How repository Markdown becomes decisions, a graph, and answers';
+const desc =
+  'Pipeline in ten steps. 1: Markdown files, canonical and never written. 2: discovery skips hidden, generated, and configured paths. 3: passages become evidence anchors with path, heading path, passage hash, and context. 4: extraction by mock rules or a LiteLLM model, with one schema-feedback retry for invalid deltas. 5: validation against the record-v1 schema on save and references on read. 6: canonical .decision/ YAML, one file per record. 7: human review reads records and appends judgments, including undo. 8: the compiler applies selected option deltas to the base graph per request and reports conflicts and invalid assumptions. 9: disposable SQLite FTS5 and vector indexes, rebuilt from the YAML. 10: consumers through the FastAPI API: the map and What-if, why-search, and four MCP tools.';
+---
+<figure class="pl-figure not-content" aria-label="Pipeline diagram">
+{
+  [
+    { id: 'wide', cards: wide, edges: wideEdges, labels: wideLabels, w: 840, h: 476, cls: 'pl-wide' },
+    { id: 'tall', cards: tall, edges: tallEdges, labels: tallLabels, w: 360, h: tallHeight, cls: 'pl-tall' },
+  ].map((v) => (
+    <svg
+      class={`pl-sheet ${v.cls}`}
+      data-sheet={v.id}
+      viewBox={`0 0 ${v.w} ${v.h}`}
+      role="img"
+      aria-labelledby={`pl-title-${v.id} pl-desc-${v.id}`}
+      xmlns="http://www.w3.org/2000/svg"
+      style="height:auto"
+    >
+      <title id={`pl-title-${v.id}`}>{title}</title>
+      <desc id={`pl-desc-${v.id}`}>{desc}</desc>
+      <defs>
+        <pattern id={`pl-grid-minor-${v.id}`} width="12" height="12" patternUnits="userSpaceOnUse">
+          <path d="M12 0H0V12" class="pl-grid-minor" />
+        </pattern>
+        <pattern id={`pl-grid-${v.id}`} width="60" height="60" patternUnits="userSpaceOnUse">
+          <rect width="60" height="60" fill={`url(#pl-grid-minor-${v.id})`} />
+          <path d="M60 0H0V60" class="pl-grid-major" />
+        </pattern>
+      </defs>
+      <rect class="pl-bg" width={v.w} height={v.h} />
+      <rect width={v.w} height={v.h} fill={`url(#pl-grid-${v.id})`} />
+      <text class="pl-heading" x={v.id === 'wide' ? 12 : 16} y="24">MARKDOWN TO DECISIONS</text>
+      {v.edges.map((e) => (
+        <>
+          <path class={`pl-edge${e.rebuild ? ' pl-rebuild' : ''}`} d={e.d} />
+          <polygon class={`pl-tip${e.rebuild ? ' pl-rebuild' : ''}`} points={tip(e.tip)} />
+        </>
+      ))}
+      {v.labels.map((l) => (
+        <text class="pl-edge-label" x={l.x} y={l.y} text-anchor={l.anchor ?? 'start'}>{l.t}</text>
+      ))}
+      {v.cards.map((k) => (
+        <g class={`pl-node${k.tag === 'canonical' ? ' pl-canonical' : k.tag === 'disposable' ? ' pl-disposable' : ''}`} transform={`translate(${k.x} ${k.y})`}>
+          <rect class="pl-card" width={k.w} height={k.h} rx="10" />
+          {k.tag && <text class="pl-tag" x={k.w} y="-6" text-anchor="end">{tagText[k.tag]}</text>}
+          <circle class="pl-badge" cx="22" cy="22" r="11" />
+          <text class="pl-num" x="22" y="26" text-anchor="middle">{k.n}</text>
+          <text class="pl-title" x="40" y="27">{k.title}</text>
+          {(k.lines ?? []).map((line, i) => (
+            <text class={line.code ? 'pl-code' : 'pl-text'} x="14" y={(k.linesY ?? 50) + i * 17}>{line.t}</text>
+          ))}
+          {k.chips && k.chipsCol &&
+            k.chips.map((chip, i) => (
+              <>
+                <rect class="pl-chip" x="12" y={64 + i * 48} width={k.w - 24} height="34" rx="7" />
+                <text class="pl-chip-text" x="24" y={85 + i * 48}>{chip}</text>
+              </>
+            ))}
+          {k.chips && !k.chipsCol &&
+            chipRow(k.chips).map((chip) => (
+              <>
+                <rect class="pl-chip" x={chip.x} y={k.chipsY ?? 38} width={chip.w} height="24" rx="6" />
+                <text class="pl-chip-text" x={chip.x + 9} y={(k.chipsY ?? 38) + 16}>{chip.t}</text>
+              </>
+            ))}
+        </g>
+      ))}
+      {v.id === 'wide' ? (
+        <>
+          <g transform="translate(12 336)">
+            <rect class="pl-card" x="0" y="0" width="26" height="16" rx="4" style="stroke: var(--c-brand); stroke-width: 2.25" />
+            <text class="pl-legend-text" x="36" y="12">Canonical: kept in Git</text>
+            <rect class="pl-card" x="0" y="30" width="26" height="16" rx="4" style="fill: var(--c-panel-raised); stroke: var(--c-muted); stroke-width: 1.5; stroke-dasharray: 6 4" />
+            <text class="pl-legend-text" x="36" y="42">Disposable: rebuildable</text>
+            <rect class="pl-card" x="0" y="60" width="26" height="16" rx="4" />
+            <text class="pl-legend-text" x="36" y="72">Process step</text>
+          </g>
+          <g class="pl-block" transform="translate(612 438)">
+            <rect width="216" height="26" rx="4" />
+            <path d="M96 0V26M154 0V26" />
+            <text x="8" y="17">{sheet}</text>
+            <text x="104" y="17">A-102</text>
+            <text x="162" y="17">PIPELINE</text>
+          </g>
+        </>
+      ) : (
+        <g transform={`translate(16 ${rows[7] + H + 26})`}>
+          <rect class="pl-card" x="0" y="0" width="26" height="16" rx="4" style="stroke: var(--c-brand); stroke-width: 2.25" />
+          <text class="pl-legend-text" x="36" y="12">Canonical: kept in Git</text>
+          <rect class="pl-card" x="0" y="28" width="26" height="16" rx="4" style="fill: var(--c-panel-raised); stroke: var(--c-muted); stroke-width: 1.5; stroke-dasharray: 6 4" />
+          <text class="pl-legend-text" x="36" y="40">Disposable: rebuildable</text>
+          <rect class="pl-card" x="0" y="56" width="26" height="16" rx="4" />
+          <text class="pl-legend-text" x="36" y="68">Process step</text>
+        </g>
+      )}
+    </svg>
+  ))
+}
+<figcaption class="pl-caption">
+  Full size: <a href={withBase('diagrams/architecture-pipeline.svg')}>SVG</a>, <a href={withBase('diagrams/architecture-pipeline.png')}>PNG</a>.
+</figcaption>
+</figure>

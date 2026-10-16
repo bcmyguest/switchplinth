@@ -33,11 +33,16 @@ pnpm check:privacy  # re-run the dist/ privacy scan
 pnpm preview        # serve dist/
 PLAYWRIGHT_CHROMIUM=/path/to/chrome pnpm screenshots http://localhost:4321/switchplinth/ out/
 PLAYWRIGHT_CHROMIUM=/path/to/chrome pnpm hero-loop http://localhost:4321/switchplinth/ out/hero-loop light
+PLAYWRIGHT_CHROMIUM=/path/to/chrome pnpm export-architecture ../adrs/docs/assets   # after pnpm build
 ```
 
 ## Hero loop
 
 `scripts/hero-loop.mjs` renders a 6-second, 1200px-wide loop of the hero's Kafka/SQS switch for READMEs and posts. It pauses and seeks the CSS animations frame by frame, writes a frame-diffed GIF with `gifenc`, and replays the frames on a canvas through the browser's `MediaRecorder` to produce WebM and, where Chromium supports it, MP4. It needs no ffmpeg. The sheet's title block shows `name` from `site.config.ts`, so re-render after a rename.
+
+## Pipeline diagram
+
+`/docs/architecture/` ("How it works") draws the Markdown-to-decisions pipeline with `src/components/docs/PipelineDiagram.astro`: a wide sheet when the figure is at least 680px wide and a stacked sheet below that, colored by the same tokens as the hero. `scripts/export-architecture.mjs` copies both sheets from `dist/` into standalone SVGs (light tokens, dark under `prefers-color-scheme`) and light PNGs: the wide sheet at 1600px, the stacked sheet at 720px. Extra arguments are directories that receive copies, such as the product repository's `docs/assets/`. In `llms-full.txt` and `/docs/architecture.md`, `plainMarkdown()` replaces the component with the wide PNG.
 
 ## Privacy check
 
@@ -51,6 +56,7 @@ PLAYWRIGHT_CHROMIUM=/path/to/chrome pnpm hero-loop http://localhost:4321/switchp
 | `/robots.txt`, `/sitemap-index.xml` | `src/pages/robots.txt.ts`, Starlight's sitemap |
 | `/llms.txt`, `/llms-full.txt` | `src/pages/llms*.txt.ts` |
 | `/docs/<page>.md` | `src/pages/docs/[slug].md.ts`: plain Markdown of each docs page |
+| `/diagrams/architecture-pipeline{,-vertical}.{svg,png}` | `scripts/export-architecture.mjs`, from `src/components/docs/PipelineDiagram.astro` in the built `/docs/architecture/` page. Committed in `public/diagrams/`; re-run after editing the diagram |
 
 ## Deploy (not executed)
 

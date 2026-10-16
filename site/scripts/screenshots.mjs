@@ -13,6 +13,7 @@ const shots = [
   { name: 'landing-sqs', path: '', w: 1440, h: 900, click: '[data-pick="sqs"]' },
   { name: 'docs-concepts', path: 'docs/concepts/', w: 1440, h: 900 },
   { name: 'docs-concepts', path: 'docs/concepts/', w: 375, h: 812 },
+  { name: 'docs-roadmap', path: 'docs/roadmap/', w: 1440, h: 900 },
 ];
 
 // PLAYWRIGHT_CHROMIUM lets you reuse an already-installed Chromium binary.

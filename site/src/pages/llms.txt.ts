@@ -12,20 +12,28 @@ export const GET: APIRoute = async ({ site }) => {
 
 > ${brand.description} Canonical data is portable YAML in a .decision/ folder beside the Markdown; it runs locally with Docker Compose and exposes an MCP server on localhost.
 
-Source: ${brand.repoUrl}
+Source: ${brand.repoUrl} (${brand.license})
 
 ## Docs
 
 ${links}
 
-## Limits
+## Works today
 
-- Hosted-provider interoperability (OpenAI, Anthropic) is untested.
-- Extraction recall and claim-level repeatability are unmeasured.
-- The food-delivery sample uses deterministic mock extraction tuned to its own text; it demonstrates the decision and what-if model, not extraction quality.
-- The API and MCP endpoint are unauthenticated and bind to loopback only.
-- Markdown only; no code parsing or other formats.
-- Schema decision/v1 only; no migration path exists yet.
+- One-command demo of the food-delivery sample (\`./scripts/demo.sh\`).
+- Deterministic mock extraction and local OpenAI-compatible model extraction; a local Qwen3.8 model with reasoning off found all 7 sample decisions.
+- Review log with undo, layered architecture map, What-if previews, grounded "why" answers with cited passages.
+- Four read-only MCP tools over streamable HTTP (loopback, unauthenticated) and stdio.
+
+## Up next
+
+- Test hosted providers (OpenAI, Anthropic); untested today.
+- Measure extraction recall on more repositories.
+- Extraction beyond the sample, whose demo uses fixture-tuned mock rules.
+- Authentication for remote API and MCP access; loopback-only today.
+- More source formats beyond Markdown.
+- Conflict detection beyond same-ID writes.
+- Scenario rename, update, and delete.
 
 ## Optional
 

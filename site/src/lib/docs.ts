@@ -1,7 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 /** Docs pages in sidebar order (matches astro.config.ts). */
-export const DOC_ORDER = ['getting-started', 'limits', 'concepts', 'portable-format', 'providers', 'mcp', 'faq'];
+export const DOC_ORDER = ['getting-started', 'roadmap', 'concepts', 'portable-format', 'providers', 'mcp', 'faq'];
 
 export async function orderedDocs(): Promise<CollectionEntry<'docs'>[]> {
   const docs = (await getCollection('docs')).filter((d) => d.id.startsWith('docs/'));

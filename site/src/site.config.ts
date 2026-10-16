@@ -17,6 +17,8 @@ export const site = {
   description:
     'A local-first tool that reads the ADRs, RFCs, and design docs already in your repository, extracts decisions with cited evidence, and lets you explore what-if scenarios.',
   repoUrl: 'https://github.com/bcmyguest/switchplinth',
+  license: 'Apache-2.0',
+  licenseUrl: 'https://www.apache.org/licenses/LICENSE-2.0',
   /** GitHub Pages project site by default; a custom domain is undecided. */
   siteUrl: 'https://bcmyguest.github.io',
   basePath: '/switchplinth/',

@@ -1,6 +1,6 @@
 # Switchplinth website
 
-Static marketing and docs site for Switchplinth, a local-first tool that maps architecture decisions from repository Markdown.
+Static marketing and docs site for [Switchplinth](https://github.com/bcmyguest/switchplinth) (Apache-2.0), a local-first tool that maps architecture decisions from repository Markdown.
 
 ## Stack
 
@@ -17,7 +17,7 @@ Static marketing and docs site for Switchplinth, a local-first tool that maps ar
 | Field | Current value | Status |
 | --- | --- | --- |
 | `name` | `Switchplinth` | decided |
-| `repoUrl` | `https://github.com/bcmyguest/switchplinth` | repository rename in progress |
+| `repoUrl`, `license` | `https://github.com/bcmyguest/switchplinth`, `Apache-2.0` | public |
 | `siteUrl` + `basePath` | `https://bcmyguest.github.io` + `/switchplinth/` | host: GitHub Pages; custom domain undecided |
 | `demo` | `./scripts/demo.sh`, `ready: true` | set `ready: false` to label the Try-it command a placeholder |
 
@@ -67,6 +67,10 @@ The chosen host is GitHub Pages. Cloudflare Pages settings stay documented as an
 | Environment | `SITE_URL=https://<your-domain>`, `BASE_PATH=/`, `NODE_VERSION=24` |
 
 `public/_headers` sets immutable caching for `/_astro/*` on Cloudflare; GitHub Pages ignores it.
+
+## Up next page
+
+`/docs/roadmap/` ("Up next") replaced the former limits page. `astro.config.ts` redirects `/docs/limits/` there, prefixed with the base path.
 
 ## Content rules
 

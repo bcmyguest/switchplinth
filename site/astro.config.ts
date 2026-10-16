@@ -13,6 +13,9 @@ export default defineConfig({
   site: siteUrl,
   base: basePath,
   trailingSlash: 'ignore',
+  // The roadmap page used to be the limits page; keep the old URL working.
+  // Astro does not prefix redirect targets with the base path.
+  redirects: { '/docs/limits': `${basePath.replace(/\/$/, '')}/docs/roadmap/` },
   integrations: [
     starlight({
       title: brand.name,
@@ -30,7 +33,7 @@ export default defineConfig({
           label: 'Start',
           items: [
             { label: 'Getting started', slug: 'docs/getting-started' },
-            { label: 'What works today', slug: 'docs/limits' },
+            { label: 'Up next', slug: 'docs/roadmap' },
           ],
         },
         {

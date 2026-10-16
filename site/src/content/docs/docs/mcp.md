@@ -14,10 +14,6 @@ The backend serves Model Context Protocol tools, so coding agents and other MCP 
 
 `PATH` is a repository directory with Markdown and `.decision/`; it defaults to the current directory.
 
-:::note[Upcoming release]
-The `switchplinth` command name matches the upcoming release. Builds from before the rename name the command `decision-graph-backend`.
-:::
-
 Both transports expose the same tools.
 
 ## Tools

@@ -27,10 +27,21 @@ Local `openai_compatible` connections may omit `credential_ref`. The backend the
 
 | Server | Status |
 | --- | --- |
-| Lemonade | Exercised: local Gemma generation and Nomic embeddings ran on disposable test fixtures. |
+| Lemonade | Exercised: Gemma generation and Nomic embeddings on small test fixtures; Qwen3.8 with reasoning off found all 7 decisions in the food-delivery sample. |
 | Ollama, llama.cpp server, LM Studio | **Unverified.** Point `openai_compatible` at the server's OpenAI-compatible endpoint. The backend also accepts `ollama` and `lm_studio` provider names; no recorded check covers them. |
 
-The Lemonade result is bounded: three repetitions of one explicit-choice fixture. It is not evidence of general extraction recall or repeatability.
+These results cover small fixtures and one sample corpus. They are not evidence of general extraction recall or repeatability.
+
+### Reasoning models
+
+A connection's optional `generation` object sets `reasoning` (`off`, `low`, `medium`, or `high`) and `max_output_tokens` for extraction and delta proposals. Local reasoning models such as Qwen can spend the whole output budget on hidden reasoning and return empty content; `generation: {reasoning: off}` prevents that:
+
+```yaml
+generation:
+  reasoning: "off"
+```
+
+The connection form does not edit this field yet; set it in the YAML record or through `POST /api/v1/connections`. Hosted reasoning models may reject `off`.
 
 ## Hosted providers
 

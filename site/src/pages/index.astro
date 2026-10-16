@@ -14,13 +14,13 @@ const description =
 const features = [
   { title: 'Reads the Markdown you have', body: 'ADRs, RFCs, design notes, READMEs. No template, no required syntax. Your files stay untouched.' },
   { title: 'Evidence on every inference', body: 'Each extracted claim cites an anchored source passage. Anchors relocate when a passage moves; ambiguous moves become reviewable.' },
-  { title: 'Human review outranks the model', body: 'Confirm, reject, or correct claims and aliases. Reviews append to a log and survive re-extraction. Undo works through the API; the UI is pending.', tag: 'Undo: API only' },
-  { title: 'An architecture map', body: 'Services, datastores, and technologies drawn from effective claims. Select a component to read the rationale and open its source.' },
+  { title: 'Human review outranks the model', body: 'Confirm, reject, or correct claims and aliases. Reviews append to a log you can undo, and survive re-extraction.' },
+  { title: 'An architecture map', body: 'Services, datastores, and technologies in a layered layout, with fullscreen. Select a component to read the rationale and open its source.' },
   { title: 'What-if scenarios', body: 'Options are typed deltas over one base graph. Switch options to preview changed entities and edges, affected decisions, and assumptions.' },
   { title: 'Grounded “why” answers', body: '“Why are we using Kafka?” returns the claims and passages behind the answer, and says so when an answer is not fully grounded.' },
   { title: 'MCP for your agents', body: 'Four read-only tools (list_decisions, search_decisions, inspect_architecture, inspect_entity) over streamable HTTP on localhost or stdio.' },
   { title: 'Portable YAML, disposable indexes', body: 'Canonical data is one validated YAML file per record in .decision/, beside your Markdown. SQLite and Qdrant rebuild from it.' },
-  { title: 'Your choice of model', body: 'Deterministic mock, a local OpenAI-compatible server, or a hosted provider. Hosted providers are untested.', tag: 'Hosted: untested' },
+  { title: 'Your choice of model', body: 'Deterministic mock, a local OpenAI-compatible server, or a hosted provider. Hosted providers are not yet tested.', tag: 'Hosted: up next' },
 ];
 
 const steps = [
@@ -32,22 +32,22 @@ const steps = [
 ];
 
 const works = [
-  'Separate frontend, backend, and Qdrant services under Docker Compose, bound to loopback',
-  'Non-template Markdown opens and bootstraps a portable .decision/ folder',
-  'Human reviews survive re-extraction and outrank inference',
-  'Option switches recompute the scenario graph',
-  'Grounded “why” answers with inspectable passages',
-  'Indexes rebuild from canonical files after deletion',
-  'MCP initialize, tools list, and query over streamable HTTP',
   'One-command demo of the food-delivery sample',
+  'Markdown discovery with no template; portable .decision/ YAML; rebuildable indexes',
+  'Mock extraction, plus local OpenAI-compatible models (Qwen3.8, reasoning off, found all 7 sample decisions)',
+  'Review log with Undo on the Facts page',
+  'Layered map with fullscreen and What-if previews',
+  'Architecture log with rationale, why-not reasons, and consequences',
+  'Grounded “why” answers and four MCP tools (HTTP and stdio)',
 ];
-const limits = [
-  'Hosted providers (OpenAI, Anthropic) are untested',
-  'Extraction recall is unmeasured',
-  'The sample uses mock extraction tuned to its own text: it shows the model, not extraction quality',
-  'API and MCP are unauthenticated and loopback-only',
-  'Markdown only: no code, PDFs, or other formats',
-  'Single local user; schema v1 with no migration path yet',
+const next = [
+  'Test hosted providers (OpenAI, Anthropic)',
+  'Measure extraction recall on more repositories',
+  'Extraction beyond the sample, which today uses fixture-tuned mock rules',
+  'Authentication for remote API and MCP access (loopback-only today)',
+  'More source formats beyond Markdown',
+  'Conflict detection beyond same-ID writes',
+  'Scenario rename, update, and delete',
 ];
 ---
 <Landing title={title} description={description}>
@@ -59,7 +59,7 @@ const limits = [
       </a>
       <div class="ml-auto flex items-center gap-1 text-sm">
         <a href={withBase('docs/getting-started/')} class="rounded-md px-3 py-2 hover:bg-hover">Docs</a>
-        <a href="#limits" class="hidden rounded-md px-3 py-2 hover:bg-hover sm:inline">Limits</a>
+        <a href="#next" class="hidden rounded-md px-3 py-2 hover:bg-hover sm:inline">Up next</a>
         <a href={site.repoUrl} class="rounded-md px-3 py-2 hover:bg-hover">Source</a>
         <button type="button" id="theme-toggle" class="rounded-md p-2 hover:bg-hover" aria-label="Toggle dark mode">
           <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
@@ -143,25 +143,25 @@ const limits = [
       </div>
     </section>
 
-    <section id="limits" class="border-y border-line bg-panel py-16" aria-labelledby="limits-h">
+    <section id="next" class="border-y border-line bg-panel py-16" aria-labelledby="next-h">
       <div class="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 id="limits-h" class="text-3xl font-bold tracking-tight">What works today, and what doesn’t</h2>
-        <p class="mt-3 max-w-2xl text-muted">From the project’s recorded local checks. Nothing here is extrapolated.</p>
+        <h2 id="next-h" class="text-3xl font-bold tracking-tight">Works today. Up next.</h2>
+        <p class="mt-3 max-w-2xl text-muted">What the current build does, and the next steps. No dates.</p>
         <div class="mt-10 grid gap-4 md:grid-cols-2">
           <Card class="bg-panel-raised">
-            <h3 class="font-semibold">Verified locally</h3>
+            <h3 class="font-semibold">Works today</h3>
             <ul class="mt-3 space-y-2 text-sm">
               {works.map((w) => <li class="flex gap-2"><span class="text-source" aria-hidden="true">✓</span><span>{w}</span></li>)}
             </ul>
           </Card>
           <Card class="bg-panel-raised">
-            <h3 class="font-semibold">Known limits</h3>
+            <h3 class="font-semibold">Up next</h3>
             <ul class="mt-3 space-y-2 text-sm">
-              {limits.map((l) => <li class="flex gap-2"><span class="text-warning" aria-hidden="true">!</span><span>{l}</span></li>)}
+              {next.map((n) => <li class="flex gap-2"><span class="text-warning" aria-hidden="true">→</span><span>{n}</span></li>)}
             </ul>
           </Card>
         </div>
-        <p class="mt-6 text-sm"><a class="font-semibold text-source underline underline-offset-4" href={withBase('docs/limits/')}>Full list of verified behavior and limits</a></p>
+        <p class="mt-6 text-sm"><a class="font-semibold text-source underline underline-offset-4" href={withBase('docs/roadmap/')}>Where each next step stands today</a></p>
       </div>
     </section>
 
@@ -189,7 +189,7 @@ ${site.demo.command}`}</code></pre>
 
   <footer class="border-t border-line py-10 text-sm text-muted">
     <div class="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-2 px-4 sm:px-6">
-      <span>{site.name}</span>
+      <span>{site.name} · {site.license}</span>
       <a class="hover:text-ink" href={withBase('docs/getting-started/')}>Docs</a>
       <a class="hover:text-ink" href={withBase('docs/faq/')}>FAQ</a>
       <a class="hover:text-ink" href={withBase('llms.txt')}>llms.txt</a>

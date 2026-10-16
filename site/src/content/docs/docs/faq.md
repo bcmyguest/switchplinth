@@ -25,7 +25,7 @@ No. Human-reviewed records and their review chains stay byte-for-byte unchanged,
 
 ## How good is extraction on my documents?
 
-Unknown. Extraction recall has not been measured. The food-delivery sample uses mock rules tuned to its own text, so it shows the decision and what-if model, not extraction quality.
+Not yet measured beyond small fixtures and the bundled sample. A local Qwen3.8 model with reasoning off found all 7 decisions in the sample; the one-command demo itself uses mock rules tuned to the sample's text. Measuring recall on more repositories is [up next](../roadmap/).
 
 ## Can I expose it to my team over the network?
 
@@ -37,7 +37,7 @@ No. Code analysis is a documented extension point with no implementation.
 
 ## Can I undo a review?
 
-Yes, through the API: `POST /api/v1/reviews/{record_id}/undo` appends a record that restores the prior judgment. The app does not have an undo button yet.
+Yes. The Facts page lists the review log; each entry shows the prior state and an Undo action. Undo appends a record that restores the prior judgment, and is also available through `POST /api/v1/reviews/{record_id}/undo`.
 
 ## What does a what-if scenario change?
 
@@ -45,4 +45,4 @@ Nothing in your repository until you save it. Option switches in the What-if pan
 
 ## Which license applies?
 
-A license has not been chosen yet. Check the source repository before reuse.
+Apache-2.0. The source is at <https://github.com/bcmyguest/switchplinth>.

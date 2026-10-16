@@ -74,7 +74,7 @@ Line numbers are display hints only. When a passage moves, the indexer relocates
 
 Human review appends records; it never mutates the original inference into an indistinguishable fact. A review record points to the chain root with `reviewed_claim` (or `reviewed_alias`) and lists prior judgments in `supersedes`. During compilation, human judgments outrank model output, and re-extraction leaves human-reviewed records byte-for-byte unchanged.
 
-Undo appends a record whose `undoes` field reverts the head of one review chain, restoring the prior judgment or the original inference. No file is deleted or rewritten. Undo is available through the API (`GET /api/v1/reviews`, `POST /api/v1/reviews/{record_id}/undo`); the app has no undo UI yet.
+Undo appends a record whose `undoes` field reverts the head of one review chain, restoring the prior judgment or the original inference. No file is deleted or rewritten. The Facts page shows this review log, with the prior state and an Undo action on each entry; the API exposes the same operations (`GET /api/v1/reviews`, `POST /api/v1/reviews/{record_id}/undo`).
 
 ## Grounded answers
 

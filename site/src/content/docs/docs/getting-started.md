@@ -29,8 +29,6 @@ The script:
 4. starts the stack as Compose project `switchplinth-demo`,
 5. rebuilds the search indexes and prints the URL, `http://localhost:3000`.
 
-The `switchplinth-demo` cache directory and project name match the upcoming release; builds from before the rename use `decision-graph-demo`.
-
 The sample holds nine Markdown files (design notes, RFCs, decision notes) for a fictional ordering, payment, restaurant, and courier workflow. They yield 7 decisions; the default scenario has 18 entities and 13 relationships. Switching the event-transport decision from Kafka to SQS moves the order event stream edge.
 
 :::caution[What the sample shows]
@@ -93,4 +91,4 @@ This removes the generated volumes only. Your Markdown and `.decision/` files st
 
 - [Concepts](../concepts/): decisions, options, deltas, scenarios, claims, evidence.
 - [MCP tools](../mcp/): query decisions from a coding agent.
-- [What works today](../limits/): verified behavior and known limits.
+- [Up next](../roadmap/): what works today and the next steps.

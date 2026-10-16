@@ -10,7 +10,8 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
     "lint": "eslint .",
-    "check:navigation": "node e2e/navigation.check.mjs"
+    "check:navigation": "node e2e/navigation.check.mjs",
+    "check:scenario-diff": "node e2e/scenario-diff.check.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

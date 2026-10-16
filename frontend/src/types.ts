@@ -129,6 +129,25 @@ export type GraphData = {
 
 export type SavedScenario = { id: string; name: string; selections: Record<string, string> }
 
+type DiffEntity = { id: string; kind: string; name: string; description?: string }
+type DiffRelationship = { id: string; from: string; to: string; kind: string; claim_id?: string | null }
+type ChangeSet<T> = { added: T[]; removed: T[]; changed: Array<{ id: string; before: T; after: T }> }
+type MissingEndpoint = { relationship_id: string; kind: string; missing_entity_id: string; status: 'rewired' | 'dangling'; rewired_to: Array<{ relationship_id: string; to: string }> }
+export type ImpactDependent = { entity_id: string; name: string; depth: number; path: string[]; present_after: boolean; points_at_missing: boolean; rewired: boolean; missing_endpoints: MissingEndpoint[] }
+type ImpactReport = { basis: string; max_depth: number; limits: string; items: Array<{ type: 'entity' | 'relationship'; id: string; name: string; change: 'removed' | 'replaced'; dependents: ImpactDependent[]; truncated: boolean }> }
+
+/** `POST /api/v1/scenarios/diff`: how the after scenario differs from the before scenario. */
+export type ScenarioDiff = {
+  selections: { before: Record<string, string>; after: Record<string, string> }
+  selection_changes: Array<{ decision_id: string; before_option: string | null; after_option: string | null }>
+  entities: ChangeSet<DiffEntity>
+  relationships: ChangeSet<DiffRelationship>
+  conflicts: { appeared: string[]; disappeared: string[] }
+  invalid_assumptions: { appeared: string[]; disappeared: string[] }
+  affected_decisions: Array<{ id: string; title: string; reasons: string[] }>
+  impact: ImpactReport
+}
+
 export type Capability = { status: 'supported' | 'unsupported' | 'error'; latency_ms?: number; raw_error?: string; normalized_error?: string; detail?: string }
 
 export type ConnectionGeneration = {

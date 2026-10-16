@@ -18,7 +18,7 @@ from switchplinth.domain import Claim, Decision, DomainError, Entity, Evidence, 
 from switchplinth.providers import diagnose, embed_with_litellm, extract_with_litellm, propose_delta_with_litellm
 from switchplinth.receipt import RECEIPT_FOLDERS, input_receipt
 from switchplinth.repository import PortableRepository, discover_markdown, passages, relocate_evidence, source_identity, source_is_included
-from switchplinth.scenario_analysis import ResolvedScenario, diff_resolved_scenarios, downstream_impact
+from switchplinth.scenario_analysis import ResolvedScenario, diff_resolved_scenarios, downstream_impact, option_replacements
 from switchplinth.store import INDEX_VERSION, SearchIndex, VectorIndex, qdrant_rebuild, qdrant_search
 
 REVIEW_FOLDERS = (("claims", "reviewed_claim"), ("aliases", "reviewed_alias"))
@@ -867,9 +867,10 @@ class DecisionService:
         source, location = record.get("source", {}), record.get("location", {})
         return Evidence(record["id"], source.get("path", ""), location.get("heading_path", []), location.get("normalized_passage_sha256", ""), location.get("context_before", ""), location.get("context_after", ""), source.get("git_blob"), location.get("display_line"), record.get("text", ""), record.get("state", "current"))
 
-    def _render_graph(self, graph: Graph, decisions: list[Decision], aliases: list[dict[str, Any]], evidence: list[dict[str, Any]], claims: list[Claim], selections: dict[str, str] | None = None, projection: tuple[ScenarioResult, dict[str, str], list[Claim], list[str]] | None = None) -> dict[str, Any]:
+    def _render_graph(self, graph: Graph, decisions: list[Decision], aliases: list[dict[str, Any]], evidence: list[dict[str, Any]], claims: list[Claim], decision_records: list[dict[str, Any]], selections: dict[str, str] | None = None, projection: tuple[ScenarioResult, dict[str, str], list[Claim], list[str]] | None = None) -> dict[str, Any]:
+        """Render a projected graph; ``decision_records`` is the raw decision snapshot ``graph`` was built from."""
         result, selected, active_claims, invalid_assumptions = projection or self._project_scenario(graph, decisions, claims, selections)
-        extraction_reviews = {record["id"]: record.get("extraction_review") for record in self.repository.records_unchecked("decisions") if record.get("extraction_review")}
+        extraction_reviews = {record["id"]: record.get("extraction_review") for record in decision_records if record.get("extraction_review")}
         derived = decision_log_reasons(decisions, [self._passage_from_record(record) for record in evidence])
         rendered = {"entities": [vars(e) for e in result.graph.entities.values()], "relationships": [{"id": r.id, "from": r.source, "to": r.target, "kind": r.kind, "claim_id": r.claim_id} for r in result.graph.relationships.values()], "decisions": [{"id": d.id, "title": d.title, "status": d.status, "context": d.context, "selected_option": selected.get(d.id), "options": [{"id": o.id, "title": o.title, "rationale": o.rationale, "delta": o.delta, "evidence": o.evidence} for o in d.options], "evidence": d.evidence, **({"extraction_review": extraction_reviews[d.id]} if d.id in extraction_reviews else {}), "derived": asdict(derived[d.id])} for d in decisions], "aliases": aliases, "claims": [vars(c) for c in active_claims], "evidence": evidence, "scenario": {"selections": selected, "affected": {"added": result.added, "removed": result.removed, "changed": result.changed}, "conflicts": result.conflicts, "invalid_assumptions": sorted(set(invalid_assumptions)), "affected_decisions": result.affected_decisions}}
         rendered.update(self._identity_data(result.graph.entities, claims))
@@ -885,14 +886,14 @@ class DecisionService:
         records = self._read_records()
         graph, decisions, aliases, evidence, claims = self.graph(records)
         projection = self._project_scenario(graph, decisions, claims, selections)
-        rendered = self._render_graph(graph, decisions, aliases, evidence, claims, selections, projection)
+        rendered = self._render_graph(graph, decisions, aliases, evidence, claims, records["decisions"], selections, projection)
         if not annotate:
             return rendered
         after, selected = projection[0].graph, projection[1]
         defaults = {d.id: d.selected_option for d in decisions if d.selected_option}
         # Repository selections remove or replace nothing relative to themselves.
         before = after if selected == defaults else self._project_scenario(graph, decisions, claims, None)[0].graph
-        rendered["scenario"]["impact"] = downstream_impact(before, after)
+        rendered["scenario"]["impact"] = downstream_impact(before, after, replacements=option_replacements(decisions, defaults, selected))
         rendered["receipt"] = input_receipt(records, selected)
         return rendered
 
@@ -936,11 +937,12 @@ class DecisionService:
             raise KeyError(option_id)
         candidate = {**record, "options": [{**item, "delta": delta} if item["id"] == option_id else item for item in record["options"]]}
         self.repository.validate_candidate("decisions", candidate)
-        graph, decisions, aliases, evidence, claims = self.graph()
+        records = self._read_records()
+        graph, decisions, aliases, evidence, claims = self.graph(records)
         target_decision = next(item for item in decisions if item.id == decision_id)
         target_option = next(item for item in target_decision.options if item.id == option_id)
         target_option.delta = delta
-        rendered = self._render_graph(graph, decisions, aliases, evidence, claims, selections)
+        rendered = self._render_graph(graph, decisions, aliases, evidence, claims, records["decisions"], selections)
         return {"decision_id": decision_id, "option_id": option_id, "delta": delta, "graph": rendered, "affected": rendered["scenario"]["affected"], "conflicts": rendered["scenario"]["conflicts"], "invalid_assumptions": rendered["scenario"]["invalid_assumptions"]}
 
     def search(self, query: str, selections: dict[str, str] | None = None) -> dict[str, Any]:

@@ -8,6 +8,7 @@ import { resolveDemoScenario } from '../../scenario-preview'
 import type { Workspace } from '../../app/useWorkspace'
 import type { Decision, DeltaOperation, GraphData, SavedScenario } from '../../types'
 import { describeScenarioSelection, scenarioSelectionKey, selectedOptions } from './scenarioSelection'
+import { usePreviousChoiceDiff, type PreviousChoiceDiff } from './usePreviousChoiceDiff'
 
 const INITIAL_SELECTIONS: Record<string, string> = { 'decision-messaging': 'option-kafka', 'decision-database': 'option-postgres' }
 
@@ -41,6 +42,8 @@ export type ScenarioSelection = {
   notice: string
   setNotice: (notice: string) => void
   changes: ScenarioChanges
+  /** The last switch compared with the selection resolved before it (live backend only). */
+  previousDiff: Pick<PreviousChoiceDiff, 'state' | 'retry'>
   history: ScenarioHistoryItem[]
   saved: SavedScenario[]
   savedError: string
@@ -99,6 +102,7 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
   const scenarioDecisionPickerRef = useRef<HTMLDivElement | null>(null)
   const scenarioDecisionPickerButtonRefs = useRef(new Map<string, HTMLButtonElement>())
   const { graph, live, projectRoot, generation: repositoryGeneration, catalog, commitGraph } = workspace
+  const previousDiff = usePreviousChoiceDiff(repositoryGeneration)
 
   function revealScenarioDecisionChip(decisionId: string) {
     const scroller = scenarioDecisionPickerRef.current
@@ -150,6 +154,7 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
     setSelection(next)
     setScenarioResolutionPending(true)
     setScenarioNotice('')
+    previousDiff.begin()
     try {
       const resolved = await resolveScenario(next)
       if (requestSequence !== scenarioRequestSequence.current || generation !== repositoryGeneration.current) return false
@@ -159,6 +164,8 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
       const preferredEntityId = addedEntity && typeof addedEntity === 'object' && 'id' in addedEntity && typeof addedEntity.id === 'string' ? addedEntity.id : undefined
       dependencies.onResolved(resolved.graph, resolved.graph.entities.find((entity) => entity.id === preferredEntityId)?.id)
       commitGraph(resolved.graph, { live: true })
+      const relationshipKinds = new Map([...graph.relationships, ...resolved.graph.relationships].map((relationship) => [relationship.id, relationship.kind]))
+      previousDiff.compare(resolvedSelection.current, committedSelections, { label: catalog.label, decisions: resolved.graph.decisions, relationshipKinds })
       resolvedSelection.current = committedSelections
       setSelection(committedSelections)
       rememberScenarioCombination(resolved.graph, committedSelections)
@@ -169,6 +176,7 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
       return warning
     } catch {
       if (requestSequence !== scenarioRequestSequence.current || generation !== repositoryGeneration.current) return false
+      previousDiff.clear()
       if (live) {
         setSelection(resolvedSelection.current)
         setScenarioResolutionPending(false)
@@ -242,6 +250,7 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
   }
 
   function commit(selections: Selections) {
+    previousDiff.clear()
     resolvedSelection.current = selections
     setSelection(selections)
   }
@@ -250,12 +259,14 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
     const nextSelection = selectedOptions(nextGraph)
     resolvedSelection.current = nextSelection
     repositorySelection.current = nextSelection
+    previousDiff.clear()
     setSelection(nextSelection)
     setScenarioHistory([{ key: scenarioSelectionKey(nextSelection), label: describeScenarioSelection(nextGraph, nextSelection), selections: nextSelection }])
   }
 
   function cancelPending() {
     scenarioRequestSequence.current += 1
+    previousDiff.clear()
     setScenarioResolutionPending(false)
     setSelection(resolvedSelection.current)
   }
@@ -263,6 +274,7 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
   function beforeSwitch() {
     scenarioRequestSequence.current += 1
     scenarioListSequence.current += 1
+    previousDiff.clear()
     setScenarioResolutionPending(false)
     setSavedScenariosLoading(false)
   }
@@ -273,6 +285,7 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
     setScenarioHistory([])
     setSelection({})
     setScenarioChanges({})
+    previousDiff.clear()
     setScenarioNotice('')
     setSavedScenarios([])
     setSavedScenariosError('')
@@ -287,6 +300,7 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
     notice: scenarioNotice,
     setNotice: setScenarioNotice,
     changes: scenarioChanges,
+    previousDiff: { state: previousDiff.state, retry: previousDiff.retry },
     history: scenarioHistory,
     saved: savedScenarios,
     savedError: savedScenariosError,

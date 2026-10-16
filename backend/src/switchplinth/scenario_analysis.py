@@ -20,8 +20,13 @@ IMPACT_LIMITS = (
     "Every relationship kind is read in that one direction: communicates_with is not treated as "
     "symmetric, and implements makes the implementer depend on what it implements. Identity groups "
     "(same_entity_as) are not traversed; a dependent attached to another member of a confirmed group "
-    "is missed. No code analysis, runtime data, or undeclared dependency is considered."
+    "is missed. No code analysis, runtime data, or undeclared dependency is considered. 'rewired' is a "
+    "heuristic: a lost edge counts as rewired when the after scenario gives the same source a new "
+    "same-kind edge written by the newly selected option of a switched decision whose options "
+    "reference the missing entity. It does not check that the option intended a replacement, and "
+    "several lost same-kind edges can share one replacement."
 )
+RELATIONSHIP_WRITE_OPS = frozenset({"add_relationship", "replace_relationship"})
 
 
 @dataclass(frozen=True)
@@ -66,13 +71,38 @@ def _decision_references(decision: Decision) -> set[str]:
     return referenced
 
 
-def _missing_endpoints(entity_id: str, before: Graph, after: Graph) -> list[dict[str, Any]]:
+def option_replacements(decisions: list[Decision], before_selections: dict[str, str], after_selections: dict[str, str]) -> dict[str, set[str]]:
+    """Map each element a switched decision's options reference to the relationship IDs its after option writes.
+
+    A lost edge to entity X may count as rewired only to a relationship that the
+    after-selected option of a switched decision adds or replaces, where some
+    option of that decision references X.
+    """
+    replacements: dict[str, set[str]] = {}
+    for decision in decisions:
+        option_id = after_selections.get(decision.id)
+        if option_id is None or option_id == before_selections.get(decision.id):
+            continue
+        option = next((item for item in decision.options if item.id == option_id), None)
+        written = {
+            str(operation["relationship"]["id"])
+            for operation in (option.delta.get("operations", []) if option else [])
+            if operation.get("op") in RELATIONSHIP_WRITE_OPS and isinstance(operation.get("relationship"), dict) and operation["relationship"].get("id")
+        }
+        if written:
+            for referenced in _decision_references(decision):
+                replacements.setdefault(referenced, set()).update(written)
+    return replacements
+
+
+def _missing_endpoints(entity_id: str, before: Graph, after: Graph, allowed: dict[str, set[str]] | None) -> list[dict[str, Any]]:
     """Outgoing before-scenario relationships of ``entity_id`` whose target is absent after.
 
-    An edge is ``rewired`` when ``after`` gives the same source a relationship of
-    the same kind to a target that source did not reach with that kind before
-    (for example publishes_to Kafka stream -> publishes_to SQS stream); otherwise
-    it is ``dangling``.
+    An edge is ``rewired`` (a heuristic) when ``after`` gives the same source a
+    relationship of the same kind to a target that source did not reach with
+    that kind before (for example publishes_to Kafka stream -> publishes_to SQS
+    stream); otherwise it is ``dangling``. When ``allowed`` is given, only
+    ``allowed[missing target]`` count (see ``option_replacements``).
     """
     outgoing = sorted((rel for rel in before.relationships.values() if rel.source == entity_id), key=lambda item: item.id)
     after_outgoing = sorted((rel for rel in after.relationships.values() if rel.source == entity_id), key=lambda item: item.id)
@@ -84,7 +114,7 @@ def _missing_endpoints(entity_id: str, before: Graph, after: Graph) -> list[dict
         replacements = [
             {"relationship_id": rel.id, "to": rel.target}
             for rel in after_outgoing
-            if rel.kind == relationship.kind and rel.target not in earlier_targets
+            if rel.kind == relationship.kind and rel.target not in earlier_targets and (allowed is None or rel.id in allowed.get(relationship.target, ()))
         ]
         missing.append({
             "relationship_id": relationship.id,
@@ -96,7 +126,7 @@ def _missing_endpoints(entity_id: str, before: Graph, after: Graph) -> list[dict
     return missing
 
 
-def _dependents(start: str, before: Graph, after: Graph, max_depth: int, seed: list[tuple[str, list[str]]]) -> tuple[list[dict[str, Any]], bool]:
+def _dependents(start: str, before: Graph, after: Graph, max_depth: int, seed: list[tuple[str, list[str]]], replacements: dict[str, set[str]] | None) -> tuple[list[dict[str, Any]], bool]:
     """Breadth-first walk against relationship direction from ``seed`` dependents.
 
     ``seed`` holds (entity_id, path) pairs at depth 1. Neighbours are visited in
@@ -132,7 +162,7 @@ def _dependents(start: str, before: Graph, after: Graph, max_depth: int, seed: l
     dependents = []
     for entity_id, entity_depth, path in sorted(found, key=lambda item: (item[1], item[0])):
         entity = before.entities.get(entity_id)
-        missing = _missing_endpoints(entity_id, before, after)
+        missing = _missing_endpoints(entity_id, before, after, replacements)
         dependents.append({
             "entity_id": entity_id,
             "name": entity.name if entity else entity_id,
@@ -146,7 +176,7 @@ def _dependents(start: str, before: Graph, after: Graph, max_depth: int, seed: l
     return dependents, truncated
 
 
-def downstream_impact(before: Graph, after: Graph, max_depth: int = IMPACT_MAX_DEPTH) -> dict[str, Any]:
+def downstream_impact(before: Graph, after: Graph, max_depth: int = IMPACT_MAX_DEPTH, replacements: dict[str, set[str]] | None = None) -> dict[str, Any]:
     """List dependents of every element ``after`` removes or replaces relative to ``before``.
 
     Items are removed and replaced entities, then removed and replaced
@@ -155,7 +185,9 @@ def downstream_impact(before: Graph, after: Graph, max_depth: int = IMPACT_MAX_D
     its depth, a path of alternating entity and relationship IDs ending at the
     item, whether it survives in ``after``, and its outgoing before-scenario
     relationships whose target is absent from ``after``, each marked
-    ``rewired`` or ``dangling`` (see ``_missing_endpoints``).
+    ``rewired`` or ``dangling`` (see ``_missing_endpoints``). ``replacements``
+    restricts rewiring per missing entity; callers pass ``option_replacements``.
+    ``None`` accepts any new same-kind edge from the same source.
     """
     items: list[dict[str, Any]] = []
     for entity_id in sorted(before.entities):
@@ -164,7 +196,7 @@ def downstream_impact(before: Graph, after: Graph, max_depth: int = IMPACT_MAX_D
             continue
         change = "replaced" if entity_id in after.entities else "removed"
         seed = [(relationship.source, [relationship.source, relationship.id, entity_id]) for relationship in sorted(before.relationships.values(), key=lambda item: item.id) if relationship.target == entity_id and relationship.source != entity_id]
-        dependents, truncated = _dependents(entity_id, before, after, max_depth, seed)
+        dependents, truncated = _dependents(entity_id, before, after, max_depth, seed, replacements)
         items.append({"type": "entity", "id": entity_id, "name": entity.name, "change": change, "dependents": dependents, "truncated": truncated})
     for relationship_id in sorted(before.relationships):
         relationship = before.relationships[relationship_id]
@@ -175,7 +207,7 @@ def downstream_impact(before: Graph, after: Graph, max_depth: int = IMPACT_MAX_D
             continue
         change = "replaced" if replacement is not None else "removed"
         seed = [(relationship.source, [relationship.source, relationship.id, relationship.target])]
-        dependents, truncated = _dependents(relationship.target, before, after, max_depth, seed)
+        dependents, truncated = _dependents(relationship.target, before, after, max_depth, seed, replacements)
         items.append({"type": "relationship", "id": relationship_id, "name": relationship.kind, "change": change, "dependents": dependents, "truncated": truncated})
     return {"basis": "before_scenario_relationships", "max_depth": max_depth, "limits": IMPACT_LIMITS, "items": items}
 
@@ -224,5 +256,5 @@ def diff_resolved_scenarios(before: ResolvedScenario, after: ResolvedScenario, d
         "conflicts": _appeared(before.conflicts, after.conflicts),
         "invalid_assumptions": _appeared(before.invalid_assumptions, after.invalid_assumptions),
         "affected_decisions": affected,
-        "impact": downstream_impact(before.graph, after.graph, max_depth),
+        "impact": downstream_impact(before.graph, after.graph, max_depth, option_replacements(decisions, before.selections, after.selections)),
     }

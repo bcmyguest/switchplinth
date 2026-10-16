@@ -1,4 +1,4 @@
-import type { Capability, Claim, Connection, Entity, EntityDecisionDetail, GraphData, IdentityConflict, IdentityGroup, IdentitySuggestion, SavedScenario } from './types'
+import type { Capability, Claim, Connection, Entity, EntityDecisionDetail, GraphData, IdentityConflict, IdentityGroup, IdentitySuggestion, SavedScenario, ScenarioDiff } from './types'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
 
@@ -61,6 +61,10 @@ export async function saveConnection(connection: Omit<Connection, 'status' | 'di
 
 export async function resolveScenario(selections: Record<string, string>) {
   return request<{ graph: GraphData; affected?: { added?: string[]; removed?: string[]; changed?: string[] }; conflicts?: string[]; invalid_assumptions?: string[] }>('/scenarios/resolve', { method: 'POST', body: JSON.stringify({ selections }) })
+}
+
+export async function diffScenarios(beforeSelections: Record<string, string>, afterSelections: Record<string, string>) {
+  return request<ScenarioDiff>('/scenarios/diff', { method: 'POST', body: JSON.stringify({ before_selections: beforeSelections, after_selections: afterSelections }) })
 }
 
 export async function previewOptionDelta(decisionId: string, optionId: string, delta: NonNullable<GraphData['decisions'][number]['options'][number]['delta']>, selections: Record<string, string>) {

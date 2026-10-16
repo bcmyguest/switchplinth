@@ -48,7 +48,7 @@ const wide: Card[] = [
   { n: 7, x: 224, y: 328, w: 180, h: H, title: 'Human review', lines: [t('confirm, reject, correct;'), t('each judgment appends;'), t('undo appends too')] },
   { n: 8, x: 436, y: 184, w: 180, h: H, title: 'Compiler', tag: 'request', lines: [c('compile_scenario()'), t('graph + option deltas'), t('conflicts, assumptions')] },
   { n: 9, x: 436, y: 328, w: 180, h: H, title: 'Indexes', tag: 'disposable', lines: [t('SQLite FTS5 passages,'), t('Qdrant or local vectors;'), t('rebuilt after each scan')] },
-  { n: 10, x: 648, y: 184, w: 180, h: 236, title: 'Consumers', lines: [c('FastAPI')], chips: ['Map and What-if', 'Why-search, grounded', 'MCP: 5 read-only tools'], chipsCol: true },
+  { n: 10, x: 648, y: 184, w: 180, h: 236, title: 'Consumers', lines: [c('FastAPI')], chips: ['Map, What-if, diffs', 'Why-search, grounded', 'MCP: 5 read-only tools'], chipsCol: true },
 ];
 const wideEdges: Edge[] = [
   { d: 'M192 94 H215', tip: [224, 94, 'right'] },
@@ -83,7 +83,7 @@ const tall: Card[] = [
   { n: 7, x: 188, y: rows[5], w: 156, h: H, title: 'Human review', lines: [t('confirm, reject,'), t('correct, undo;'), t('always appends')] },
   { n: 8, x: 16, y: rows[6], w: 156, h: H, title: 'Compiler', tag: 'request', lines: [t('base graph + deltas;'), t('conflicts, invalid'), t('assumptions')] },
   { n: 9, x: 188, y: rows[6], w: 156, h: H, title: 'Indexes', tag: 'disposable', lines: [t('SQLite FTS5,'), t('Qdrant or local'), t('vectors; rebuilt')] },
-  { n: 10, x: 16, y: rows[7], w: 328, h: H, title: 'Consumers', lines: [c('FastAPI')], chips: ['Map, What-if', 'Why-search', 'MCP tools'], chipsY: 60 },
+  { n: 10, x: 16, y: rows[7], w: 328, h: H, title: 'Consumers', lines: [t('FastAPI and 5 MCP tools')], chips: ['Map', 'What-if', 'Diffs', 'Why-search'], chipsY: 60 },
 ];
 const down = (x: number, from: number, to: number): Edge => ({ d: `M${x} ${from} V${to - 9}`, tip: [x, to, 'down'] });
 const tallEdges: Edge[] = [
@@ -108,7 +108,7 @@ const tallHeight = rows[7] + H + 110;
 const sheet = site.name.toUpperCase();
 const title = 'How repository Markdown becomes decisions, a graph, and answers';
 const desc =
-  'Pipeline in ten steps. 1: Markdown files, canonical and never written. 2: discovery skips generated, metadata, and configured paths. 3: passages become evidence anchors with path, heading path, passage hash, and context. 4: extraction by mock rules or a LiteLLM model, with one schema-feedback retry for invalid deltas. 5: validation against the record-v1 schema on save and references on read. 6: canonical .decision/ YAML, one file per record. 7: human review reads records and appends judgments, including undo. 8: the compiler applies selected option deltas to the base graph per request and reports conflicts and invalid assumptions. 9: disposable SQLite FTS5 and vector indexes, rebuilt from the YAML. 10: consumers through FastAPI: the map and What-if, why-search, and five MCP tools.';
+  'Pipeline in ten steps. 1: Markdown files, canonical and never written. 2: discovery skips generated, metadata, and configured paths. 3: passages become evidence anchors with path, heading path, passage hash, and context. 4: extraction by mock rules or a LiteLLM model, with one schema-feedback retry for invalid deltas. 5: validation against the record-v1 schema on save and references on read. 6: canonical .decision/ YAML, one file per record. 7: human review reads records and appends judgments, including undo. 8: the compiler applies selected option deltas to the base graph per request and reports conflicts and invalid assumptions. 9: disposable SQLite FTS5 and vector indexes, rebuilt from the YAML. 10: consumers through FastAPI: the map and What-if, why-search, scenario diffs, and five MCP tools.';
 ---
 <figure class="pl-figure not-content" aria-label="Pipeline diagram">
 {

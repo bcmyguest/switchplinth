@@ -256,3 +256,91 @@ def test_receipt_is_stable_and_tracks_reviews_evidence_and_selections(repo: Path
     assert edited["digest"] not in {digest, reviewed["digest"]}
     assert edited["components"]["evidence_anchors"] != reviewed["components"]["evidence_anchors"]
     assert edited["components"]["review_heads"] == reviewed["components"]["review_heads"]
+
+
+def test_rewiring_counts_only_edges_written_by_the_switched_decision_that_references_the_lost_target() -> None:
+    """R1: when several decisions switch, a same-kind edge from an unrelated decision must not hide a dangling dependency."""
+    entities = {name: Entity(name, "service", name.upper()) for name in ("svc", "old", "side", "new")}
+    drop_old = Option("opt-drop", "Drop", "", {"operations": [{"op": "remove_entity", "entity": {"id": "old"}}]})
+    keep_old = Option("opt-keep", "Keep", "", {"operations": []})
+    side_edge = Option("opt-side", "Side", "", {"operations": [{"op": "add_relationship", "relationship": {"id": "r-side", "from": "svc", "to": "side", "kind": "calls"}}]})
+    no_side = Option("opt-none", "None", "", {"operations": []})
+    move = Option("opt-move", "Move", "", {"operations": [{"op": "remove_entity", "entity": {"id": "old"}}, {"op": "add_relationship", "relationship": {"id": "r-new", "from": "svc", "to": "new", "kind": "calls"}}]})
+    decisions = [Decision("d-old", "Old", "decided", "", "opt-keep", [keep_old, drop_old, move]), Decision("d-side", "Side", "decided", "", "opt-none", [no_side, side_edge])]
+    before = ResolvedScenario({"d-old": "opt-keep", "d-side": "opt-none"}, Graph(entities, {"r-old": Relationship("r-old", "svc", "old", "calls")}), [], [])
+    remaining = {key: value for key, value in entities.items() if key != "old"}
+
+    unrelated = ResolvedScenario({"d-old": "opt-drop", "d-side": "opt-side"}, Graph(remaining, {"r-side": Relationship("r-side", "svc", "side", "calls")}), [], [])
+    [svc] = diff_resolved_scenarios(before, unrelated, decisions)["impact"]["items"][0]["dependents"]
+    assert svc["missing_endpoints"][0]["status"] == "dangling" and svc["points_at_missing"] is True and svc["rewired"] is False
+    assert downstream_impact(before.graph, unrelated.graph)["items"][0]["dependents"][0]["rewired"] is True, "without provenance the side edge looks like a rewire"
+
+    moved = ResolvedScenario({"d-old": "opt-move", "d-side": "opt-side"}, Graph(remaining, {"r-side": Relationship("r-side", "svc", "side", "calls"), "r-new": Relationship("r-new", "svc", "new", "calls")}), [], [])
+    [svc] = diff_resolved_scenarios(before, moved, decisions)["impact"]["items"][0]["dependents"]
+    assert svc["missing_endpoints"] == [{"relationship_id": "r-old", "kind": "calls", "missing_entity_id": "old", "status": "rewired", "rewired_to": [{"relationship_id": "r-new", "to": "new"}]}]
+
+
+def test_rewiring_filter_applies_to_each_lost_edge_of_one_source() -> None:
+    """A source that loses two edges gets each one judged against its own missing target."""
+    entities = {name: Entity(name, "service", name.upper()) for name in ("svc", "a", "b", "new")}
+    before = Graph(entities, {"r-a": Relationship("r-a", "svc", "a", "calls"), "r-b": Relationship("r-b", "svc", "b", "calls")})
+    after = Graph({"svc": entities["svc"], "new": entities["new"]}, {"r-new": Relationship("r-new", "svc", "new", "calls")})
+    impact = downstream_impact(before, after, replacements={"a": {"r-new"}})
+    [svc] = impact["items"][0]["dependents"]
+    assert [(item["missing_entity_id"], item["status"]) for item in svc["missing_endpoints"]] == [("a", "rewired"), ("b", "dangling")]
+    assert svc["rewired"] is True and svc["points_at_missing"] is True
+
+
+def test_depth_one_dependents_of_removed_relationships_and_replaced_entities_lose_no_endpoint() -> None:
+    """The UI labels these dependents "Direct": their own edge is the changed element, yet no endpoint goes missing."""
+    entities = {name: Entity(name, "service", name.upper()) for name in ("a", "b", "c")}
+    before = Graph(entities, {"r1": Relationship("r1", "a", "b", "calls"), "r2": Relationship("r2", "c", "a", "calls")})
+    after = Graph(dict(entities), {"r2": before.relationships["r2"]})
+    [removed] = downstream_impact(before, after)["items"]
+    assert (removed["type"], removed["id"], removed["change"]) == ("relationship", "r1", "removed")
+    [source, upstream] = removed["dependents"]
+    assert (source["entity_id"], source["depth"], source["path"]) == ("a", 1, ["a", "r1", "b"])
+    assert source["missing_endpoints"] == [] and not source["points_at_missing"] and not source["rewired"]
+    assert (upstream["entity_id"], upstream["depth"]) == ("c", 2)
+
+    renamed = Graph({**entities, "b": Entity("b", "service", "B v2")}, dict(before.relationships))
+    [replaced] = downstream_impact(before, renamed)["items"]
+    assert (replaced["type"], replaced["id"], replaced["change"]) == ("entity", "b", "replaced")
+    direct = replaced["dependents"][0]
+    assert (direct["entity_id"], direct["depth"], direct["path"]) == ("a", 1, ["a", "r1", "b"])
+    assert direct["missing_endpoints"] == [] and direct["present_after"]
+
+
+def test_replay_requirement_is_not_yet_surfaced(repo: Path, tmp_path: Path) -> None:
+    """Pins a known gap tracked in README "Up next": scenario comparison ignores capability requirements.
+
+    The event-transport source says the stream must support replay and that SQS needs extra work to replay. Human claims
+    can record that as requires/provides/lacks_capability, but no output reports the unmet requirement after Kafka -> SQS.
+    Replace this test when capability checking lands.
+    """
+    fulfillment = "entity-779ab6fab932e39b"
+    service = service_for(repo, tmp_path / "cache")
+    baseline = service.diff_scenarios(None, {EVENT_TRANSPORT: SQS_OPTION})
+
+    human = {"epistemic_state": "asserted", "confidence": 1.0, "evidence": [], "reviewer": "human", "reviewed_at": "2026-10-16T00:00:00+00:00"}
+    service.repository.save("entities", {"schema_version": "decision/v1", "record_type": "entity", "id": "capability-event-replay", "kind": "capability", "name": "Event replay", **human})
+    claims = [
+        ("claim-fulfillment-requires-replay", fulfillment, "requires_capability"),
+        ("claim-kafka-provides-replay", KAFKA_STREAM, "provides_capability"),
+        ("claim-sqs-lacks-replay", SQS_STREAM, "lacks_capability"),
+    ]
+    for claim_id, subject, predicate in claims:
+        service.repository.save("claims", {"schema_version": "decision/v1", "record_type": "claim", "id": claim_id, "subject": subject, "predicate": predicate, "object": "capability-event-replay", **human})
+
+    stored = {record["id"]: record for record in service_for(repo, tmp_path / "cache-2").repository.records("claims")}
+    assert {(stored[claim_id]["subject"], stored[claim_id]["predicate"]) for claim_id, _, _ in claims} == {(subject, predicate) for _, subject, predicate in claims}
+    assert "capability-event-replay" in {entity["id"] for entity in service.graph_json()["entities"]}, "records pass read-time validation"
+
+    diff = service.diff_scenarios(None, {EVENT_TRANSPORT: SQS_OPTION})
+    assert diff["invalid_assumptions"] == baseline["invalid_assumptions"] == {"appeared": [], "disappeared": []}
+    assert diff["conflicts"] == baseline["conflicts"]
+    assert diff["impact"] == baseline["impact"]
+    [dependent] = diff["impact"]["items"][0]["dependents"]
+    assert dependent["entity_id"] == ORDER_SERVICE and dependent["rewired"] is True, "still reported rewired, with no replay warning"
+    assert all(fulfillment not in (dep["entity_id"] for dep in item["dependents"]) for item in diff["impact"]["items"])
+    assert diff["receipt"]["digest"] != baseline["receipt"]["digest"], "the claims are inputs, yet nothing in the output reflects them"

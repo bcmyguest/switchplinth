@@ -15,6 +15,7 @@ import type { ScanState } from '../discovery/scanState'
 import { evidenceHeading, evidencePath, resolveEvidence } from '../evidence/evidence'
 import type { EvidenceViewer } from '../evidence/useEvidenceViewer'
 import { compactScenarioDecisionTitle, describeScenarioDifference, describeScenarioSelection, scenarioSelectionKey } from './scenarioSelection'
+import { PreviousChoiceDiffPanel } from './PreviousChoiceDiffPanel'
 import type { ScenarioSelection } from './useScenarioSelection'
 
 /** Derived component-detail values the rationale panel shows; App computes them until the component-detail module lands. */
@@ -61,6 +62,9 @@ export function ScenarioWorkspace({ mode, panelOpen, panelRef, onClosePanel, gra
   const compiledScenarioChanges = scenarioChangeItems.length ? scenarioChangeItems : Object.entries(graph.scenario?.affected ?? {}).flatMap(([kind, ids]) => (ids ?? []).map((id) => ({ kind, label: catalog.label(id) })))
   const scenarioWarnings = [...(graph.scenario?.conflicts ?? []), ...(graph.scenario?.invalid_assumptions ?? [])]
   const affectedDecisionNames = (graph.scenario?.affected_decisions ?? []).map((id) => graph.decisions.find((decision) => decision.id === id)?.title ?? id)
+  const previousDiffState = live ? scenario.previousDiff.state : undefined
+  /** Shown first so the top count describes the last switch; the repository comparison follows it. */
+  const lastSwitch = previousDiffState?.status === 'ready' && previousDiffState.view.switched.length ? { changed: previousDiffState.view.components.length + previousDiffState.view.relationships.length, problems: previousDiffState.view.problems.length } : null
   const hasTemporaryChoices = graph.decisions.some((decision) => displayedSelection[decision.id] !== repositorySelection.current[decision.id])
 
   return <div className={`${mode === 'overlay' ? 'architecture-scenario-open' : ''}${mode === 'page' ? ' scenarios-page' : ''}`} style={{ display: mode === 'hidden' ? 'none' : undefined }}><div className="below-grid">
@@ -84,7 +88,7 @@ export function ScenarioWorkspace({ mode, panelOpen, panelRef, onClosePanel, gra
         const visibleLabel = index === 0 ? 'Original choices' : describeScenarioDifference(graph, item.selections, repositorySelection.current)
         return <Button type="button" variant="choice" key={item.key} className={cn('scenario-history-item', HISTORY_ITEM, index === 0 && 'border-(--theme-selected) bg-(--theme-panel-raised)')} title={fullLabel} aria-label={`${index === 0 ? 'Restore original repository choices' : 'Show combination'}: ${fullLabel}`} aria-pressed={item.key === scenarioSelectionKey(resolvedSelection.current)} disabled={scenarioResolutionPending || repositoryBusy || scanState === 'scanning'} onClick={() => void applySelections(item.selections)}>{index === 0 && <span className="scenario-history-kind">Base</span>}{visibleLabel}</Button>
       })}</div></section>}
-      <section className="scenario-quick-summary" aria-label="Preview summary" role="status"><strong>{scenarioEvaluated ? 'Preview result' : 'Preview not resolved'}</strong>{scenarioEvaluated ? <div className="scenario-summary-counts"><span>{compiledScenarioChanges.length} changed</span><span>{graph.scenario?.conflicts?.length ?? 0} conflicts</span><span>{graph.scenario?.invalid_assumptions?.length ?? 0} invalid assumptions</span></div> : <span>Choose an option to compare.</span>}{compiledScenarioChanges[0] && <p>Changed: {compiledScenarioChanges[0].label}{compiledScenarioChanges.length > 1 ? ` · +${compiledScenarioChanges.length - 1} more` : ''}</p>}</section>
+      <section className="scenario-quick-summary" aria-label="Preview summary" role="status">{lastSwitch && <strong>Last switch: {lastSwitch.changed} changed vs previous choice{lastSwitch.problems ? ` · ${lastSwitch.problems} conflicts or assumptions appeared or disappeared` : ''}</strong>}<strong>{scenarioEvaluated ? 'Preview vs repository choices' : 'Preview not resolved'}</strong>{scenarioEvaluated ? <div className="scenario-summary-counts"><span>{compiledScenarioChanges.length} changed</span><span>{graph.scenario?.conflicts?.length ?? 0} conflicts</span><span>{graph.scenario?.invalid_assumptions?.length ?? 0} invalid assumptions</span></div> : <span>Choose an option to compare.</span>}{compiledScenarioChanges[0] && <p>Changed: {compiledScenarioChanges[0].label}{compiledScenarioChanges.length > 1 ? ` · +${compiledScenarioChanges.length - 1} more` : ''}</p>}</section>
       {graph.decisions.length > 0 && <nav className="scenario-decision-picker" aria-label="Jump to a decision"><span className="scenario-decision-picker-label">Jump to</span><div ref={scenarioDecisionPickerRef}>{graph.decisions.map((decision) => <Button type="button" variant="choice" className={PICKER_ITEM} key={decision.id} ref={(element) => { if (element) scenarioDecisionPickerButtonRefs.current.set(decision.id, element); else scenarioDecisionPickerButtonRefs.current.delete(decision.id) }} title={decision.title} aria-label={`Jump to ${decision.title} options`} aria-current={activeScenarioDecisionId === decision.id ? 'location' : undefined} onClick={() => jumpToScenarioDecision(decision.id)}><span>{compactScenarioDecisionTitle(decision.title)}</span>{activeScenarioDecisionId === decision.id && <small className="rounded-[8px] bg-(--theme-brand-soft) px-[5px] py-[2px] text-[10px] font-bold text-(--theme-brand)">Current</small>}</Button>)}</div></nav>}
       {graph.decisions.map((decision) => {
         const activeOptionId = displayedSelection[decision.id] ?? decision.selected_option
@@ -98,8 +102,9 @@ export function ScenarioWorkspace({ mode, panelOpen, panelRef, onClosePanel, gra
       })}
       {scenarioResolutionPending && <p className="scenario-list-status" role="status">Resolving choices… Your last resolved graph remains in view until this finishes.</p>}
       {scenarioNotice && <Alert variant="warning" role="status" className="order-6 my-[6px] flex items-start gap-[6px] px-[8px] py-[7px] text-(length:--type-tertiary) leading-[1.45] [&>svg]:flex-none"><AlertTriangle size={14} /><AlertDescription className="flex-1 text-(length:--type-tertiary)">{scenarioNotice}</AlertDescription><Button type="button" variant="icon" size="icon" className="p-0 text-inherit" aria-label="Dismiss scenario message" onClick={() => setScenarioNotice('')}><X size={12} /></Button></Alert>}
-      <section className="scenario-outcome" aria-label="Scenario comparison">
-        <div className="scenario-outcome-heading"><strong>Preview result</strong><span>{scenarioEvaluated ? 'Resolved' : 'Choose an option to compare'}</span></div>
+      {live && <PreviousChoiceDiffPanel state={scenario.previousDiff.state} onRetry={scenario.previousDiff.retry} />}
+      <section className="scenario-outcome" aria-label="Scenario comparison with repository choices">
+        <div className="scenario-outcome-heading"><strong>Compared with repository choices</strong><span>{scenarioEvaluated ? 'Baseline: the repository-selected options' : 'Choose an option to compare'}</span></div>
         <div className="scenario-outcome-grid">
           <div><strong>What changed</strong>{!scenarioEvaluated ? <p>Run a comparison to see changed components and relationships.</p> : compiledScenarioChanges.length ? <ul>{compiledScenarioChanges.map((item, index) => <li key={`${item.kind}-${item.label}-${index}`}><span>{item.kind}</span>{item.label}</li>)}</ul> : <p>No graph records changed for this selection.</p>}</div>
           <div><strong>Decisions affected</strong>{!scenarioEvaluated ? <p>Not evaluated yet.</p> : affectedDecisionNames.length ? <p>{affectedDecisionNames.join(' · ')}</p> : <p>No decisions affected.</p>}</div>

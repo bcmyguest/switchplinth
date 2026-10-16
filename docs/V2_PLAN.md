@@ -101,7 +101,20 @@ Lay out the projection with elkjs (layered algorithm). Route orthogonal edges be
 
 Gate at 1440×900 and 375×812: zero node bounding-box intersections; edge crossings reduced ≥50% against a baseline count recorded before the change; every edge segment orthogonal; edge labels ≥12px at fit zoom; on hover and selection, non-incident edges and unrelated nodes measure ≤0.3 opacity and incident edges have a wider stroke; minimap rules unchanged; canvas position/width unchanged when overlays open.
 
-Backlog (Map/What-if): scenario added/removed lists compare against the base graph, not the previous selection. Consider a "diff vs previous selection" view in What-if.
+Backlog (Map/What-if): delivered. What-if now shows "Changes vs previous choice" beside the comparison with repository choices; see "Scenario diff and downstream impact" below.
+
+Backlog (scenario comparison): comparison follows relationships only. It does not know that a component requires a capability, such as event replay, that one store provides and its replacement lacks. Switching Kafka to SQS in the sample reports Order Service as rewired with no warning, although the source says SQS cannot replay. `test_replay_requirement_is_not_yet_surfaced` in `backend/tests/test_scenario_diff.py` pins the current behavior.
+
+### Scenario diff and downstream impact
+
+Shipped:
+
+- `POST /api/v1/scenarios/diff` and MCP `diff_scenarios` compare any two selection maps. Both scenarios go through the resolve projection; `backend/src/switchplinth/scenario_analysis.py` compares the compiled graphs and reports switched decisions, added, removed, and changed entities and relationships, conflicts and invalid assumptions that appeared or disappeared, affected decisions with reasons, and downstream impact.
+- Receipts: graph, resolve, search, and diff results carry a `receipt` whose digest hashes the canonical records, review heads, evidence anchors, and selections. Repeating a call and comparing digests shows whether those inputs changed. Search ranking, connections, `config.yaml`, and saved scenarios are not covered.
+- Downstream impact walks the before scenario's relationships against their direction, up to four hops, and lists each removed or replaced element's dependents with depth and path. A dependent's lost edge counts as rewired when the switched decision's new option writes a same-kind edge from the same source and some option of that decision references the lost target; otherwise it dangles. This is a heuristic: it does not check that the option meant a replacement, several lost edges can share one replacement, and identity groups, code, runtime traffic, and required capabilities are not considered.
+- What-if shows "Changes vs previous choice" and "Affected downstream" for the last switch, and keeps "Compared with repository choices" below them. The preview summary leads with the last switch's count. Dependent statuses are Dangling, Rewired, Direct (depth 1: its own edge is the removed or replaced relationship, or points at the replaced entity), and Indirect (deeper). `frontend/e2e/scenario-diff.check.mjs` checks the panels at 1440×900 and 375×812 in light and dark themes.
+
+Details: `docs/DEVELOPMENT.md`, "Scenario diff, impact, and receipts".
 
 ### 6. Architecture log reasons (request c)
 

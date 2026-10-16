@@ -56,6 +56,8 @@ More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 - Review of claims, aliases, and identities, with an append-only log and undo
 - The Architecture log: reasons, rejected alternatives, and consequences
 - Saved scenarios: create, list, and load
+- Scenario diffs between any two selections, with relationship-based downstream impact (API and MCP)
+- Input receipts on graph, scenario, search, and diff results, for checking whether the inputs changed
 - Search that cites its sources, and an MCP server over HTTP and stdio
 - Indexes that rebuild from the files
 

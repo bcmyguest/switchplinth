@@ -94,7 +94,7 @@ class LocalRuntime:
 
     def scan(self) -> ScanSummary:
         result = self.service.scan()
-        return summary_from(result, self.service.graph_json())
+        return summary_from(result, self.service.graph_json(annotate=False))
 
     def next_steps(self) -> list[str]:
         return []

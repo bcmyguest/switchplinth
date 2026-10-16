@@ -13,7 +13,9 @@ description: What works today, and the next steps - hosted-provider tests, recal
 - An architecture map with layered layout and fullscreen mode, plus What-if previews that switch decision options in place.
 - An Architecture log with each decision's rationale, why alternatives were not chosen, and consequences, linked to source passages.
 - Grounded "why" answers with cited passages.
-- Four read-only MCP tools over streamable HTTP (loopback) and stdio.
+- Scenario diffs between any two selection maps, with relationship-based downstream impact, over the API and MCP.
+- Input receipts on graph, scenario, search, and diff results, for checking whether the inputs changed.
+- Five read-only MCP tools over streamable HTTP (loopback) and stdio.
 
 ## Up next
 

@@ -2784,7 +2784,7 @@ def test_mcp_streamable_http_initializes_and_lists_tools(tmp_path: Path, monkeyp
                 listed = await client.post("/mcp", headers=session_headers, json={"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}})
                 assert listed.status_code == 200
                 tool_names = {tool["name"] for tool in response_json(listed)["result"]["tools"]}
-                assert tool_names == {"list_decisions", "search_decisions", "inspect_architecture", "inspect_entity"}
+                assert tool_names == {"list_decisions", "search_decisions", "inspect_architecture", "inspect_entity", "diff_scenarios"}
 
     asyncio.run(exercise())
 

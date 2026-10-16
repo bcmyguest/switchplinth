@@ -16,7 +16,7 @@ from switchplinth.setup.runtime import DockerRuntime, compose_env, render_env_fi
 from switchplinth.setup.verify import verify_stdio
 from switchplinth.setup.wizard import WizardContext, run_setup
 
-EXPECTED_TOOLS = ("inspect_architecture", "inspect_entity", "list_decisions", "search_decisions")
+EXPECTED_TOOLS = ("diff_scenarios", "inspect_architecture", "inspect_entity", "list_decisions", "search_decisions")
 OFFLINE_ENV = {"QDRANT_URL": "http://127.0.0.1:9", "NO_PROXY": "*"}
 
 

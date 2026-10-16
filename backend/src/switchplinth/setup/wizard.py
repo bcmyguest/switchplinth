@@ -23,7 +23,7 @@ from switchplinth.setup.verify import VerifyResult, verify_http, verify_stdio
 from switchplinth.setup.workspace import config_home, ensure_sample, source_checkout
 
 STATUS_LABEL = {"supported": "pass", "unsupported": "n/a ", "error": "FAIL"}
-EXPECTED_TOOLS = {"list_decisions", "search_decisions", "inspect_architecture", "inspect_entity"}
+EXPECTED_TOOLS = {"list_decisions", "search_decisions", "inspect_architecture", "inspect_entity", "diff_scenarios"}
 
 
 @dataclass

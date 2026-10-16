@@ -175,7 +175,7 @@ Gate: a reviewer runs `scripts/demo.sh` from a clean copy of the repository and 
 
 ### 12. Stdio MCP server
 
-`switchplinth mcp --repo PATH` (formerly `decision-graph-backend mcp`) serves MCP over stdio for one repository. Add a `list_decisions` tool and improve the tool descriptions. The wheel builds with the entry point. HTTP `/mcp` and stdio share `create_mcp_server` in `mcp_tools.py`, so both expose the same four tools and descriptions. `DecisionService` takes a `VectorIndex` (`rebuild`, `search`; defined in `store.py`): Qdrant is the default adapter, and stdio passes the in-process `LocalVectorIndex`. Stdio still calls a configured embedding model for index rebuild and each search; when the model is unreachable, vector search reports an error and lexical search still answers. No `--no-model` flag exists.
+`switchplinth mcp --repo PATH` (formerly `decision-graph-backend mcp`) serves MCP over stdio for one repository. Add a `list_decisions` tool and improve the tool descriptions. The wheel builds with the entry point. HTTP `/mcp` and stdio share `create_mcp_server` in `mcp_tools.py`, so both expose the same tools and descriptions (four at this increment; `diff_scenarios` later made five). `DecisionService` takes a `VectorIndex` (`rebuild`, `search`; defined in `store.py`): Qdrant is the default adapter, and stdio passes the in-process `LocalVectorIndex`. Stdio still calls a configured embedding model for index rebuild and each search; when the model is unreachable, vector search reports an error and lexical search still answers. No `--no-model` flag exists.
 
 Gate: an MCP client lists and calls every tool over stdio against the bootstrapped fixture; the built wheel installs and runs the command.
 

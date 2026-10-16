@@ -24,7 +24,9 @@ ${links}
 - One-command Docker demo of the food-delivery sample (\`./scripts/demo.sh\`).
 - Deterministic mock extraction and local OpenAI-compatible model extraction; a local Qwen3.8 model with reasoning off found all 7 sample decisions.
 - Review log with undo, layered architecture map, What-if previews, grounded "why" answers with cited passages.
-- Four read-only MCP tools over streamable HTTP (loopback, unauthenticated) and stdio.
+- Scenario diffs between any two selection maps, with relationship-based downstream impact (API and MCP \`diff_scenarios\`).
+- Input receipts on graph, scenario, search, and diff results; repeat a call and compare \`receipt.digest\` to detect stale results.
+- Five read-only MCP tools over streamable HTTP (loopback, unauthenticated) and stdio: list_decisions, search_decisions, inspect_architecture, inspect_entity, diff_scenarios.
 
 ## Up next
 

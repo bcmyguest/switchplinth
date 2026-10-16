@@ -26,7 +26,7 @@ File names refer to modules in the backend Python package under `backend/src/`.
 | 7 | Human review | A claim, alias, or identity pair | An appended review or undo record | `review_claim()`, `correct_claim()`, `review_alias()`, `correct_alias()`, `review_exact_identity_candidate()`, `undo_review()` in `service.py` | Canonical |
 | 8 | Compiler | Records and option selections | Scenario graph, changed IDs, conflicts, invalid assumptions, identity groups | `graph()`, `_project_scenario()` in `service.py`; `effective_claims()`, `compile_scenario()`, `identity_projection()` in `domain.py` | Computed per request |
 | 9 | Indexes | Current evidence, base graph | SQLite FTS5 table, passage vectors | `_rebuild_indexes()` in `service.py`; `SearchIndex` in `store.py`; `QdrantVectorIndex` in `service.py`; `LocalVectorIndex` in `local_vectors.py` | Disposable |
-| 10 | Consumers | API and MCP requests | Map data, What-if results, search answers, tool results | `api.py`, `search()` in `service.py`, `mcp_tools.py` | Not stored |
+| 10 | Consumers | API and MCP requests | Map data, What-if results, scenario diffs with downstream impact, search answers, tool results, each with an input receipt | `api.py`, `search()` in `service.py`, `scenario_analysis.py`, `receipt.py`, `mcp_tools.py` | Not stored |
 
 ## 1. Markdown files
 
@@ -84,7 +84,11 @@ FastAPI (`api.py`) serves everything under `/api/v1`. The React UI loads the arc
 
 `search()` combines full-text hits, vector hits, entity and alias names, and the compiled scenario. For a question that starts with "why", it returns `grounded: true` only when effective claims cite the returned passages, or when the returned passages are the cited option's own evidence. Otherwise the answer states that it is not fully grounded.
 
-The MCP server (`mcp_tools.py`) exposes `list_decisions`, `search_decisions`, `inspect_architecture`, and `inspect_entity` over the same service. See [MCP tools](../mcp/).
+`scenario_analysis.py` compares two compiled scenario graphs. `POST /api/v1/scenarios/diff` and the `diff_scenarios` tool return what changed between two selection maps, plus downstream impact: the entities that depend, over relationships, on each element the switch removes or replaces.
+
+`receipt.py` stamps graph, scenario, search, and diff results with a digest of the canonical inputs: the `.decision/` records, the current human review heads, the evidence anchors, and the selections. It never reads SQLite, Qdrant, or the clock, so rebuilding the indexes leaves it unchanged.
+
+The MCP server (`mcp_tools.py`) exposes `list_decisions`, `search_decisions`, `inspect_architecture`, `inspect_entity`, and `diff_scenarios` over the same service. See [MCP tools](../mcp/).
 
 ## One passage, end to end
 

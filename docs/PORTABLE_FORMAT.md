@@ -257,6 +257,8 @@ selections:
 
 Scenario application composes selected option operations over one base graph. Compilation reports invalid references, conflicting operations, affected decisions, invalid assumptions, and evidence links. Ordering and conflict resolution must be deterministic and surfaced, never silently guessed.
 
+Read results carry a `receipt`: a SHA-256 digest over canonical JSON of the `.decision/` aliases, claims, decisions, entities, evidence, and relationships records, the unsuperseded human review heads, the evidence anchor hashes, and the resolved selections. It is derived, never stored, and depends only on these files, so copying `.decision/` into a fresh checkout reproduces it. See `docs/DEVELOPMENT.md` "Scenario diff, impact, and receipts".
+
 ## Identity, relocation, and migration
 
 Evidence IDs survive edits when the indexing process unambiguously relocates the same passage. Relocation compares passages within the same repository-relative source path, first by normalized passage hash, then by heading path and surrounding context. The source record also stores Git blob and file-content hashes when available, but the current relocation matcher does not use those values. Reordering or line shifts alone do not create new evidence. Ambiguous relocation creates a reviewable unresolved anchor rather than silently attaching evidence to a different passage. Display lines are optional conveniences.

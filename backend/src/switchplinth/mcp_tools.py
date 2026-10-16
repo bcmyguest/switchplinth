@@ -15,7 +15,9 @@ SERVER_INSTRUCTIONS = (
     "Read-only access to architecture decisions extracted from this repository's Markdown and "
     "`.decision/` YAML. Call list_decisions first to learn decision and option IDs. A `selections` "
     "map ({decision_id: option_id}) previews a what-if scenario; omit it for the repository's "
-    "selected options. Previews never write files."
+    "selected options. Previews never write files. diff_scenarios compares two selection maps. Graph, "
+    "search, and diff results carry a `receipt`; call the same tool again later and compare "
+    "`receipt.digest` to tell whether the canonical inputs changed."
 )
 SELECTIONS_HELP = (
     "`selections` (optional) maps decision ID to option ID, using IDs from list_decisions, to "
@@ -47,7 +49,7 @@ def register_tools(server: FastMCP, get_service: Callable[[], DecisionService]) 
             }
             for decision in rendered["decisions"]
         ]
-        return {"decisions": decisions, "selections": rendered["scenario"]["selections"]}
+        return {"decisions": decisions, "selections": rendered["scenario"]["selections"], "receipt": rendered["receipt"]}
 
     @server.tool(annotations=READ_ONLY, description=(
         "Search the repository's Markdown passages and decision claims. Use for questions such as "
@@ -65,12 +67,27 @@ def register_tools(server: FastMCP, get_service: Callable[[], DecisionService]) 
     @server.tool(annotations=READ_ONLY, description=(
         "Return the full compiled architecture graph: entities, relationships, decisions with "
         "option deltas, aliases, claims, evidence, identity groups, and a `scenario` block with "
-        "added/removed/changed records, conflicts, invalid assumptions, and affected decisions. "
-        "Large; prefer list_decisions or inspect_entity for targeted questions. "
+        "added/removed/changed records, conflicts, invalid assumptions, affected decisions, and "
+        "`impact` (downstream dependents of what the selections remove or replace versus the "
+        "repository-selected options). Large; prefer list_decisions or inspect_entity for targeted questions. "
         + SELECTIONS_HELP
     ))
     def inspect_architecture(selections: dict[str, str] | None = None) -> dict[str, Any]:
         return get_service().graph_json(selections)
+
+    @server.tool(annotations=READ_ONLY, description=(
+        "Compare two scenarios given as `before_selections` and `after_selections` maps "
+        "({decision_id: option_id}; an omitted or empty map means the repository-selected options). "
+        "Returns `selection_changes`; `entities` and `relationships` each split into added, removed, "
+        "and changed; `conflicts` and `invalid_assumptions` split into appeared and disappeared; "
+        "`affected_decisions` with reasons; and `impact`: for each removed or replaced element, the "
+        "entities that depend on it over relationships in the before scenario (transitive, with path "
+        "and depth, capped at `impact.max_depth`); each dependent's outgoing edges to now-missing "
+        "entities are marked `rewired` (same kind to a new target) or `dangling` (`points_at_missing`). "
+        "Impact is relationship-based only, with no code analysis; see `impact.limits`. Nothing is written."
+    ))
+    def diff_scenarios(before_selections: dict[str, str] | None = None, after_selections: dict[str, str] | None = None) -> dict[str, Any]:
+        return get_service().diff_scenarios(before_selections, after_selections)
 
     @server.tool(annotations=READ_ONLY, description=(
         "Return one entity (component, service, technology, datastore, ...) by `entity_id`, taken "

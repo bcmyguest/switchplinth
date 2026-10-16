@@ -32,6 +32,11 @@ class ScenarioRequest(BaseModel):
     selections: dict[str, str] = Field(default_factory=dict)
 
 
+class ScenarioDiffRequest(BaseModel):
+    before_selections: dict[str, str] = Field(default_factory=dict)
+    after_selections: dict[str, str] = Field(default_factory=dict)
+
+
 class SearchRequest(BaseModel):
     query: str
     selections: dict[str, str] = Field(default_factory=dict)
@@ -267,7 +272,7 @@ def create_app(service: DecisionService | None = None) -> FastAPI:
 
     @app.get("/api/v1/decisions")
     def decisions() -> list[dict[str, Any]]:
-        return app.state.service.graph_json()["decisions"]
+        return app.state.service.graph_json(annotate=False)["decisions"]
 
     @app.patch("/api/v1/decisions/{decision_id}/options/{option_id}")
     def edit_option(decision_id: str, option_id: str, request: DeltaRequest) -> dict[str, Any]:
@@ -298,7 +303,11 @@ def create_app(service: DecisionService | None = None) -> FastAPI:
     @app.post("/api/v1/scenarios/resolve")
     def resolve(request: ScenarioRequest) -> dict[str, Any]:
         graph = app.state.service.graph_json(request.selections)
-        return {"graph": graph, "affected": graph["scenario"]["affected"], "conflicts": graph["scenario"]["conflicts"], "invalid_assumptions": graph["scenario"]["invalid_assumptions"]}
+        return {"graph": graph, "affected": graph["scenario"]["affected"], "conflicts": graph["scenario"]["conflicts"], "invalid_assumptions": graph["scenario"]["invalid_assumptions"], "impact": graph["scenario"]["impact"], "receipt": graph["receipt"]}
+
+    @app.post("/api/v1/scenarios/diff")
+    def diff_scenarios(request: ScenarioDiffRequest) -> dict[str, Any]:
+        return app.state.service.diff_scenarios(request.before_selections, request.after_selections)
 
     @app.post("/api/v1/scenarios/preview-delta")
     def preview_delta(request: DeltaPreviewRequest) -> dict[str, Any]:

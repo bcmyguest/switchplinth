@@ -16,7 +16,9 @@ from switchplinth import DEFAULT_CACHE_ROOT
 from switchplinth.decision_log import decision_log_reasons
 from switchplinth.domain import Claim, Decision, DomainError, Entity, Evidence, Graph, Option, Relationship, ScenarioResult, compile_scenario, effective_aliases, effective_claims, identity_projection, load_yaml, stable_id, without_undone_reviews
 from switchplinth.providers import diagnose, embed_with_litellm, extract_with_litellm, propose_delta_with_litellm
+from switchplinth.receipt import RECEIPT_FOLDERS, input_receipt
 from switchplinth.repository import PortableRepository, discover_markdown, passages, relocate_evidence, source_identity, source_is_included
+from switchplinth.scenario_analysis import ResolvedScenario, diff_resolved_scenarios, downstream_impact
 from switchplinth.store import INDEX_VERSION, SearchIndex, VectorIndex, qdrant_rebuild, qdrant_search
 
 REVIEW_FOLDERS = (("claims", "reviewed_claim"), ("aliases", "reviewed_alias"))
@@ -154,9 +156,15 @@ class DecisionService:
         # "vector_index" names the adapter that produced it.
         return {"version": INDEX_VERSION, "sqlite": str(self.cache / "index.sqlite3"), "qdrant": self.qdrant_status, "vector_index": {"kind": self.vector_index.kind, "status": self.qdrant_status}, "embedding": embedding_status}
 
-    def graph(self) -> tuple[Graph, list[Decision], list[dict[str, Any]], list[dict[str, Any]], list[Claim]]:
-        entity_records = self.repository.records("entities")
-        option_created_entities = {operation.get("entity", {}).get("id") for record in self.repository.records("decisions") for option in record.get("options", []) for operation in option.get("delta", {}).get("operations", []) if operation.get("op") == "add_entity"}
+    def _read_records(self) -> dict[str, list[dict[str, Any]]]:
+        """Read and validate, once, every canonical record folder the graph and its receipt consume."""
+        return {folder: self.repository.records(folder) for folder in RECEIPT_FOLDERS}
+
+    def graph(self, records: dict[str, list[dict[str, Any]]] | None = None) -> tuple[Graph, list[Decision], list[dict[str, Any]], list[dict[str, Any]], list[Claim]]:
+        """Build the base graph from ``records`` (folder -> raw records), reading them when omitted."""
+        records = records if records is not None else self._read_records()
+        entity_records = records["entities"]
+        option_created_entities = {operation.get("entity", {}).get("id") for record in records["decisions"] for option in record.get("options", []) for operation in option.get("delta", {}).get("operations", []) if operation.get("op") == "add_entity"}
         # Older mock-extractor overlays wrote base candidate entities without an
         # epistemic state. Treat those legacy records like inferred duplicates
         # when an option delta owns the same ID. Explicit human assertions stay
@@ -164,22 +172,22 @@ class DecisionService:
         entity_records = [record for record in entity_records if not (record["id"] in option_created_entities and record.get("epistemic_state") not in {"confirmed", "asserted"})]
         entities = {r["id"]: Entity(r["id"], r.get("kind", "component"), r.get("name", r["id"]), r.get("description", "")) for r in entity_records}
         relationships: dict[str, Relationship] = {}
-        claims = [Claim(r["id"], str(r.get("subject", "")), str(r.get("predicate", "")), str(r.get("object", "")), r.get("epistemic_state", "inferred"), float(r.get("confidence", 0)), r.get("evidence", []), r.get("source_path"), r.get("supersedes", [])) for r in without_undone_reviews(self.repository.records("claims"))]
+        claims = [Claim(r["id"], str(r.get("subject", "")), str(r.get("predicate", "")), str(r.get("object", "")), r.get("epistemic_state", "inferred"), float(r.get("confidence", 0)), r.get("evidence", []), r.get("source_path"), r.get("supersedes", [])) for r in without_undone_reviews(records["claims"])]
         for claim in effective_claims(claims):
             if claim.predicate in {"uses", "publishes_to", "calls", "depends_on", "stores_in", "communicates_with", "implements"} and claim.subject in entities and claim.object in entities:
                 rid = stable_id("relationship", f"{claim.subject}/{claim.predicate}/{claim.object}")
                 relationships[rid] = Relationship(rid, claim.subject, claim.object, claim.predicate, claim.id)
-        for r in self.repository.records("relationships"):
+        for r in records["relationships"]:
             if r.get("epistemic_state") == "rejected":
                 relationships.pop(r["id"], None)
                 continue
             if r.get("from") in entities and r.get("to") in entities:
                 relationships[r["id"]] = Relationship(r["id"], r["from"], r["to"], r.get("kind", "related"))
         decisions: list[Decision] = []
-        for r in self.repository.records("decisions"):
+        for r in records["decisions"]:
             opts = [Option(o["id"], o.get("title", o["id"]), o.get("rationale", ""), o.get("delta", {"operations": []}), o.get("evidence", [])) for o in r.get("options", [])]
             decisions.append(Decision(r["id"], r.get("title", r["id"]), r.get("status", "proposed"), r.get("context", ""), r.get("selected_option"), opts, r.get("evidence", [])))
-        return Graph(entities, relationships), decisions, effective_aliases(without_undone_reviews(self.repository.records("aliases"))), self.repository.records("evidence"), claims
+        return Graph(entities, relationships), decisions, effective_aliases(without_undone_reviews(records["aliases"])), records["evidence"], claims
 
     def scan(self) -> dict[str, Any]:
         """Run deterministic extraction and restore portable YAML on failure."""
@@ -859,17 +867,48 @@ class DecisionService:
         source, location = record.get("source", {}), record.get("location", {})
         return Evidence(record["id"], source.get("path", ""), location.get("heading_path", []), location.get("normalized_passage_sha256", ""), location.get("context_before", ""), location.get("context_after", ""), source.get("git_blob"), location.get("display_line"), record.get("text", ""), record.get("state", "current"))
 
-    def _render_graph(self, graph: Graph, decisions: list[Decision], aliases: list[dict[str, Any]], evidence: list[dict[str, Any]], claims: list[Claim], selections: dict[str, str] | None = None) -> dict[str, Any]:
-        result, selected, active_claims, invalid_assumptions = self._project_scenario(graph, decisions, claims, selections)
+    def _render_graph(self, graph: Graph, decisions: list[Decision], aliases: list[dict[str, Any]], evidence: list[dict[str, Any]], claims: list[Claim], selections: dict[str, str] | None = None, projection: tuple[ScenarioResult, dict[str, str], list[Claim], list[str]] | None = None) -> dict[str, Any]:
+        result, selected, active_claims, invalid_assumptions = projection or self._project_scenario(graph, decisions, claims, selections)
         extraction_reviews = {record["id"]: record.get("extraction_review") for record in self.repository.records_unchecked("decisions") if record.get("extraction_review")}
         derived = decision_log_reasons(decisions, [self._passage_from_record(record) for record in evidence])
         rendered = {"entities": [vars(e) for e in result.graph.entities.values()], "relationships": [{"id": r.id, "from": r.source, "to": r.target, "kind": r.kind, "claim_id": r.claim_id} for r in result.graph.relationships.values()], "decisions": [{"id": d.id, "title": d.title, "status": d.status, "context": d.context, "selected_option": selected.get(d.id), "options": [{"id": o.id, "title": o.title, "rationale": o.rationale, "delta": o.delta, "evidence": o.evidence} for o in d.options], "evidence": d.evidence, **({"extraction_review": extraction_reviews[d.id]} if d.id in extraction_reviews else {}), "derived": asdict(derived[d.id])} for d in decisions], "aliases": aliases, "claims": [vars(c) for c in active_claims], "evidence": evidence, "scenario": {"selections": selected, "affected": {"added": result.added, "removed": result.removed, "changed": result.changed}, "conflicts": result.conflicts, "invalid_assumptions": sorted(set(invalid_assumptions)), "affected_decisions": result.affected_decisions}}
         rendered.update(self._identity_data(result.graph.entities, claims))
         return rendered
 
-    def graph_json(self, selections: dict[str, str] | None = None) -> dict[str, Any]:
-        graph, decisions, aliases, evidence, claims = self.graph()
-        return self._render_graph(graph, decisions, aliases, evidence, claims, selections)
+    def graph_json(self, selections: dict[str, str] | None = None, *, annotate: bool = True) -> dict[str, Any]:
+        """Render a scenario graph.
+
+        With ``annotate`` (the default for API and MCP reads), add ``receipt`` over the
+        records this call read and ``scenario.impact`` versus repository selections.
+        Internal callers that only need the graph pass ``annotate=False``.
+        """
+        records = self._read_records()
+        graph, decisions, aliases, evidence, claims = self.graph(records)
+        projection = self._project_scenario(graph, decisions, claims, selections)
+        rendered = self._render_graph(graph, decisions, aliases, evidence, claims, selections, projection)
+        if not annotate:
+            return rendered
+        after, selected = projection[0].graph, projection[1]
+        defaults = {d.id: d.selected_option for d in decisions if d.selected_option}
+        # Repository selections remove or replace nothing relative to themselves.
+        before = after if selected == defaults else self._project_scenario(graph, decisions, claims, None)[0].graph
+        rendered["scenario"]["impact"] = downstream_impact(before, after)
+        rendered["receipt"] = input_receipt(records, selected)
+        return rendered
+
+    def _resolve_scenario(self, graph: Graph, decisions: list[Decision], claims: list[Claim], selections: dict[str, str] | None) -> ResolvedScenario:
+        result, selected, _, invalid_assumptions = self._project_scenario(graph, decisions, claims, selections)
+        return ResolvedScenario(selected, result.graph, list(result.conflicts), sorted(set(invalid_assumptions)))
+
+    def diff_scenarios(self, before_selections: dict[str, str] | None = None, after_selections: dict[str, str] | None = None) -> dict[str, Any]:
+        """Compare two scenarios; an omitted map means the repository-selected options."""
+        records = self._read_records()
+        graph, decisions, _, _, claims = self.graph(records)
+        before = self._resolve_scenario(graph, decisions, claims, before_selections)
+        after = self._resolve_scenario(graph, decisions, claims, after_selections)
+        result = diff_resolved_scenarios(before, after, decisions)
+        result["receipt"] = input_receipt(records, {"before": before.selections, "after": after.selections})
+        return result
 
     @staticmethod
     def _option_touches_entities(option: Option, entity_ids: set[str]) -> bool:
@@ -906,7 +945,8 @@ class DecisionService:
 
     def search(self, query: str, selections: dict[str, str] | None = None) -> dict[str, Any]:
         why_query = bool(re.match(r"^\s*why\b", query, re.IGNORECASE))
-        graph, decisions, aliases, evidence_records, claim_history = self.graph()
+        records = self._read_records()
+        graph, decisions, aliases, evidence_records, claim_history = self.graph(records)
         base_entities = graph.entities.copy()
         scenario, effective_selections, claims, _ = self._project_scenario(graph, decisions, claim_history, selections)
         graph = scenario.graph
@@ -1087,7 +1127,7 @@ class DecisionService:
             grounded = bool(historical_evidence) if not why_query else bool(historical_evidence and (historical_claims or option_grounded))
             if why_query and not historical_claims and not option_grounded:
                 descriptions.append("No current claim supports this why answer, so it is not fully grounded.")
-            return {"answer": " ".join(descriptions), "evidence": historical_evidence, "claims": historical_claims if why_query else [vars(claim) for claim in claims if claim.subject in inactive_entities or claim.object in inactive_entities], "entities": [], **self._identity_data(graph.entities, claim_history), "grounded": grounded, "semantic_index": embedding_status, "vector_search": semantic_diagnostic, "scenario_context": {"selections": effective_selections, "inactive_entities": inactive_details, "evidence_context": "historical_decision_option"}}
+            return {"receipt": input_receipt(records, effective_selections, {"query": query}), "answer": " ".join(descriptions), "evidence": historical_evidence, "claims": historical_claims if why_query else [vars(claim) for claim in claims if claim.subject in inactive_entities or claim.object in inactive_entities], "entities": [], **self._identity_data(graph.entities, claim_history), "grounded": grounded, "semantic_index": embedding_status, "vector_search": semantic_diagnostic, "scenario_context": {"selections": effective_selections, "inactive_entities": inactive_details, "evidence_context": "historical_decision_option"}}
 
         related_claims = [vars(c) for c in claims if c.subject in entities or c.object in entities]
         related_ids = {c.get("source_path") for c in related_claims}
@@ -1197,14 +1237,14 @@ class DecisionService:
         ]
         if alternatives:
             answer = _append_sentence(answer, f"Unselected alternatives: {'; '.join(dict.fromkeys(alternatives))}.")
-        return {"answer": answer, "evidence": [{"id": x["id"], "source": (x.get("source", {}).get("path") if isinstance(x.get("source"), dict) else x.get("source")) or x.get("path", ""), "heading": x.get("location", {}).get("heading_path", x.get("heading", [])), "text": x["text"]} for x in final_evidence[:8]], "claims": final_claims, "entities": entities, **self._identity_data(graph.entities, claim_history), "grounded": grounded, "semantic_index": embedding_status, "vector_search": semantic_diagnostic}
+        return {"receipt": input_receipt(records, effective_selections, {"query": query}), "answer": answer, "evidence": [{"id": x["id"], "source": (x.get("source", {}).get("path") if isinstance(x.get("source"), dict) else x.get("source")) or x.get("path", ""), "heading": x.get("location", {}).get("heading_path", x.get("heading", [])), "text": x["text"]} for x in final_evidence[:8]], "claims": final_claims, "entities": entities, **self._identity_data(graph.entities, claim_history), "grounded": grounded, "semantic_index": embedding_status, "vector_search": semantic_diagnostic}
 
     def entity_detail(self, entity_id: str, selections: dict[str, str] | None = None) -> dict[str, Any]:
         graph, decisions, aliases, evidence, claims = self.graph()
         all_alias_records = without_undone_reviews(self.repository.records_unchecked("aliases"))
         superseded_alias_ids = {alias_id for record in all_alias_records for alias_id in record.get("supersedes", [])}
         detail_aliases = aliases + [record for record in all_alias_records if record.get("epistemic_state") == "rejected" and record["id"] not in superseded_alias_ids]
-        rendered = self.graph_json(selections)
+        rendered = self.graph_json(selections, annotate=False)
         entity_data = next((item for item in rendered["entities"] if item["id"] == entity_id), None)
         entity = graph.entities.get(entity_id)
         if not entity:
@@ -1989,7 +2029,7 @@ class DecisionService:
         option = next((item for item in record.get("options", []) if item["id"] == option_id), None)
         if not option:
             raise KeyError(option_id)
-        proposal = propose_delta_with_litellm(connection, record, option, request, self.graph_json())
+        proposal = propose_delta_with_litellm(connection, record, option, request, self.graph_json(annotate=False))
         delta = proposal.get("delta")
         if not isinstance(delta, dict) or not isinstance(delta.get("operations"), list):
             raise DomainError("Provider returned a delta without a typed operations list.")

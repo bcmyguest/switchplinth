@@ -1,6 +1,6 @@
 ---
 title: MCP tools
-description: Four read-only Model Context Protocol tools for listing decisions, searching evidence, and inspecting the architecture graph, over HTTP or stdio.
+description: Five read-only Model Context Protocol tools for listing decisions, searching evidence, inspecting the graph, and diffing scenarios, with input receipts, over HTTP or stdio.
 ---
 
 The backend serves Model Context Protocol tools, so coding agents and other MCP clients can query the same domain and retrieval services as the UI. Every tool is read-only.
@@ -18,7 +18,7 @@ Both transports expose the same tools.
 
 ## Tools
 
-Every tool accepts an optional `selections` map from decision ID to option ID. Pass it to ask about a what-if scenario instead of the repository's selected options.
+Every tool except `diff_scenarios` accepts an optional `selections` map from decision ID to option ID. Pass it to ask about a what-if scenario instead of the repository's selected options. Decisions you leave out keep their selected option. Nothing is written.
 
 ### `list_decisions`
 
@@ -41,7 +41,7 @@ Search the repository's Markdown passages and decision claims, for questions suc
 
 ### `inspect_architecture`
 
-Return the full compiled graph: entities, relationships, decisions with option deltas, aliases, claims, evidence, identity groups, and a `scenario` block with added, removed, and changed records, conflicts, invalid assumptions, and affected decisions. The response is large; prefer `list_decisions` or `inspect_entity` for targeted questions.
+Return the full compiled graph: entities, relationships, decisions with option deltas, aliases, claims, evidence, identity groups, and a `scenario` block with added, removed, and changed records, conflicts, invalid assumptions, and affected decisions. When `selections` differs from the repository's choices, `scenario.impact` lists downstream impact against those choices (see `diff_scenarios`). The response is large; prefer `list_decisions` or `inspect_entity` for targeted questions.
 
 | Argument     | Type                 | Required |
 | ------------ | -------------------- | -------- |
@@ -55,6 +55,53 @@ Return one entity by `entity_id`: its relationships, aliases, claims, cited evid
 | ------------ | -------------------- | -------- |
 | `entity_id`  | string               | yes      |
 | `selections` | map of string→string | no       |
+
+### `diff_scenarios`
+
+Compare two scenarios. Each argument is a selection map; an omitted or empty map means the repository-selected options.
+
+| Argument            | Type                 | Required |
+| ------------------- | -------------------- | -------- |
+| `before_selections` | map of string→string | no       |
+| `after_selections`  | map of string→string | no       |
+
+The result holds:
+
+- `selection_changes`: each decision whose option differs, with `before_option` and `after_option`.
+- `entities` and `relationships`, each split into `added`, `removed`, and `changed`.
+- `conflicts` and `invalid_assumptions`, each split into `appeared` and `disappeared`.
+- `affected_decisions`, with the reason each one is affected.
+- `impact`: downstream impact, described below.
+- `receipt`.
+
+The same comparison is available over HTTP as `POST /api/v1/scenarios/diff` with a `before_selections` / `after_selections` body.
+
+## Downstream impact
+
+For each entity or relationship the after scenario removes or replaces, `impact.items` lists the entities that depend on it. A relationship's source depends on its target, and the walk follows relationships in the before scenario up to `impact.max_depth` hops (4). `truncated: true` means more dependents lie past the cap.
+
+Each dependent carries its `depth` and a `path` of entity and relationship IDs back to the changed item. If one of its outgoing relationships now points at a missing entity, that edge is listed in `missing_endpoints` as either:
+
+- `rewired`: the after scenario gives the same source a relationship of the same kind to a new target, or
+- `dangling`: it does not. `points_at_missing` is true when any edge dangles.
+
+In the food-delivery sample, switching event transport from Kafka to SQS removes the Order Service's `publishes_to` edge to the Kafka stream and adds one to the SQS stream, so that edge is `rewired` and nothing dangles.
+
+Impact only sees relationships declared in the graph. It does not read code, runtime traffic, or undeclared dependencies, and it does not follow identity groups. `impact.limits` restates this in every result.
+
+## Receipts
+
+`list_decisions`, `search_decisions`, `inspect_architecture`, and `diff_scenarios` return a `receipt`, as do the matching HTTP reads. It is a digest of the canonical inputs behind the result:
+
+- `records`: every alias, claim, decision, entity, evidence, and relationship file in `.decision/`
+- `review_heads`: human judgments that are neither superseded nor undone
+- `evidence_anchors`: each anchor's source path, passage hash, and state
+- `selections`: the resolved selection map
+- `request`: extra inputs, such as the search query
+
+To check whether a result is stale, repeat the same call with the same selections and query, then compare `receipt.digest`. Equal digests mean the canonical inputs have not changed; when they differ, the component hashes show which kind of input changed. The receipt never reads SQLite, Qdrant, or the clock, so an index rebuild or another process gives the same digest.
+
+The receipt does not cover the search index or embedding model, which also affect search ranking, or connections, `config.yaml`, and saved scenarios.
 
 ## Example
 

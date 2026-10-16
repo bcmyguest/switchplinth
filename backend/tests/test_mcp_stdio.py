@@ -14,7 +14,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 FIXTURE_BOOTSTRAP = Path(__file__).resolve().parents[2] / "fixtures" / "food-delivery" / "bootstrap.py"
-EXPECTED_TOOLS = {"list_decisions", "search_decisions", "inspect_architecture", "inspect_entity"}
+EXPECTED_TOOLS = {"list_decisions", "search_decisions", "inspect_architecture", "inspect_entity", "diff_scenarios"}
 # An unroutable Qdrant URL: any accidental Qdrant call fails instead of reaching a service.
 OFFLINE_ENV = {"QDRANT_URL": "http://127.0.0.1:9", "NO_PROXY": "*"}
 

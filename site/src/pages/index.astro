@@ -18,7 +18,7 @@ const features = [
   { title: 'An architecture map', body: 'Services, datastores, and technologies in a layered layout, with fullscreen. Select a component to read the rationale and open its source.' },
   { title: 'What-if scenarios', body: 'Options are typed deltas over one base graph. Switch options to preview changed entities and edges, affected decisions, and assumptions.' },
   { title: 'Grounded “why” answers', body: '“Why are we using Kafka?” returns the claims and passages behind the answer, and says so when an answer is not fully grounded.' },
-  { title: 'MCP for your agents', body: 'Four read-only tools (list_decisions, search_decisions, inspect_architecture, inspect_entity) over streamable HTTP on localhost or stdio.' },
+  { title: 'MCP for your agents', body: 'Five read-only tools over HTTP on localhost or stdio: list, search, inspect, and diff scenarios with downstream impact. Results carry a receipt so an agent can tell when they go stale.' },
   { title: 'Portable YAML, disposable indexes', body: 'Canonical data is one validated YAML file per record in .decision/, beside your Markdown. SQLite and Qdrant rebuild from it.' },
   { title: 'Your choice of model', body: 'Deterministic mock, a local OpenAI-compatible server, or a hosted provider. Hosted providers are not yet tested.', tag: 'Hosted: up next' },
 ];
@@ -39,7 +39,8 @@ const works = [
   'Review log with Undo on the Facts page',
   'Layered map with fullscreen and What-if previews',
   'Architecture log with rationale, why-not reasons, and consequences',
-  'Grounded “why” answers and four MCP tools (HTTP and stdio)',
+  'Scenario diffs with downstream impact, and input receipts on results',
+  'Grounded “why” answers and five MCP tools (HTTP and stdio)',
 ];
 const next = [
   'Test hosted providers (OpenAI, Anthropic)',

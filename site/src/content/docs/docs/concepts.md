@@ -43,6 +43,14 @@ A composition of selected options across decisions. The compiler applies the sel
 
 In the app, the Architecture map's **What-if** panel treats option switches as a temporary preview with a one-click return to the repository's selected choices. Saving a named scenario writes its selections to `.decision/scenarios/`. Scenarios support create, list, and load; rename, update, and delete are not implemented.
 
+## Downstream impact
+
+When an option switch removes or replaces an entity or relationship, downstream impact lists the entities that depended on it, following relationships from source to target up to four hops. Each dependent's edges to now-missing entities are marked `rewired` (the switch gives it a same-kind edge to a new target) or `dangling`. Impact covers relationships declared in the graph only, not code or runtime traffic. It is returned by scenario diffs and what-if reads over the API and MCP. See [MCP tools](../mcp/#downstream-impact).
+
+## Receipt
+
+Graph, scenario, search, and diff results carry a receipt: a digest of the canonical inputs that produced them, meaning the `.decision/` records, the current human review heads, the evidence anchors, and the selections. Repeat the same call later and compare digests to tell whether those inputs changed. The receipt is computed, never stored, and ignores the disposable indexes. See [MCP tools](../mcp/#receipts).
+
 ## Claim
 
 A proposition about an entity, alias, relationship, decision, or consequence. Each claim has a subject, a predicate, an object, an epistemic state, a confidence, and evidence.

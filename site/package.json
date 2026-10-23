@@ -10,6 +10,7 @@
     "preview": "astro preview",
     "screenshots": "node scripts/screenshots.mjs",
     "hero-loop": "node scripts/hero-loop.mjs",
+    "app-screenshots": "node scripts/app-screenshots.mjs",
     "export-architecture": "node scripts/export-architecture.mjs"
   },
   "type": "module",

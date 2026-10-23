@@ -126,3 +126,15 @@ A live review drove the food-delivery fixture through the backend and Vite at 14
 `frontend/e2e/use-cases.check.mjs` (`pnpm check:use-cases`) covers these flows; it fails on the previous frontend at the duplicate history entry. The existing navigation, capability, and scenario-diff checks also pass against the live backend; scenario-diff previously did not finish within 30 minutes on the slow backend.
 
 Remaining observations, not changed here: the 18-node map still truncates long labels at fit zoom; decision titles extracted from RFCs keep their `RFC:` prefix; the Facts "All" filter counts reviewed rows while the heading counts only pending ones; and saved scenarios still list only their names.
+
+### README images from the running app — 2026-10-23
+
+The README hero was a five-node SVG illustration from the site, not the product, and its "Repository selection" frame showed Amazon SQS where the sample's repository choice is Apache Kafka. The other README screenshots predated the scenario fixes. `site/scripts/app-screenshots.mjs` now captures every README image from the running app on a fresh food-delivery bootstrap, including a two-frame GIF of the real map and What-if panel switching order events Kafka → SQS.
+
+Capturing them exposed three product issues, fixed here:
+
+- Map cards clamped names such as "Order event stream (Amazon SQS)" to "Order event stream…", hiding the very part a scenario switch changes. Cards now show a trailing parenthesized implementation on its own line ("Order event stream" / "Amazon SQS"), and nodes are 232×112 graph units (from 216×96). The full name stays in the card's title.
+- Explore listed one card per cited passage for the same fact ("Apache Kafka · mentioned in · decisions/event-transport.md" three times). Claims with the same subject, predicate, object, and review state now share one card that quotes every passage. Passage rows are left-aligned instead of centered.
+- Jumping to a decision in What-if centered it, so a decision taller than the panel slid its title and first option under the sticky header. The jump now aligns the decision's top just below that header.
+
+The use-case, navigation, capability, and scenario-diff checks pass after these changes, as do frontend typecheck, lint, and build.

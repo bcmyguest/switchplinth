@@ -33,12 +33,13 @@ pnpm check:privacy  # re-run the dist/ privacy scan
 pnpm preview        # serve dist/
 PLAYWRIGHT_CHROMIUM=/path/to/chrome pnpm screenshots http://localhost:4321/switchplinth/ out/
 PLAYWRIGHT_CHROMIUM=/path/to/chrome pnpm hero-loop http://localhost:4321/switchplinth/ out/hero-loop light
+PLAYWRIGHT_CHROMIUM=/path/to/chrome pnpm app-screenshots http://localhost:3000/ ../docs/assets   # running app on a fresh food-delivery sample
 PLAYWRIGHT_CHROMIUM=/path/to/chrome pnpm export-architecture ../adrs/docs/assets   # after pnpm build
 ```
 
 ## Hero loop
 
-`scripts/hero-loop.mjs` renders a 6-second, 1200px-wide loop of the hero's Kafka/SQS switch for READMEs and posts. It pauses and seeks the CSS animations frame by frame, writes a frame-diffed GIF with `gifenc`, and replays the frames on a canvas through the browser's `MediaRecorder` to produce WebM and, where Chromium supports it, MP4. It needs no ffmpeg. The sheet's title block shows `name` from `site.config.ts`, so re-render after a rename.
+`scripts/hero-loop.mjs` renders a 6-second, 1200px-wide loop of the landing hero's Kafka/SQS illustration for posts. The repository README uses images of the running product instead: `scripts/app-screenshots.mjs` drives the app on a fresh `fixtures/food-delivery` bootstrap and writes `hero-loop.gif` (the real map and What-if panel switching order events Kafka → SQS), `whatif-map.png`, `architecture-log.png`, `review-log.png`, and `why-search.png` at 1280×800 in the light theme. It confirms two aliases for the review-log shot, so point it at a disposable copy (`scripts/demo.sh --reset` gives a fresh one). It pauses and seeks the CSS animations frame by frame, writes a frame-diffed GIF with `gifenc`, and replays the frames on a canvas through the browser's `MediaRecorder` to produce WebM and, where Chromium supports it, MP4. It needs no ffmpeg. The sheet's title block shows `name` from `site.config.ts`, so re-render after a rename.
 
 ## Pipeline diagram
 

@@ -4,7 +4,9 @@ Visualize architecture changes from the docs you already wrote.
 
 Switchplinth reads your ADRs, RFCs, and design notes, maps the decisions and the components they touch, and shows what changes when you switch an option. Every inferred fact links to its source passage.
 
-![The map switching order events between Apache Kafka and Amazon SQS](docs/assets/hero-loop.gif)
+![The running app switching order events from Apache Kafka to Amazon SQS in the What-if panel: the order event stream card changes and the Kafka card leaves the map](docs/assets/hero-loop.gif)
+
+All images on this page are captured from the running app on the bundled food-delivery sample (fixture-tuned mock extraction) by `site/scripts/app-screenshots.mjs`.
 
 The What-if panel previews another option without changing the repository's choice.
 

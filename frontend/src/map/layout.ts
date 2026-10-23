@@ -1,7 +1,7 @@
 import type { ELK as ElkEngine, ElkExtendedEdge, ElkNode, ElkPoint } from 'elkjs/lib/elk-api'
 
-export const MAP_NODE_WIDTH = 216
-export const MAP_NODE_HEIGHT = 96
+export const MAP_NODE_WIDTH = 232
+export const MAP_NODE_HEIGHT = 112
 const MAP_GROUP_PADDING = { top: 44, side: 20, bottom: 20 }
 // Edge labels render at a constant 11px (DM Mono, uppercase) on screen. Reserve room for them down to MAP_LABEL_MIN_ZOOM.
 export const MAP_LABEL_MIN_ZOOM = 0.5

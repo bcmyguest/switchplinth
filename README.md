@@ -8,7 +8,7 @@ Write an ADR, run Discover, and the decision shows up in the Architecture log wi
 
 ![Five captioned steps: an ADR is written in Markdown, Discover runs, the Architecture log shows the decision with its alternative and why it lost, the map shows Restaurant Service queuing notifications on Amazon SQS, and What-if previews the Kafka alternative](docs/assets/workflow.gif)
 
-The ADR uses technologies the sample's mock extractor knows; for your own repository, extract with a local model.
+Step 2 of the recording names the extractor it used. `scripts/record-workflow.sh` records it with real extraction through a local Lemonade model; see [Recording the workflow GIF](docs/DEVELOPMENT.md#recording-the-workflow-gif).
 
 Screenshots on this page are captured from the running app on the bundled food-delivery sample (fixture-tuned mock extraction) by `site/scripts/app-screenshots.mjs` and `site/scripts/workflow-gif.mjs`; the workflow's first step shows the ADR file as it is written.
 

@@ -85,6 +85,20 @@ async function settled(page) {
   await page.waitForTimeout(SETTLE_MS);
 }
 
+/** Picks `option` in one of the app's Radix select comboboxes (they are buttons, not native selects). */
+async function choose(page, label, option) {
+  await page.getByRole('combobox', { name: label }).click();
+  await page.getByRole('option', { name: option }).click();
+}
+
+/** The option names a combobox offers, read by opening and closing it. */
+async function optionNames(page, label) {
+  await page.getByRole('combobox', { name: label }).click();
+  const names = await page.getByRole('option').allTextContents();
+  await page.keyboard.press('Escape');
+  return names;
+}
+
 async function scrollToTop(page, locator) {
   await locator.evaluate((element, clearance) => window.scrollTo({ top: element.getBoundingClientRect().top + window.scrollY - clearance }), TOPBAR_CLEARANCE_PX);
   await page.waitForTimeout(SETTLE_MS);
@@ -117,7 +131,7 @@ async function discover(page) {
     const connection = (await (await fetch(new URL('/api/v1/connections', base))).json()).find((item) => item.id === CONNECTION_ID);
     if (!connection) throw new Error(`No model connection ${CONNECTION_ID}`);
     await dialog.getByText('Configured model', { exact: true }).click();
-    await dialog.getByLabel('Model connection').selectOption(CONNECTION_ID);
+    await choose(page, 'Model connection', new RegExp(`^${connection.name} · `));
     await caption(page, `2 · Run Discover with a local model (${connection.name}: ${connection.model})`);
   } else {
     await caption(page, '2 · Run Discover (this sample uses fixture-tuned mock extraction; your repo can use a local model)');
@@ -125,6 +139,8 @@ async function discover(page) {
   await frame(page, STEP_FRAME_MS);
   await page.getByRole('button', { name: 'Run discovery' }).click();
   await page.locator('.scan-summary').waitFor({ timeout: CONNECTION_ID ? EXTRACTION_TIMEOUT_MS : 60000 });
+  // The result banner stays on every page; without Qdrant it also reports the unavailable vector index.
+  await page.getByRole('button', { name: 'Dismiss discovery result' }).click();
   await page.waitForTimeout(SETTLE_MS);
 }
 
@@ -194,10 +210,10 @@ async function ask(page) {
 /** Propose a delta sends the request to the model; the proposal is discarded, not saved. */
 async function propose(page, title) {
   await page.getByRole('button', { name: 'Propose a delta' }).click();
-  await page.getByLabel('Target decision').selectOption({ label: title });
-  const options = await page.getByLabel('Target option').locator('option').allTextContents();
+  await choose(page, 'Target decision', title);
+  const options = await optionNames(page, 'Target option');
   const alternative = options.find((option) => !/amazon sqs/i.test(option)) ?? options[0];
-  await page.getByLabel('Target option').selectOption({ label: alternative });
+  await choose(page, 'Target option', alternative);
   await page.getByRole('textbox').fill(CHANGE_REQUEST);
   await page.keyboard.press('Enter');
   const proposal = page.locator('.proposal-card');

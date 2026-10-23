@@ -1,5 +1,6 @@
 // Explore page: the decision assistant with ask/propose modes, the proposal target pickers, the grounded answer with
 // supporting and related claims and cited passages, the proposed delta, the query input, and suggested questions.
+import { useMemo } from 'react'
 import { stringify } from 'yaml'
 import { AlertTriangle, ArrowRight, Bot, Check, FileText, LoaderCircle, MessageCircle, Search, Sparkles } from 'lucide-react'
 import type { SearchEvidence } from '../../api'
@@ -16,6 +17,8 @@ import { InlineError } from '../../components/InlineError'
 
 const ANSWER_CARD = 'mb-[9px] block! rounded-[8px] text-[12px] border-(--theme-line) p-[11px] shadow-none'
 const CLAIM_STATE_VARIANT = { inferred: 'warning', rejected: 'destructive', confirmed: 'secondary', asserted: 'secondary' } as const
+/** How many suggested questions the Try asking row offers. */
+const SUGGESTION_LIMIT = 3
 
 type ExplorePageProps = {
   explore: Explore
@@ -32,6 +35,7 @@ const CHAT_MODE = 'flex min-h-0 items-center gap-[4px] rounded-[4px] border-0 px
 
 export function ExplorePage({ explore, graph, live, displayedSelection, editor, onOpenSearchPassage: openSearchPassage }: ExplorePageProps) {
   const { query, setQuery, mode: chatMode, setMode: setChatMode, answer, proposal, proposalError, searching } = explore
+  const suggestedQuestions = useMemo(() => suggestQuestions(graph, displayedSelection), [graph, displayedSelection])
   const { decisionId: editingDecisionId, optionId: editingOptionId, chooseDecision: updateEditorDecision, chooseOption: updateEditorOption } = editor
   const scenarioContext = graph.decisions.map((decision) => `${decision.title}: ${decision.options.find((option) => option.id === displayedSelection[decision.id])?.title ?? 'unselected'}`).join(' · ')
   const supportingAnswerClaims = answer?.claims.filter((claim) => answer.whyQuery || (claim.evidence ?? []).some((id) => answer.evidence.some((item) => item.id === id))) ?? []
@@ -59,6 +63,13 @@ export function ExplorePage({ explore, graph, live, displayedSelection, editor, 
     </>}
     {proposal && <Card className={`answer-card proposal-card ${ANSWER_CARD}`}><div className="answer-label"><Sparkles size={14} /> PROPOSED DELTA · NOT SAVED</div><p>{proposal.rationale ?? 'Review the proposed operations before applying them.'}</p><pre>{stringify(proposal.delta)}</pre>{proposal.warnings?.map((warning) => <div className="proposal-warning" key={warning}><AlertTriangle size={12} />{warning}</div>)}{proposalError && <InlineError message={proposalError} />}<div className="proposal-actions"><Button type="button" variant="subtle" onClick={explore.discardProposal}>Discard</Button><Button type="button" className="text-(length:--type-tertiary)" disabled={searching} onClick={() => void explore.applyProposal()}>{searching ? <LoaderCircle className="spin" size={13} /> : <Check size={13} />} Apply to option</Button></div></Card>}
     <form className="chat-input" onSubmit={(event) => void explore.submit(event)}><MessageCircle size={16} /><Input className="min-h-0 flex-1 border-0 bg-transparent px-0 py-0 text-(length:--type-secondary) shadow-none" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={chatMode === 'ask' ? 'Why are we using Kafka?' : 'Replace Kafka with SQS and add a dead letter queue'} /><kbd>↵</kbd><Button type="submit" variant="ghost" className="min-h-0" aria-label={chatMode === 'ask' ? 'Ask' : 'Propose delta'} disabled={searching || (chatMode === 'propose' && !live)}>{searching ? <LoaderCircle className="spin" size={16} /> : chatMode === 'ask' ? <ArrowRight size={16} /> : <Sparkles size={15} />}</Button></form>
-    {chatMode === 'ask' && <div className="suggestions"><span>Try asking</span><Button variant="ghost" className="min-h-0" onClick={() => setQuery('What depends on Kafka?')}>What depends on Kafka?</Button><Button variant="ghost" className="min-h-0" onClick={() => setQuery('Which decisions mention replay?')}>Which decisions mention replay?</Button><Button variant="ghost" className="min-h-0" onClick={() => setQuery('What changes if we choose SQS?')}>What changes if we choose SQS?</Button></div>}
+    {chatMode === 'ask' && suggestedQuestions.length > 0 && <div className="suggestions"><span>Try asking</span>{suggestedQuestions.map((question) => <Button type="button" variant="ghost" className="min-h-0" key={question} disabled={searching} onClick={() => void explore.ask(question)}>{question}</Button>)}</div>}
   </div>
+}
+
+/** "Why …?" questions for selected options named after a map component: the questions grounded search answers best. */
+function suggestQuestions(graph: GraphData, selection: Record<string, string>): string[] {
+  const entityNames = new Set(graph.entities.map((entity) => entity.name.toLowerCase()))
+  const titles = graph.decisions.map((decision) => decision.options.find((option) => option.id === (selection[decision.id] ?? decision.selected_option))?.title).filter((title): title is string => Boolean(title) && entityNames.has(title!.toLowerCase()))
+  return [...new Set(titles)].slice(0, SUGGESTION_LIMIT).map((title) => `Why ${title}?`)
 }

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import functools
 import hashlib
 import json
@@ -19,6 +20,8 @@ from jsonschema import Draft202012Validator
 from switchplinth.domain import CAPABILITY_PREDICATES, DomainError, Evidence, entity_kinds, evidence_anchor, load_yaml, validate_capability_endpoints, validate_record
 
 DEFAULT_IGNORES = {".git", ".venv", "venv", "node_modules", "dist", "build", "coverage", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", ".tox", ".cache", ".decision", ".decision-cache", ".tasks"}
+# Parsed, validated records keyed by path; see PortableRepository._validated_records.
+_RECORD_CACHE: dict[Path, tuple[tuple[int, int, int, str], dict[str, Any]]] = {}
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 def source_is_included(source_path: str, includes: list[str] | set[str]) -> bool:
     """Return whether a configured source path matches a file or directory."""
@@ -29,11 +32,16 @@ def validate_extraction_review(record: dict[str, Any]) -> None:
     """Validate review metadata even when a project has an older overlay schema."""
     if "extraction_review" not in record:
         return
-    bundled_schema = json.loads(Path(__file__).with_name("record-v1.schema.json").read_text(encoding="utf-8"))
-    review_schema = bundled_schema["$defs"]["extraction_review"]
+    review_schema = _bundled_record_schema()["$defs"]["extraction_review"]
     errors = sorted(Draft202012Validator(review_schema).iter_errors(record["extraction_review"]), key=lambda error: list(error.path))
     if errors:
         raise DomainError(f"Invalid extraction_review: {errors[0].message}")
+
+
+@functools.lru_cache(maxsize=8)
+def _overlay_validator(schema_text: str) -> Draft202012Validator:
+    """Build one validator per distinct overlay schema text."""
+    return Draft202012Validator(json.loads(schema_text))
 
 
 @functools.cache
@@ -187,18 +195,7 @@ class PortableRepository:
         directory = self.overlay / kind
         if not directory.exists():
             return []
-        schema_path = self.overlay / "schema" / "record-v1.schema.json"
-        schema = __import__("json").loads(schema_path.read_text(encoding="utf-8"))
-        validator = Draft202012Validator(schema)
-        result = []
-        for path in sorted(directory.glob("*.yaml")):
-            record = load_yaml(path)
-            errors = sorted(validator.iter_errors(record), key=lambda e: list(e.path))
-            if errors:
-                raise DomainError(f"{path}: {errors[0].message}")
-            validate_extraction_review(record)
-            validate_review_metadata(record)
-            result.append(record)
+        result = self._validated_records(directory)
         if kind in {"entities", "evidence", "aliases", "claims", "relationships", "decisions", "scenarios", "connections", "agents"}:
             self.validate_references()
         return result
@@ -329,17 +326,32 @@ class PortableRepository:
         directory = self.overlay / kind
         if not directory.exists():
             return []
-        schema = __import__("json").loads((self.overlay / "schema" / "record-v1.schema.json").read_text(encoding="utf-8"))
-        validator = Draft202012Validator(schema)
+        return self._validated_records(directory)
+
+    def _validated_records(self, directory: Path) -> list[dict[str, Any]]:
+        """Load and schema-validate every record in `directory`, reusing parses of unchanged files.
+
+        Entries are keyed by the file's inode, size, and mtime and by the overlay schema's, so an atomic replace or a
+        schema refresh invalidates them. Callers receive deep copies and may mutate them.
+        """
+        schema_path = self.overlay / "schema" / "record-v1.schema.json"
+        schema_text = schema_path.read_text(encoding="utf-8")
+        validator = _overlay_validator(schema_text)
         result = []
         for path in sorted(directory.glob("*.yaml")):
-            record = load_yaml(path)
-            errors = sorted(validator.iter_errors(record), key=lambda e: list(e.path))
-            if errors:
-                raise DomainError(f"{path}: {errors[0].message}")
-            validate_extraction_review(record)
-            validate_review_metadata(record)
-            result.append(record)
+            info = path.stat()
+            key = (info.st_ino, info.st_size, info.st_mtime_ns, schema_text)
+            cached = _RECORD_CACHE.get(path)
+            if cached is None or cached[0] != key:
+                record = load_yaml(path)
+                errors = sorted(validator.iter_errors(record), key=lambda e: list(e.path))
+                if errors:
+                    raise DomainError(f"{path}: {errors[0].message}")
+                validate_extraction_review(record)
+                validate_review_metadata(record)
+                cached = (key, record)
+                _RECORD_CACHE[path] = cached
+            result.append(copy.deepcopy(cached[1]))
         return result
 
     def save(self, kind: str, record: dict[str, Any]) -> Path:

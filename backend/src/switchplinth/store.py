@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import hashlib
 import sqlite3
 import uuid
@@ -58,7 +59,8 @@ class SearchIndex:
             db.execute("INSERT OR REPLACE INTO index_metadata VALUES ('index_version', ?)", (str(INDEX_VERSION),))
 
     def search(self, query: str, limit: int = 8) -> list[dict[str, Any]]:
-        terms = [word for word in query.split() if word.isalnum()]
+        # Word tokens, so trailing punctuation ("replay?") does not drop the term.
+        terms = list(dict.fromkeys(re.findall(r"\w+", query)))
         if not terms:
             return []
         expression = " OR ".join(f'"{term}"' for term in terms)

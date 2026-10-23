@@ -15,6 +15,8 @@ EPISTEMIC_STATES = {"inferred", "confirmed", "rejected", "asserted"}
 SUPPORTED_OPERATIONS = {"add_entity", "remove_entity", "replace_entity", "add_relationship", "remove_relationship", "replace_relationship"}
 CAPABILITY_PREDICATES = frozenset({"requires_capability", "provides_capability", "lacks_capability"})
 CAPABILITY_KIND = "capability"
+# The libyaml safe loader when available; both build plain Python values only.
+YAML_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
 ID_PATTERN = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
 
 
@@ -167,7 +169,7 @@ def validate_record(record: dict[str, Any], expected: str | None = None) -> None
 
 def load_yaml(path: Path, expected: str | None = None) -> dict[str, Any]:
     with path.open(encoding="utf-8") as stream:
-        record = yaml.safe_load(stream)
+        record = yaml.load(stream, Loader=YAML_LOADER)  # noqa: S506 - a safe loader
     if not isinstance(record, dict):
         raise DomainError(f"{path}: record must be a YAML mapping.")
     validate_record(record, expected)

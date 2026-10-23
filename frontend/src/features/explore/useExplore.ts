@@ -26,6 +26,8 @@ export type Explore = {
   /** Switches to propose mode, clears the answer and proposal, and targets the editor's decision (else the first one). */
   startPropose(): void
   submit(event: FormEvent<HTMLFormElement>): Promise<void>
+  /** Fills the query with `text` and asks it in ask mode, as a suggestion chip does. */
+  ask(text: string): Promise<void>
   applyProposal(): Promise<void>
   discardProposal(): void
   /** Clears this module's share of the repository-switch reset: answer, proposal, proposal error, and query. */
@@ -46,7 +48,17 @@ export function useExplore(workspace: Pick<Workspace, 'graph' | 'commitGraph'>, 
 
   async function submitQuery(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!query.trim()) return
+    await runQuery(query, chatMode)
+  }
+
+  async function askQuery(text: string) {
+    setQuery(text)
+    setChatMode('ask')
+    await runQuery(text, 'ask')
+  }
+
+  async function runQuery(query: string, chatMode: ExploreMode) {
+    if (!query.trim() || searching) return
     setSearching(true)
     if (chatMode === 'propose') {
       const decisionId = editingDecisionId || graph.decisions[0]?.id
@@ -95,6 +107,7 @@ export function useExplore(workspace: Pick<Workspace, 'graph' | 'commitGraph'>, 
       setChatMode('propose'); setAnswer(null); setProposal(null); setProposalError(''); const decision = graph.decisions.find((item) => item.id === editingDecisionId) ?? graph.decisions[0]; editor.setTarget(decision?.id ?? '', decision?.options[0]?.id ?? '')
     },
     submit: submitQuery,
+    ask: askQuery,
     applyProposal,
     discardProposal() {
       setProposal(null); setProposalError('')

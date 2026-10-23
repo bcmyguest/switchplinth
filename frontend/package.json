@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "check:navigation": "node e2e/navigation.check.mjs",
     "check:scenario-diff": "node e2e/scenario-diff.check.mjs",
-    "check:capability": "node e2e/capability.check.mjs"
+    "check:capability": "node e2e/capability.check.mjs",
+    "check:use-cases": "node e2e/use-cases.check.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

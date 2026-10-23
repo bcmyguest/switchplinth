@@ -22,10 +22,15 @@ const VIEWPORT = { width: 1280, height: 800 };
 const ADR_PATH = 'decisions/restaurant-notifications.md';
 // A model may word titles differently from the mock, so the new decision and its card are found by this pattern.
 const DECISION_PATTERN = /notification/i;
+// A model may or may not attach a graph change to the decision (the ADR names no component IDs, and extraction never
+// invents them), so the decision may have no card of its own. In model mode step 4 shows the chosen technology's card
+// and steps 4 and 5 caption what the panel actually shows.
+const MODEL_MAP_CARD = /Amazon SQS/;
 const CONNECTION_ID = process.env.WORKFLOW_CONNECTION ?? '';
 const EXTRACTION_TIMEOUT_MS = 30 * 60 * 1000;
 const QUESTION = 'Why did we choose Amazon SQS for restaurant notifications?';
 const CHANGE_REQUEST = 'Add a dead-letter topic that the support dashboard reads';
+const PROPOSE_ATTEMPTS = 3;
 const SETTLE_MS = 900;
 const TYPING_FRAME_MS = 900;
 const STEP_FRAME_MS = 3200;
@@ -34,6 +39,8 @@ const TOPBAR_CLEARANCE_PX = 72;
 // An empty stretch of the full-screen canvas between the resource and technology rows at 1280x800.
 const PAN_FROM = { x: 700, y: 620 };
 const PAN_LEFT_PX = 300;
+// Where model mode drags the chosen card: left of the details panel that opens on the right.
+const CARD_TARGET = { x: 430, y: 450 };
 // The mock extractor only knows the sample's technologies and services, so the ADR uses them.
 const ADR = `# Restaurant notification queue
 
@@ -152,19 +159,48 @@ async function architectureLog(page) {
   await frame(page, STEP_FRAME_MS);
 }
 
+/** Drag the canvas from `from` by (dx, dy), as a reader would. */
+async function pan(page, from, dx, dy) {
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(from.x + dx, from.y + dy, { steps: 10 });
+  await page.mouse.up();
+  await page.waitForTimeout(SETTLE_MS);
+}
+
+/** Model extraction lays the map out differently each run, so drag `card` to CARD_TARGET from an empty spot of the canvas. */
+async function panToCard(page, card) {
+  const box = await card.boundingBox();
+  if (!box) throw new Error('Map card has no layout box');
+  const from = await page.evaluate(() => {
+    for (let y = 120; y < 740; y += 20) {
+      for (let x = 20; x < 840; x += 20) {
+        if (document.elementFromPoint(x, y)?.classList.contains('react-flow__pane')) return { x, y };
+      }
+    }
+    return null;
+  });
+  if (!from) throw new Error('No empty canvas to drag the map from');
+  await pan(page, from, CARD_TARGET.x - (box.x + box.width / 2), CARD_TARGET.y - (box.y + box.height / 2));
+}
+
 async function map(page) {
   await page.getByRole('button', { name: 'Architecture', exact: true }).click();
   await page.getByRole('button', { name: 'Open map full screen' }).click();
   await page.waitForTimeout(SETTLE_MS);
+  const card = page.locator('.react-flow__node', { hasText: CONNECTION_ID ? MODEL_MAP_CARD : DECISION_PATTERN }).first();
   // Drag the canvas left, as a reader would, so the new card clears the details panel that opens on the right.
-  await page.mouse.move(PAN_FROM.x, PAN_FROM.y);
-  await page.mouse.down();
-  await page.mouse.move(PAN_FROM.x - PAN_LEFT_PX, PAN_FROM.y, { steps: 10 });
-  await page.mouse.up();
+  if (CONNECTION_ID) await panToCard(page, card);
+  else await pan(page, PAN_FROM, -PAN_LEFT_PX, 0);
+  await card.click();
   await page.waitForTimeout(SETTLE_MS);
-  await page.locator('.react-flow__node', { hasText: DECISION_PATTERN }).first().click();
-  await page.waitForTimeout(SETTLE_MS);
-  await caption(page, '4 · It joins the system map, with the reason and the alternative one click away');
+  const linked = CONNECTION_ID
+    && DECISION_PATTERN.test(await page.locator('.graph-selection-summary.is-open').innerText());
+  await caption(page, !CONNECTION_ID
+    ? '4 · It joins the system map, with the reason and the alternative one click away'
+    : linked
+      ? '4 · On the map, Amazon SQS links the decision, with the reason and the alternative one click away'
+      : '4 · Amazon SQS is on the map with its source passage; the model attached no graph change to the decision');
   await frame(page, STEP_FRAME_MS);
 }
 
@@ -186,7 +222,11 @@ async function whatIf(page) {
   await settled(page);
   await page.getByRole('button', { name: `Jump to ${title} options` }).click();
   await settled(page);
-  await caption(page, '5 · Preview the alternative: the map switches; the repository keeps its choice');
+  const unchanged = CONNECTION_ID
+    && /(^|\D)0 changes/.test(await page.locator('.scenario-panel').innerText());
+  await caption(page, unchanged
+    ? '5 · Preview the alternative: with no graph change extracted for it, the map stays as it is'
+    : '5 · Preview the alternative: the map switches; the repository keeps its choice');
   await frame(page, CONNECTION_ID ? STEP_FRAME_MS : LAST_FRAME_MS);
   await page.getByRole('button', { name: 'Return to repository choices' }).click();
   await settled(page);
@@ -203,7 +243,7 @@ async function ask(page) {
   const answer = page.locator('.answer-card').first();
   await answer.waitFor();
   await scrollToTop(page, answer);
-  await caption(page, '6 · Ask why: the answer quotes the ADR passages it found');
+  await caption(page, '6 · Ask why: the answer quotes the repository passages it found');
   await frame(page, STEP_FRAME_MS);
 }
 
@@ -214,10 +254,18 @@ async function propose(page, title) {
   const options = await optionNames(page, 'Target option');
   const alternative = options.find((option) => !/amazon sqs/i.test(option)) ?? options[0];
   await choose(page, 'Target option', alternative);
-  await page.getByRole('textbox').fill(CHANGE_REQUEST);
-  await page.keyboard.press('Enter');
   const proposal = page.locator('.proposal-card');
-  await proposal.waitFor({ timeout: EXTRACTION_TIMEOUT_MS });
+  // A model's delta can fail validation (for example an unexpected field); ask again rather than record the error.
+  // The failure card stays on screen during a retry, so each attempt waits for its own response.
+  for (let attempt = 1; ; attempt += 1) {
+    const response = page.waitForResponse((item) => item.url().includes('/api/v1/scenarios/propose'), { timeout: EXTRACTION_TIMEOUT_MS });
+    await page.getByRole('textbox').fill(CHANGE_REQUEST);
+    await page.keyboard.press('Enter');
+    const result = await response;
+    if (result.ok()) break;
+    if (attempt === PROPOSE_ATTEMPTS) throw new Error(`No valid proposal after ${PROPOSE_ATTEMPTS} attempts: ${result.status()} ${await result.text()}`);
+    await page.waitForTimeout(SETTLE_MS);
+  }
   await scrollToTop(page, proposal);
   await caption(page, `7 · Ask the model to change the ${alternative} option: it proposes a typed delta you review before applying`);
   await frame(page, LAST_FRAME_MS);

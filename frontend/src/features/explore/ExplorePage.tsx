@@ -38,8 +38,8 @@ export function ExplorePage({ explore, graph, live, displayedSelection, editor, 
   const suggestedQuestions = useMemo(() => suggestQuestions(graph, displayedSelection), [graph, displayedSelection])
   const { decisionId: editingDecisionId, optionId: editingOptionId, chooseDecision: updateEditorDecision, chooseOption: updateEditorOption } = editor
   const scenarioContext = graph.decisions.map((decision) => `${decision.title}: ${decision.options.find((option) => option.id === displayedSelection[decision.id])?.title ?? 'unselected'}`).join(' · ')
-  const supportingAnswerClaims = answer?.claims.filter((claim) => answer.whyQuery || (claim.evidence ?? []).some((id) => answer.evidence.some((item) => item.id === id))) ?? []
-  const relatedAnswerClaims = answer?.claims.filter((claim) => !supportingAnswerClaims.includes(claim)) ?? []
+  const supportingAnswerClaims = mergeRepeatedClaims(answer?.claims.filter((claim) => answer.whyQuery || (claim.evidence ?? []).some((id) => answer.evidence.some((item) => item.id === id))) ?? [])
+  const relatedAnswerClaims = mergeRepeatedClaims(answer?.claims.filter((claim) => !(answer.whyQuery || (claim.evidence ?? []).some((id) => answer.evidence.some((item) => item.id === id)))) ?? [])
   function renderAnswerClaim(claim: Claim, category: 'supporting' | 'related') {
     if (!answer) return null
     const citedEvidence = (claim.evidence ?? []).map((id) => answer.evidence.find((item) => item.id === id)).filter((item): item is SearchEvidence => Boolean(item))
@@ -58,7 +58,7 @@ export function ExplorePage({ explore, graph, live, displayedSelection, editor, 
         <p>{answer.text}</p>
         {supportingAnswerClaims.length > 0 && <section className="answer-claims" aria-label="Supporting claims"><h4>Supporting claims</h4>{supportingAnswerClaims.map((claim) => renderAnswerClaim(claim, 'supporting'))}</section>}
         {relatedAnswerClaims.length > 0 && <section className="answer-claims" aria-label="Related claims"><h4>Related claims</h4>{relatedAnswerClaims.map((claim) => renderAnswerClaim(claim, 'related'))}</section>}
-        {answer.evidence.length > 0 && <section className="answer-passages" aria-label="Answer passages">{answer.claims.length > 0 && <h4>Passages</h4>}{answer.evidence.map((source, index) => { const heading = Array.isArray(source.heading) ? source.heading.join(' / ') : source.heading ?? source.location?.heading_path?.join(' / ') ?? 'Passage'; return <Button type="button" variant="ghost" className="answer-source min-h-0" key={`${source.id ?? source.path ?? source.source}-${index}`} aria-label={`Open passage ${source.path ?? source.source ?? 'source document'} ${heading}`} onClick={() => openSearchPassage(source)} disabled={!source.path && !source.source}><FileText size={13} /><strong>{source.path ?? source.source ?? 'Source document'}</strong><span>{heading}</span><blockquote>{source.passage ?? source.text}</blockquote></Button>})}</section>}
+        {answer.evidence.length > 0 && <section className="answer-passages" aria-label="Answer passages">{answer.claims.length > 0 && <h4>Passages</h4>}{answer.evidence.map((source, index) => { const heading = Array.isArray(source.heading) ? source.heading.join(' / ') : source.heading ?? source.location?.heading_path?.join(' / ') ?? 'Passage'; return <Button type="button" variant="ghost" className="answer-source min-h-0 justify-items-start text-left" key={`${source.id ?? source.path ?? source.source}-${index}`} aria-label={`Open passage ${source.path ?? source.source ?? 'source document'} ${heading}`} onClick={() => openSearchPassage(source)} disabled={!source.path && !source.source}><FileText size={13} /><strong>{source.path ?? source.source ?? 'Source document'}</strong><span>{heading}</span><blockquote>{source.passage ?? source.text}</blockquote></Button>})}</section>}
       </Card>
     </>}
     {proposal && <Card className={`answer-card proposal-card ${ANSWER_CARD}`}><div className="answer-label"><Sparkles size={14} /> PROPOSED DELTA · NOT SAVED</div><p>{proposal.rationale ?? 'Review the proposed operations before applying them.'}</p><pre>{stringify(proposal.delta)}</pre>{proposal.warnings?.map((warning) => <div className="proposal-warning" key={warning}><AlertTriangle size={12} />{warning}</div>)}{proposalError && <InlineError message={proposalError} />}<div className="proposal-actions"><Button type="button" variant="subtle" onClick={explore.discardProposal}>Discard</Button><Button type="button" className="text-(length:--type-tertiary)" disabled={searching} onClick={() => void explore.applyProposal()}>{searching ? <LoaderCircle className="spin" size={13} /> : <Check size={13} />} Apply to option</Button></div></Card>}
@@ -72,4 +72,18 @@ function suggestQuestions(graph: GraphData, selection: Record<string, string>): 
   const entityNames = new Set(graph.entities.map((entity) => entity.name.toLowerCase()))
   const titles = graph.decisions.map((decision) => decision.options.find((option) => option.id === (selection[decision.id] ?? decision.selected_option))?.title).filter((title): title is string => Boolean(title) && entityNames.has(title!.toLowerCase()))
   return [...new Set(titles)].slice(0, SUGGESTION_LIMIT).map((title) => `Why ${title}?`)
+}
+
+/**
+ * One card per stated fact: extraction records a separate claim for each passage that mentions the same subject,
+ * predicate, and object. Claims in different review states stay apart; merged cards cite every passage.
+ */
+function mergeRepeatedClaims(claims: Claim[]): Claim[] {
+  const merged = new Map<string, Claim>()
+  for (const claim of claims) {
+    const key = [claim.subject, claim.predicate, claim.object, claim.epistemic_state].join('\u0000')
+    const existing = merged.get(key)
+    merged.set(key, existing ? { ...existing, confidence: Math.max(existing.confidence, claim.confidence), evidence: [...new Set([...(existing.evidence ?? []), ...(claim.evidence ?? [])])] } : claim)
+  }
+  return [...merged.values()]
 }

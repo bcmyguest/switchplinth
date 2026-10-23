@@ -10,6 +10,8 @@ import type { Decision, DeltaOperation, GraphData, SavedScenario } from '../../t
 import { describeScenarioSelection, scenarioSelectionKey, selectedOptions } from './scenarioSelection'
 import { usePreviousChoiceDiff, type PreviousChoiceDiff } from './usePreviousChoiceDiff'
 
+/** Space between the sticky header and a decision the picker scrolls to. */
+const SCROLL_GAP_PX = 8
 const INITIAL_SELECTIONS: Record<string, string> = { 'decision-messaging': 'option-kafka', 'decision-database': 'option-postgres' }
 
 type Selections = Record<string, string>
@@ -240,7 +242,10 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
     const section = scenarioDecisionRefs.current.get(decisionId)
     if (!section) return
     setActiveScenarioDecisionId(decisionId)
-    section.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Align the decision's top just below the sticky header; centering a tall decision hid its title under the header.
+    const sticky = section.closest('.scenario-panel')?.querySelector<HTMLElement>('.scenario-sticky')
+    section.style.scrollMarginTop = sticky ? `${(Number.parseFloat(getComputedStyle(sticky).top) || 0) + sticky.offsetHeight + SCROLL_GAP_PX}px` : ''
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' })
     window.requestAnimationFrame(() => {
       const target = section.querySelector<HTMLButtonElement>('button[aria-pressed]:not(:disabled)') ?? section.querySelector<HTMLDivElement>('.decision-name')
       target?.focus({ preventScroll: true })

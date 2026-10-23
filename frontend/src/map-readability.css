@@ -326,6 +326,8 @@ body{background:var(--theme-canvas);color:var(--theme-ink)}
 .react-flow__node-architecture .arch-node .node-copy{flex:1 1 auto}
 .react-flow__node-architecture .arch-node .node-copy strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;font-size:20px;line-height:1.15;font-weight:600}
 .react-flow__node-architecture .arch-node .node-copy span{font-size:19px;line-height:1.2;letter-spacing:.08em;color:var(--theme-muted)}
+/* The implementation from a trailing "(Amazon SQS)" gets its own line, so a scenario switch stays visible when long names clamp. */
+.react-flow__node-architecture .arch-node .node-copy .node-implementation{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:19px;line-height:1.2;font-style:normal;font-weight:600;color:var(--theme-source)}
 .react-flow__node-mapGroup{pointer-events:none!important}
 .map-group{position:relative;width:100%;height:100%;border:1px dashed color-mix(in srgb,var(--theme-muted) 45%,transparent);border-radius:18px;background:color-mix(in srgb,var(--theme-brand-soft) 40%,transparent)}
 .map-group-label{position:absolute;top:12px;left:16px;display:inline-flex;align-items:center;gap:6px;color:var(--theme-muted);font:600 20px/1.3 'DM Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase}

@@ -4,7 +4,9 @@ Visualize architecture changes from the docs you already wrote.
 
 Switchplinth reads your ADRs, RFCs, and design notes, maps the decisions and the components they touch, and shows what changes when you switch an option. Every inferred fact links to its source passage.
 
-![The map switching order events between Apache Kafka and Amazon SQS](docs/assets/hero-loop.gif)
+![The running app switching order events from Apache Kafka to Amazon SQS in the What-if panel: the order event stream card changes and the Kafka card leaves the map](docs/assets/hero-loop.gif)
+
+Screenshots on this page are captured from the running app on the bundled food-delivery sample (fixture-tuned mock extraction) by `site/scripts/app-screenshots.mjs` and `site/scripts/workflow-gif.mjs`; the workflow's first step shows the ADR file as it is written.
 
 The What-if panel previews another option without changing the repository's choice.
 
@@ -21,6 +23,14 @@ Your reviews go into an append-only log, and each one can be undone.
 Ask why, and the answer lists the source passages it found.
 
 ![Answer to "Why are we using Kafka?" with source passages below it](docs/assets/why-search.png)
+
+## From an ADR to the map
+
+Write an ADR, run Discover, and the decision shows up in the Architecture log with its alternative and why it lost, joins the system map, and can be previewed the other way in What-if.
+
+![Five captioned steps: an ADR is written in Markdown, Discover runs, the Architecture log shows the decision with its alternative and why it lost, the map shows Restaurant Service queuing notifications on Amazon SQS, and What-if previews the Kafka alternative](docs/assets/workflow.gif)
+
+The ADR uses technologies the sample's mock extractor knows; for your own repository, extract with a local model.
 
 ## Run it
 

@@ -19,6 +19,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    proxy: { '/api': { target: 'http://localhost:8000', changeOrigin: true } },
+    // DECISION_BACKEND_URL points the dev proxy at another backend, for example when a local model server holds port 8000.
+    proxy: { '/api': { target: process.env.DECISION_BACKEND_URL ?? 'http://localhost:8000', changeOrigin: true } },
   },
 })

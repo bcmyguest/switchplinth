@@ -6,11 +6,11 @@ Switchplinth reads your ADRs, RFCs, and design notes, maps the decisions and the
 
 Write an ADR, run Discover, and the decision shows up in the Architecture log with its alternative and why it lost, joins the system map, and can be previewed the other way in What-if.
 
-![Five captioned steps: an ADR is written in Markdown, Discover runs, the Architecture log shows the decision with its alternative and why it lost, the map shows Restaurant Service queuing notifications on Amazon SQS, and What-if previews the Kafka alternative](docs/assets/workflow.gif)
+![Seven captioned steps: an ADR is written in Markdown, Discover runs through a local model, the Architecture log shows the decision with its alternative and why it lost, the map shows Amazon SQS, What-if previews the Kafka alternative, Explore answers a why question from cited passages, and the model proposes a change to the alternative that is not saved](docs/assets/workflow.gif)
 
-Step 2 of the recording names the extractor it used. `scripts/record-workflow.sh` records it with real extraction through a local Lemonade model; see [Recording the workflow GIF](docs/DEVELOPMENT.md#recording-the-workflow-gif).
+Recorded with real extraction through Lemonade (Qwen3.6-35B-A3B-ThinkingCoder) by `scripts/record-workflow.sh`: one run on the sample, not a measure of extraction quality. In that run the model attached no graph change to the new decision, so the map and What-if steps show it unchanged. See [Recording the workflow GIF](docs/DEVELOPMENT.md#recording-the-workflow-gif).
 
-Screenshots on this page are captured from the running app on the bundled food-delivery sample (fixture-tuned mock extraction) by `site/scripts/app-screenshots.mjs` and `site/scripts/workflow-gif.mjs`; the workflow's first step shows the ADR file as it is written.
+Screenshots on this page are captured from the running app on the bundled food-delivery sample (fixture-tuned mock extraction) by `site/scripts/app-screenshots.mjs`; the workflow recording's first step shows the ADR file as it is written.
 
 ## Run it
 

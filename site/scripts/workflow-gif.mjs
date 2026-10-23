@@ -4,8 +4,11 @@
 //
 // <appUrl> is the frontend serving a fresh bootstrap of fixtures/food-delivery, and <repoDir> is that same repository
 // on disk (for scripts/demo.sh, ~/.cache/switchplinth-demo/food-delivery). The script writes the ADR below into
-// <repoDir>/decisions/ and runs a mock Discover, so use a disposable copy. Every step after the editor frames is the
-// running app; the editor frames show the file being written. Captions are drawn on top of the page.
+// <repoDir>/decisions/ and runs Discover, so use a disposable copy. Every step after the editor frames is the running
+// app; the editor frames show the file being written. Captions are drawn on top of the page.
+// Set WORKFLOW_CONNECTION to a saved model connection ID (for example a local Lemonade server) to extract with that
+// model and add two steps: a grounded Explore question and a model-proposed change to the ADR's alternative, which
+// is discarded, not saved. Without it, Discover uses the sample's fixture-tuned mock extraction.
 import { chromium } from 'playwright';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -17,8 +20,12 @@ const [base = 'http://localhost:3000/', repoDir, outFile = 'workflow.gif'] = pro
 if (!repoDir) throw new Error('Usage: node scripts/workflow-gif.mjs <appUrl> <repoDir> <outFile>');
 const VIEWPORT = { width: 1280, height: 800 };
 const ADR_PATH = 'decisions/restaurant-notifications.md';
-const DECISION = 'Restaurant notification queue';
-const ALTERNATIVE = 'Apache Kafka topic';
+// A model may word titles differently from the mock, so the new decision and its card are found by this pattern.
+const DECISION_PATTERN = /notification/i;
+const CONNECTION_ID = process.env.WORKFLOW_CONNECTION ?? '';
+const EXTRACTION_TIMEOUT_MS = 30 * 60 * 1000;
+const QUESTION = 'Why did we choose Amazon SQS for restaurant notifications?';
+const CHANGE_REQUEST = 'Add a dead-letter topic that the support dashboard reads';
 const SETTLE_MS = 900;
 const TYPING_FRAME_MS = 900;
 const STEP_FRAME_MS = 3200;
@@ -104,19 +111,28 @@ async function discover(page) {
   await page.goto(new URL('#architecture-log', base).href, { waitUntil: 'networkidle' });
   await page.waitForTimeout(SETTLE_MS);
   await page.getByRole('button', { name: 'Discover decisions' }).first().click();
-  await page.getByRole('dialog', { name: 'Choose discovery mode' }).waitFor();
-  await caption(page, '2 · Run Discover (this sample uses fixture-tuned mock extraction; your repo can use a local model)');
+  const dialog = page.getByRole('dialog', { name: 'Choose discovery mode' });
+  await dialog.waitFor();
+  if (CONNECTION_ID) {
+    const connection = (await (await fetch(new URL('/api/v1/connections', base))).json()).find((item) => item.id === CONNECTION_ID);
+    if (!connection) throw new Error(`No model connection ${CONNECTION_ID}`);
+    await dialog.getByText('Configured model', { exact: true }).click();
+    await dialog.getByLabel('Model connection').selectOption(CONNECTION_ID);
+    await caption(page, `2 · Run Discover with a local model (${connection.name}: ${connection.model})`);
+  } else {
+    await caption(page, '2 · Run Discover (this sample uses fixture-tuned mock extraction; your repo can use a local model)');
+  }
   await frame(page, STEP_FRAME_MS);
   await page.getByRole('button', { name: 'Run discovery' }).click();
-  await page.locator('.scan-summary').waitFor({ timeout: 60000 });
+  await page.locator('.scan-summary').waitFor({ timeout: CONNECTION_ID ? EXTRACTION_TIMEOUT_MS : 60000 });
   await page.waitForTimeout(SETTLE_MS);
 }
 
 async function architectureLog(page) {
-  const entry = page.locator('.log-entry').filter({ has: page.locator('h3', { hasText: DECISION }) });
+  const entry = page.locator('.log-entry').filter({ has: page.locator('h3', { hasText: DECISION_PATTERN }) });
   await entry.waitFor();
   await scrollToTop(page, entry);
-  await caption(page, '3 · The decision, its alternative, and why it lost, each cited to the ADR');
+  await caption(page, `3 · ${CONNECTION_ID ? 'The model found the decision: its' : 'The decision,'} alternative and why it lost, each cited to the ADR`);
   await frame(page, STEP_FRAME_MS);
 }
 
@@ -130,23 +146,66 @@ async function map(page) {
   await page.mouse.move(PAN_FROM.x - PAN_LEFT_PX, PAN_FROM.y, { steps: 10 });
   await page.mouse.up();
   await page.waitForTimeout(SETTLE_MS);
-  await page.locator('.react-flow__node', { hasText: DECISION }).first().click();
+  await page.locator('.react-flow__node', { hasText: DECISION_PATTERN }).first().click();
   await page.waitForTimeout(SETTLE_MS);
-  await caption(page, '4 · It joins the system map: Restaurant Service queues notifications on Amazon SQS');
+  await caption(page, '4 · It joins the system map, with the reason and the alternative one click away');
   await frame(page, STEP_FRAME_MS);
+}
+
+/** Title of the new decision as extracted, for the What-if picker and the propose target. */
+async function decisionTitle(page) {
+  const titles = await page.locator('.decision-select .decision-name').evaluateAll((names) => names.map((name) => name.childNodes[1]?.textContent ?? ''));
+  const title = titles.find((item) => DECISION_PATTERN.test(item));
+  if (!title) throw new Error(`No decision matches ${DECISION_PATTERN}: ${titles.join(', ')}`);
+  return title;
 }
 
 async function whatIf(page) {
   await page.locator('.graph-selection-summary.is-open').getByRole('button', { name: 'Close component details' }).click();
   await page.getByRole('button', { name: 'What-if', exact: true }).click();
-  await page.getByRole('button', { name: `Jump to ${DECISION} options` }).click();
+  const title = await decisionTitle(page);
+  await page.getByRole('button', { name: `Jump to ${title} options` }).click();
   await settled(page);
-  await page.locator('.decision-select').filter({ has: page.locator('.decision-name', { hasText: DECISION }) }).getByRole('button', { name: new RegExp(`^${ALTERNATIVE}`) }).click();
+  await page.locator('.decision-select').filter({ has: page.locator('.decision-name', { hasText: title }) }).locator('button[aria-pressed="false"]').first().click();
   await settled(page);
-  await page.getByRole('button', { name: `Jump to ${DECISION} options` }).click();
+  await page.getByRole('button', { name: `Jump to ${title} options` }).click();
   await settled(page);
-  await caption(page, '5 · Preview the alternative: the map switches to Kafka; the repository keeps SQS');
+  await caption(page, '5 · Preview the alternative: the map switches; the repository keeps its choice');
+  await frame(page, CONNECTION_ID ? STEP_FRAME_MS : LAST_FRAME_MS);
+  await page.getByRole('button', { name: 'Return to repository choices' }).click();
+  await settled(page);
+  return title;
+}
+
+/** Explore Ask is grounded search over cited passages; no model writes the answer. */
+async function ask(page) {
+  await page.getByRole('button', { name: 'Close What-if panel' }).click();
+  await page.getByRole('button', { name: 'Exit full-screen map' }).click();
+  await page.getByRole('button', { name: 'Explore', exact: true }).click();
+  await page.getByRole('textbox').fill(QUESTION);
+  await page.keyboard.press('Enter');
+  const answer = page.locator('.answer-card').first();
+  await answer.waitFor();
+  await scrollToTop(page, answer);
+  await caption(page, '6 · Ask why: the answer quotes the ADR passages it found');
+  await frame(page, STEP_FRAME_MS);
+}
+
+/** Propose a delta sends the request to the model; the proposal is discarded, not saved. */
+async function propose(page, title) {
+  await page.getByRole('button', { name: 'Propose a delta' }).click();
+  await page.getByLabel('Target decision').selectOption({ label: title });
+  const options = await page.getByLabel('Target option').locator('option').allTextContents();
+  const alternative = options.find((option) => !/amazon sqs/i.test(option)) ?? options[0];
+  await page.getByLabel('Target option').selectOption({ label: alternative });
+  await page.getByRole('textbox').fill(CHANGE_REQUEST);
+  await page.keyboard.press('Enter');
+  const proposal = page.locator('.proposal-card');
+  await proposal.waitFor({ timeout: EXTRACTION_TIMEOUT_MS });
+  await scrollToTop(page, proposal);
+  await caption(page, `7 · Ask the model to change the ${alternative} option: it proposes a typed delta you review before applying`);
   await frame(page, LAST_FRAME_MS);
+  await proposal.getByRole('button', { name: 'Discard' }).click();
 }
 
 function encodeGif() {
@@ -172,7 +231,11 @@ try {
   await discover(page);
   await architectureLog(page);
   await map(page);
-  await whatIf(page);
+  const title = await whatIf(page);
+  if (CONNECTION_ID) {
+    await ask(page);
+    await propose(page, title);
+  }
 } finally {
   await browser.close();
 }

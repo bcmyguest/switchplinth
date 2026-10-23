@@ -143,11 +143,20 @@
 .scenario-copy{order:1}
 .scenario-working-state{order:2}
 .scenario-decision-picker{order:3}
-.scenario-panel .decision-select{order:4}
+.scenario-panel .decision-select,.scenario-panel .scenario-decisions{order:4}
+.scenario-panel .scenario-results{order:6;display:flex;flex-direction:column;min-width:0}
 .scenario-panel .scenario-history,.scenario-panel .scenario-quick-summary{order:5}
 .scenario-panel .scenario-list-status,.scenario-panel .scenario-outcome{order:6}
 .scenario-panel .scenario-library{order:7}
 .scenario-panel .scenario-note{order:8}
+/* Scenarios page on wide screens: options on the left, the outcome of the latest choice beside them while scrolling. */
+@media(min-width:1200px){
+  /* clip, unlike hidden/auto, keeps the document as the sticky scroll container. */
+  .scenarios-page .scenario-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,400px);column-gap:24px;align-items:start;overflow:clip}
+  .scenarios-page .scenario-panel>*{grid-column:1}
+  .scenarios-page .scenario-panel>.scenario-sticky{top:var(--topbar-height,53px)}
+  .scenarios-page .scenario-panel>.scenario-results{grid-column:2;grid-row:1/span 4;position:sticky;top:calc(var(--topbar-height,53px) + 12px);max-height:calc(100vh - var(--topbar-height,53px) - 24px);overflow:auto;padding-right:2px}
+}
 .scenario-panel .option-rationale{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:3}
 @media(max-width:640px){
   .scenario-panel .scenario-history{max-height:72px;overflow:auto}

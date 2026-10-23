@@ -1,6 +1,6 @@
 // Projects a compiled graph onto React Flow nodes and edges, including confirmed identity-group merging for display.
 import type { Edge, Node } from '@xyflow/react'
-import type { Entity, GraphData } from '../types'
+import type { DeltaOperation, Entity, GraphData } from '../types'
 
 export function entityNodes(graph: GraphData, columns = 3): Node[] {
   return graph.entities.map((entity, index) => ({
@@ -50,6 +50,29 @@ export function mapGraphWithConfirmedIdentityGroups(graph: GraphData): GraphData
   }
 }
 
+/**
+ * Splits off components that only unselected options use: no relationship in this scenario, touched by some option
+ * delta, and touched by no selected option. After a switch from Kafka to SQS, Kafka is such a component; drawing it
+ * beside SQS reads as if both were in use. The records stay in the graph for search and details; only the map omits them.
+ */
+export function withoutUnusedAlternatives(graph: GraphData, selections: Record<string, string>): { graph: GraphData; hidden: Entity[] } {
+  const connected = new Set(graph.relationships.flatMap((relationship) => [relationship.from, relationship.to]))
+  const optionEntities = new Set<string>()
+  const selectedEntities = new Set<string>()
+  for (const decision of graph.decisions) {
+    const selectedId = selections[decision.id] ?? decision.selected_option
+    for (const option of decision.options) {
+      const ids = (option.delta?.operations ?? []).flatMap(operationEntityIds)
+      ids.forEach((id) => optionEntities.add(id))
+      if (option.id === selectedId) ids.forEach((id) => selectedEntities.add(id))
+    }
+  }
+  const hidden = graph.entities.filter((entity) => !connected.has(entity.id) && optionEntities.has(entity.id) && !selectedEntities.has(entity.id))
+  if (!hidden.length) return { graph, hidden }
+  const hiddenIds = new Set(hidden.map((entity) => entity.id))
+  return { graph: { ...graph, entities: graph.entities.filter((entity) => !hiddenIds.has(entity.id)) }, hidden }
+}
+
 export function entityEdges(graph: GraphData): Edge[] {
   const parallelCounts = new Map<string, number>()
   const parallelTotals = new Map<string, number>()
@@ -78,4 +101,11 @@ export function entityEdges(graph: GraphData): Edge[] {
     labelBgStyle: { fill: 'var(--theme-map-canvas)', fillOpacity: 0.92 },
     markerEnd: { type: 'arrowclosed' as const, color: 'var(--theme-muted)', width: 12, height: 12 },
   })})
+}
+
+/** Entity IDs an option operation adds, replaces, removes, or links. */
+function operationEntityIds(operation: DeltaOperation): string[] {
+  const entity = operation.entity as { id?: string } | string | undefined
+  const relationship = operation.relationship as { from?: string; to?: string } | undefined
+  return [typeof entity === 'string' ? entity : entity?.id, operation.from as string | undefined, operation.to as string | undefined, relationship?.from, relationship?.to].filter((id): id is string => typeof id === 'string' && id.length > 0)
 }

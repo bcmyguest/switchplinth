@@ -1,10 +1,10 @@
 // Architecture page: the overlay backdrop, component details, the map summary and heading with the What-if action, the
 // first-use guide, the system map with the option editor overlay, and the map editing controls. It stays mounted and is
 // hidden with `display: none` on other pages so the map keeps its viewport and the overlays keep their state.
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { ArrowRight, GitPullRequest } from 'lucide-react'
 import { Button } from '../../components/ui/button'
-import { mapGraphWithConfirmedIdentityGroups } from '../../map/projection'
+import { mapGraphWithConfirmedIdentityGroups, withoutUnusedAlternatives } from '../../map/projection'
 import type { AppTheme } from '../../theme-preference'
 import type { GraphData } from '../../types'
 import type { ScanState } from '../discovery/scanState'
@@ -43,8 +43,12 @@ export function ArchitecturePage({ active, panels, graph, live, theme, editor, d
   const { panel: architecturePanel, setPanel: setArchitecturePanel, panelRef: architecturePanelRef, selectCanvasEntity } = panels
   const { selected, selectedId: selectedEntity, visibleSelectedEntityId } = detail
   const visibleGraph = editor.preview?.graph ?? graph
-  const mapGraph = useMemo(() => mapGraphWithConfirmedIdentityGroups(visibleGraph), [visibleGraph])
+  const [showUnusedAlternatives, setShowUnusedAlternatives] = useState(false)
+  const scenarioSelections = visibleGraph.scenario?.selections ?? scenario.displayed
+  const { graph: usedGraph, hidden: unusedAlternatives } = useMemo(() => withoutUnusedAlternatives(visibleGraph, scenarioSelections), [visibleGraph, scenarioSelections])
+  const mapGraph = useMemo(() => mapGraphWithConfirmedIdentityGroups(showUnusedAlternatives ? visibleGraph : usedGraph), [showUnusedAlternatives, visibleGraph, usedGraph])
   const nodeCount = mapGraph.entities.length
+  const unusedNames = unusedAlternatives.map((entity) => entity.name).join(', ')
 
   return <div className={`architecture-layout${architecturePanel ? ` panel-${architecturePanel}` : ''}`} style={{ display: active ? undefined : 'none' }}>
 
@@ -52,7 +56,7 @@ export function ArchitecturePage({ active, panels, graph, live, theme, editor, d
 
     <ComponentDetailOverlay panelOpen={architecturePanel === 'detail'} panelRef={architecturePanelRef} onClose={() => setArchitecturePanel(null)} onOpenScenario={() => setArchitecturePanel('scenario')} detail={detail} graph={graph} live={live} scenario={scenario} facts={facts} onOpenEvidence={evidence.open} onExploreDecision={panels.exploreDecision} scanState={scanState} />
 
-    <div className="map-overview-line" aria-label="Map summary"><span><strong>{nodeCount}</strong> components</span><span><strong>{graph.decisions.length}</strong> {graph.decisions.length === 1 ? 'decision' : 'decisions'}</span><span><strong>{pendingCount}</strong> to review</span><span><strong>{live ? currentSourceCount(graph.evidence) : 'Sample'}</strong> {live ? 'Markdown sources' : 'data'}</span></div>
+    <div className="map-overview-line" aria-label="Map summary"><span><strong>{nodeCount}</strong> components</span><span><strong>{graph.decisions.length}</strong> {graph.decisions.length === 1 ? 'decision' : 'decisions'}</span><span><strong>{pendingCount}</strong> to review</span><span><strong>{live ? currentSourceCount(graph.evidence) : 'Sample'}</strong> {live ? 'Markdown sources' : 'data'}</span>{unusedAlternatives.length > 0 && <Button type="button" variant="link" size="sm" className="min-h-0 px-0" title={unusedNames} aria-pressed={showUnusedAlternatives} aria-label={`${showUnusedAlternatives ? 'Hide' : 'Show'} components only unselected options use: ${unusedNames}`} onClick={() => setShowUnusedAlternatives((shown) => !shown)}>{showUnusedAlternatives ? 'Hide' : 'Show'} {unusedAlternatives.length} unused {unusedAlternatives.length === 1 ? 'alternative' : 'alternatives'}</Button>}</div>
 
     <div className="section-heading graph-heading"><div><div className="section-kicker">{live ? 'REPOSITORY MODEL' : 'DEMO MODEL'} <span className="live-dot" /></div><h2>System map</h2></div><div className="graph-tools"><div className="legend"><span><i className="legend-solid" /> confirmed</span><span><i className="legend-dashed" /> inferred</span></div><Button variant="subtle" size="tiny" className="text-(length:--type-control) max-sm:flex-1 max-sm:justify-center max-sm:px-[6px]" onClick={(event) => panels.openScenario(event.currentTarget)}><GitPullRequest size={14} /> What-if</Button></div></div>
     <section className="map-start-guide" aria-label="How to read the system map">

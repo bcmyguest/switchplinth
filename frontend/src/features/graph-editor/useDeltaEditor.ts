@@ -9,7 +9,7 @@ import type { Workspace } from '../../app/useWorkspace'
 import type { DeltaOperation, GraphData } from '../../types'
 import type { ArchitecturePanel } from '../architecture/useArchitecturePanels'
 import type { ScenarioSelection } from '../scenarios/useScenarioSelection'
-import { DEFAULT_DELTA, deltaOperationsFromText, entitiesForOption, parseDeltaForPreview, relationshipsForOption } from './deltaOperations'
+import { DEFAULT_DELTA, deltaOperationsFromText, entitiesForOption, operationTouchesEntity, parseDeltaForPreview, relationshipsForOption } from './deltaOperations'
 import { useOperationForm, type OperationForm } from './useOperationForm'
 
 type DeltaPreview = { source: string; decisionId: string; optionId: string; graph: GraphData; affected?: { added?: string[]; removed?: string[]; changed?: string[] }; conflicts?: string[]; invalid_assumptions?: string[] }
@@ -167,13 +167,22 @@ export function useDeltaEditor(workspace: Pick<Workspace, 'graph' | 'live' | 'co
     }
   }
 
+  /** The decision a canvas edit lands in: an open draft's target, else one whose selected option (then any option) touches the entity. */
+  function canvasEditDecision(entityId: string) {
+    const selectedOption = (decision: GraphData['decisions'][number]) => decision.options.find((option) => option.id === (selection[decision.id] ?? decision.selected_option))
+    return (showEditor ? graph.decisions.find((item) => item.id === editingDecisionIdState) : undefined)
+      ?? graph.decisions.find((item) => selectedOption(item)?.delta?.operations.some((operation) => operationTouchesEntity(operation, entityId)))
+      ?? graph.decisions.find((item) => item.options.some((option) => option.delta?.operations.some((operation) => operationTouchesEntity(operation, entityId))))
+      ?? graph.decisions.find((item) => item.id === editingDecisionIdState) ?? graph.decisions.find((item) => selection[item.id]) ?? graph.decisions[0]
+  }
+
   function stageCanvasOperation(operation: DeltaOperation, openerEntityId: string) {
-    const decision = graph.decisions.find((item) => item.id === editingDecisionIdState) ?? graph.decisions.find((item) => selection[item.id]) ?? graph.decisions[0]
+    const decision = canvasEditDecision(openerEntityId)
     if (!decision) {
       setScenarioNotice('Add a decision with at least one option before editing the graph.')
       return
     }
-    const targetOption = decision.options.find((item) => item.id === editingOptionIdState) ?? decision.options.find((item) => item.id === selection[decision.id]) ?? decision.options[0]
+    const targetOption = (showEditor && decision.id === editingDecisionIdState ? decision.options.find((item) => item.id === editingOptionIdState) : undefined) ?? decision.options.find((item) => item.id === selection[decision.id]) ?? decision.options[0]
     if (!targetOption) {
       setScenarioNotice('This decision has no option to receive the graph edit.')
       return

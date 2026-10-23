@@ -225,7 +225,8 @@ export function useScenarioSelection(workspace: Pick<Workspace, 'graph' | 'live'
         label: describeScenarioSelection(sourceGraph, repositorySelection.current),
         selections: repositorySelection.current,
       }
-      const recent = [entry, ...current.filter((item) => item.key !== entry.key && item.key !== baselineKey)].slice(0, 4)
+      // The baseline is pinned first, so returning to it must not add a second copy as a recent combination.
+      const recent = [...(entry.key === baselineKey ? [] : [entry]), ...current.filter((item) => item.key !== entry.key && item.key !== baselineKey)].slice(0, 4)
       return [baseline, ...recent]
     })
   }

@@ -153,7 +153,7 @@ export function ReviewLogPanel({ live, revision, onChanged }: ReviewLogPanelProp
                   <span className="font-medium">{entryStatus(entry)}</span>
                   <code className="min-w-0 break-all text-xs text-(--theme-muted)">{entry.id}</code>
                 </div>
-                <Button type="button" variant="secondary" size="sm" className={ACTION_BUTTON} disabled={!entry.undoable || busyId !== ''} aria-describedby={blocked ? reasonId : undefined} onClick={() => void undo(entry)}>
+                <Button type="button" variant="secondary" size="sm" className={ACTION_BUTTON} disabled={!entry.undoable || busyId !== ''} aria-label={`Undo: ${entry.summary}`} aria-describedby={blocked ? reasonId : undefined} onClick={() => void undo(entry)}>
                   {busyId === entry.id ? <LoaderCircle className="spin" size={13} /> : <Undo2 size={13} />} Undo
                 </Button>
               </div>

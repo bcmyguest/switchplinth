@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import time
 from typing import Any
@@ -227,13 +228,21 @@ def diagnose(connection: dict[str, Any]) -> dict[str, Any]:
     }}
 
 
+def parse_json_reply(content: str | None) -> Any:
+    """Parse a model reply as JSON. Local models often wrap JSON in one Markdown code fence even when JSON output
+    is requested, so a single surrounding fence (```json or ```) is removed first; anything else must be bare JSON."""
+    text = (content or "").strip()
+    if text.startswith("```") and text.endswith("```") and "\n" in text:
+        text = text[text.index("\n") + 1 : -3].strip()
+    return json.loads(text)
+
+
 def extract_with_litellm(connection: dict[str, Any], text: str) -> dict[str, Any]:
     """Run a structured extraction prompt through LiteLLM when configured."""
     try:
         import litellm
         result = litellm.completion(model=litellm_model(connection), messages=[{"role": "system", "content": "Extract architecture entities, relationships, consequences, and decisions from arbitrary repository Markdown passages. Return JSON: {entities:[{name,kind,aliases:[...],confidence,alias_confidence,evidence_quote}],relationships:[{from_name,to_name,predicate,confidence,evidence_quote}],consequences:[{subject_name,decision_title,predicate,object,confidence,evidence_quote}],decisions:[{title,context,evidence_quote,options:[{title,rationale,selected,evidence_quote,delta:{base:'architecture',operations:[...]}}]}]}. For every option delta use exactly {base:'architecture',operations:[...]}. Each operation must use one supported shape: {op:'add_entity',entity:{id,kind,name,description?}}; {op:'remove_entity',entity:{id}}; {op:'replace_entity',entity:{id,kind,name,description?}}; {op:'add_relationship',relationship:{id,from,to,kind}}; {op:'remove_relationship',relationship:{id}}; {op:'replace_relationship',relationship:{id,from,to,kind}}. Any operation may also include the optional precondition expect:{} or expect:{exists:boolean}; do not include other expect fields or value types. Use only exact stable IDs present in the supplied passages or explicit operation data; never invent IDs or infer a graph change from a decision title. When a source-grounded typed operation and its required IDs cannot be formed safely, return operations:[] and preserve the decision/options. A consequence subject may be an entity name or decision_title matching an extracted decision. Relationship predicate should be a structural relation such as uses, publishes_to, calls, depends_on, stores_in, communicates_with, or implements. Consequences use a concise predicate and statement as object. Every evidence_quote must be an exact quote from one supplied passage and must uniquely identify it. Never invent an entity, relationship, consequence, or evidence; do not mark an option selected unless the source says it was selected."}, {"role": "user", "content": text}], response_format={"type": "json_object"}, api_base=litellm_api_base(connection), api_key=litellm_api_key(connection), timeout=litellm_request_timeout(connection), **litellm_generation_kwargs(connection))
-        import json
-        return json.loads(result.choices[0].message.content)
+        return parse_json_reply(result.choices[0].message.content)
     except Exception as exc:
         raise ProviderError(f"LiteLLM extraction failed: {type(exc).__name__}: {exc}") from exc
 
@@ -244,9 +253,9 @@ def propose_delta_with_litellm(connection: dict[str, Any], decision: dict[str, A
         import json
         import litellm
         result = litellm.completion(model=litellm_model(connection), messages=[
-            {"role": "system", "content": "Edit architecture option deltas. Return JSON only with {delta:{base:'architecture',operations:[...]},rationale:'...',warnings:[...]}. Allowed operations: add_entity, remove_entity, replace_entity, add_relationship, remove_relationship, replace_relationship. Every change must follow the request; use stable IDs from the current option or deterministic slugs for new nodes. Do not claim a change is verified."},
+            {"role": "system", "content": "Edit architecture option deltas. Return JSON only with {delta:{base:'architecture',operations:[...]},rationale:'...',warnings:[...]}. Each operation must use one supported shape: {op:'add_entity',entity:{id,kind,name,description?}}; {op:'remove_entity',entity:{id}}; {op:'replace_entity',entity:{id,kind,name,description?}}; {op:'add_relationship',relationship:{id,from,to,kind}}; {op:'remove_relationship',relationship:{id}}; {op:'replace_relationship',relationship:{id,from,to,kind}}. Any operation may also include the optional precondition expect:{} or expect:{exists:boolean}. Every operation has an op field; include no fields beyond these shapes. Every change must follow the request; use stable IDs from the current option or deterministic slugs for new nodes. Do not claim a change is verified."},
             {"role": "user", "content": json.dumps({"decision": decision, "option": option, "request": request, "current_graph": graph}, ensure_ascii=False)},
         ], response_format={"type": "json_object"}, api_base=litellm_api_base(connection), api_key=litellm_api_key(connection), timeout=litellm_request_timeout(connection), **litellm_generation_kwargs(connection))
-        return json.loads(result.choices[0].message.content)
+        return parse_json_reply(result.choices[0].message.content)
     except Exception as exc:
         raise ProviderError(f"LiteLLM delta proposal failed: {type(exc).__name__}: {exc}") from exc
